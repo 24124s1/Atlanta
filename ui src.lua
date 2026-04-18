@@ -1626,7 +1626,7 @@
 					name = "Style", 
 					anchor_point = vec2(0, 0),
 					size = dim2(0, 400, 0, 464),
-					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 400, 0, main_window.items.main_holder.AbsolutePosition.Y),
+					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 415, 0, main_window.items.main_holder.AbsolutePosition.Y),
 					image = "rbxassetid://115194686863276",
 				})
 
@@ -1737,9 +1737,8 @@
 				local credits_column = setmetatable(credits_items, library):column()
 				local credits_section = credits_column:section({name = "Info"})
 
-				credits_section:label({name = "Script by: YourName"})
-				credits_section:label({name = "UI Library: YourLibrary"})
-				credits_section:label({name = "Special Thanks: Whoever"})
+				credits_section:label({name = "Script by: Cookie & 090"})
+				credits_section:label({name = "Tester: War The Femboy"})
 	
 			-- cfg holder
 				local holder = library:panel({
