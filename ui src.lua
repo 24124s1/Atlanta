@@ -1791,41 +1791,6 @@
 						blur:Destroy()
 					end})
 			-- 
-					
-			-- esp preview
-				local holder = library:panel({
-					name = "ESP Preview", 
-					anchor_point = vec2(0, 0),
-					size = dim2(0, 300, 0, 325),
-					position = dim2(0, style.items.main_holder.AbsolutePosition.X, 0, style.items.main_holder.AbsolutePosition.Y + style.items.main_holder.AbsoluteSize.Y + 2),
-					image = "rbxassetid://77684377836328",
-				})  
-				
-				local items = holder.items
-				
-				local column = setmetatable(items, library):column() 
-				window.esp_section = column:section({name = "Main"})
-			--  
-
-			-- playerlist 
-				local holder = library:panel({
-					name = "Playerlist", 
-					anchor_point = vec2(0, 0),
-					size = dim2(0, 529, 0, 445),
-					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 531, 0, main_window.items.main_holder.AbsolutePosition.Y),
-					image = "rbxassetid://107070078834415",
-				})  
-				
-				local items = holder.items
-
-				local column = setmetatable(items, library):column() 
-				local section = column:section({name = "Playerlist"})
-				local playerlist = section:playerlist({})
-				section:dropdown({name = "Priority", items = {"Enemy", "Priority", "Neutral", "Friendly"}, default = "Neutral", flag = "PLAYERLIST_DROPDOWN", callback = function(text)
-					library.prioritize(text)
-				end})
-			--  
-
 			return setmetatable(window, library)
 		end
 
