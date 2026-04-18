@@ -1626,7 +1626,7 @@
 					name = "Style", 
 					anchor_point = vec2(0, 0),
 					size = dim2(0, 400, 0, 464),
-					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 405, 0, main_window.items.main_holder.AbsolutePosition.Y),
+					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 400, 0, main_window.items.main_holder.AbsolutePosition.Y),
 					image = "rbxassetid://115194686863276",
 				})
 
@@ -1735,7 +1735,7 @@
 				local credits_items = credits_holder.items
 
 				local credits_column = setmetatable(credits_items, library):column()
-				local credits_section = credits_column:section({name = "Info"})
+				local credits_section = credits_column:section({name = "Credits :)"})
 
 				credits_section:label({name = "Devs : Cookie & 090"})
 				credits_section:label({name = "Tester : War The Femboy"})
