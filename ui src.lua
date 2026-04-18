@@ -1525,7 +1525,7 @@
 
 			-- main window
 				local main_window = library:panel({
-					name = properties and properties.name or "Atlanta | ", 
+					name = properties and properties.name or "Vagrent.cc | ", 
 					size = dim2(0, 604, 0, 628),
 					position = dim2(0, (camera.ViewportSize.X / 2) - 302 - 96, 0, (camera.ViewportSize.Y / 2) - 421 - 12),
 					image = "rbxassetid://98823308062942",
@@ -1625,8 +1625,8 @@
 				local style = library:panel({
 					name = "Style", 
 					anchor_point = vec2(0, 0),
-					size = dim2(0, 394, 0, 464),
-					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 531, 0, main_window.items.main_holder.AbsolutePosition.Y),
+					size = dim2(0, 400, 0, 464),
+					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 331, 0, main_window.items.main_holder.AbsolutePosition.Y),
 					image = "rbxassetid://115194686863276",
 				})
 
@@ -1725,7 +1725,27 @@
 				end})
 				section:slider({name = "Max Players", flag = "max_players", min = 0, max = 40, default = 15, interval = 1})
 			-- 
+				local credits_holder = library:panel({
+					name = "Credits",
+					size = dim2(0, 324, 0, 120),
+					position = dim2(
+						0,
+						holder.items.main_holder.AbsolutePosition.X,
+						0,
+						holder.items.main_holder.AbsolutePosition.Y + holder.items.main_holder.AbsoluteSize.Y + 2
+					),
+					image = "rbxassetid://105199726008012",
+				})
 
+				local credits_items = credits_holder.items
+
+				local credits_column = setmetatable(credits_items, library):column()
+				local credits_section = credits_column:section({name = "Info"})
+
+				credits_section:label({name = "Script by: YourName"})
+				credits_section:label({name = "UI Library: YourLibrary"})
+				credits_section:label({name = "Special Thanks: Whoever"})
+	
 			-- cfg holder
 				local holder = library:panel({
 					name = "Configurations", 
