@@ -1626,7 +1626,7 @@
 					name = "Style", 
 					anchor_point = vec2(0, 0),
 					size = dim2(0, 394, 0, 464),
-					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X - 531, 0, main_window.items.main_holder.AbsolutePosition.Y),
+					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 531, 0, main_window.items.main_holder.AbsolutePosition.Y),
 					image = "rbxassetid://115194686863276",
 				})
 
@@ -1730,7 +1730,7 @@
 				local holder = library:panel({
 					name = "Configurations", 
 					size = dim2(0, 324, 0, 410),
-					position = dim2(0, items.main_holder.AbsolutePosition.X + items.main_holder.AbsoluteSize.X + 2, 0, items.main_holder.AbsolutePosition.Y),
+					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 2, 0, main_window.items.main_holder.AbsolutePosition.Y),
 					image = "rbxassetid://105199726008012",
 				}) 
 
