@@ -530,29 +530,28 @@
 			library:apply_theme(stroke, "text_outline", "Color")
 		end
 
-function library:create(instance, options)
-			local ins
-			local s = pcall(function()
-					ins = Instance.new(instance)
-			end)
+		function library:create(instance, options)
+				local ins
+				task.spawn(function()
+						local s = pcall(function()
+								ins = Instance.new(instance)
+						end)
 
-			if not s or not ins then
-					return
-			end
+						if s and ins then
+								for prop, value in next, options do
+										ins[prop] = value
+								end
 
-			for prop, value in next, options do
-					ins[prop] = value
-			end
-
-			if instance == "TextLabel" or instance == "TextButton" or instance == "TextBox" then
-					library:apply_theme(ins, "text", "TextColor3")
-					library:apply_stroke(ins)
-			elseif instance == "ScreenGui" then
-					insert(library.guis, ins)
-			end
-
-			return ins
-	end
+								if instance == "TextLabel" or instance == "TextButton" or instance == "TextBox" then
+										library:apply_theme(ins, "text", "TextColor3")
+										library:apply_stroke(ins)
+								elseif instance == "ScreenGui" then
+										insert(library.guis, ins)
+								end
+						end
+				end)
+				return ins
+		end
 	-- 
 
 	-- elements 
