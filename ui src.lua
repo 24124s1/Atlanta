@@ -1725,11 +1725,10 @@
 				end})
 				section:slider({name = "Max Players", flag = "max_players", min = 0, max = 40, default = 15, interval = 1})
 			-- credits holder
-
 				local credits_holder = library:panel({
 					name = "Credits", 
-					size = dim2(0, 324, 0, 410),
-					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 10, 0, main_window.items.main_holder.AbsolutePosition.Y),
+					size = dim2(0, 324, 0, 120),
+					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 10, 0, main_window.items.main_holder.AbsolutePosition.Y + 425),
 					image = "rbxassetid://105199726008012",
 				}) 
 	
