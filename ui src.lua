@@ -1728,7 +1728,7 @@
 				local credits_holder = library:panel({
 					name = "Credits", 
 					size = dim2(0, 324, 0, 120),
-					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 10, 0, main_window.items.main_holder.AbsolutePosition.Y + 425),
+					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 2, 0, main_window.items.main_holder.AbsolutePosition.Y + 410),
 					image = "rbxassetid://105199726008012",
 				}) 
 	
