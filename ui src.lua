@@ -1728,7 +1728,7 @@
 				local credits_holder = library:panel({
 					name = "Credits", 
 					size = dim2(0, 324, 0, 120),
-					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 2, 0, main_window.items.main_holder.AbsolutePosition.Y + 410),
+					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 2, 0, main_window.items.main_holder.AbsolutePosition.Y + 415),
 					image = "rbxassetid://105199726008012",
 				}) 
 	
@@ -1737,8 +1737,8 @@
 				local credits_column = setmetatable(credits_items, library):column()
 				local credits_section = credits_column:section({name = "Info"})
 
-				credits_section:label({name = "Script by: Cookie & 090"})
-				credits_section:label({name = "Tester: War The Femboy"})
+				credits_section:label({name = "Devs : Cookie & 090"})
+				credits_section:label({name = "Tester : War The Femboy"})
 	
 			-- cfg holder
 				local holder = library:panel({
