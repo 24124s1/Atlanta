@@ -4008,7 +4008,7 @@
 				binding = nil, 
 				name = options.name or nil, 
 				ignore_key = options.ignore or false, 
-
+				parent_toggle = options.parent_toggle or nil,
 				key = options.key or nil, 
 				mode = options.mode or "toggle",
 				active = options.default or false, 
@@ -4292,6 +4292,10 @@
 							cfg.active = true 
 						end 
 
+						if options.parent_toggle then
+							options.parent_toggle.set(cfg.active)
+						end
+			
 						cfg.callback(cfg.active or false)
 					elseif type(input) == "table" then 
 						input.key = type(input.key) == "string" and input.key ~= "none" and library:convert_enum(input.key) or input.key
