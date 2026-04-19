@@ -1791,7 +1791,7 @@
 					name = "Credits", 
 					size = dim2(0, 329, 0, 125),
 					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 2, 0, main_window.items.main_holder.AbsolutePosition.Y + 420),
-					image = "rbxassetid://105199726008012",
+					image = "rbxassetid://107070078834415",
 				}) 
 	
 				local credits_items = credits_holder.items
