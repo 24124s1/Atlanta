@@ -1228,7 +1228,7 @@
 			local blur = library:create( "BlurEffect" , {
 				Parent = lighting;
 				Enabled = true;
-				Size = 15
+				Size = 0
 			});    
 
 			library.cache = library:create("ScreenGui", {
