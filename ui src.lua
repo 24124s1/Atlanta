@@ -1625,7 +1625,7 @@
 				local style = library:panel({
 					name = "Style", 
 					anchor_point = vec2(0, 0),
-					size = dim2(0, 400, 0, 475),
+					size = dim2(0, 410, 0, 425),
 					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 402, 0, main_window.items.main_holder.AbsolutePosition.Y),
 					image = "rbxassetid://115194686863276",
 				})
