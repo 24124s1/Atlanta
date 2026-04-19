@@ -1634,8 +1634,7 @@
 				
 	
 				local watermark = library:watermark({
-    				Icon = icon_base64,
-    				IconColor = Color3.fromRGB(255, 255, 255), 
+    				Image = icon_base64,
     				default = os.date('Vagrant.cc | - %b %d %Y - %H:%M:%S')
 				})
 	
