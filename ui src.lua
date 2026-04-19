@@ -1,3 +1,6 @@
+-- REASON: Dumbass customer put their library in a request and flexed his non existant security and ended up getting it leaked by himself... 😭
+-- The code here is horrendous this is my 2nd library, the added on code was made to suit the old code however I should have just converted to a newer version of my code kind of an oopsie. 
+
 -- variables
 	local uis = cloneref(game:GetService("UserInputService"))
 	local players = cloneref(game:GetService("Players"))
@@ -1228,7 +1231,7 @@
 			local blur = library:create( "BlurEffect" , {
 				Parent = lighting;
 				Enabled = true;
-				Size = 0
+				Size = 15
 			});    
 
 			library.cache = library:create("ScreenGui", {
@@ -1525,7 +1528,7 @@
 
 			-- main window
 				local main_window = library:panel({
-					name = properties and properties.name or "Vagrent.cc | ", 
+					name = properties and properties.name or "Atlanta | ", 
 					size = dim2(0, 604, 0, 628),
 					position = dim2(0, (camera.ViewportSize.X / 2) - 302 - 96, 0, (camera.ViewportSize.Y / 2) - 421 - 12),
 					image = "rbxassetid://98823308062942",
@@ -1625,18 +1628,18 @@
 				local style = library:panel({
 					name = "Style", 
 					anchor_point = vec2(0, 0),
-					size = dim2(0, 410, 0, 425),
+					size = dim2(0, 394, 0, 464),
 					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 402, 0, main_window.items.main_holder.AbsolutePosition.Y),
 					image = "rbxassetid://115194686863276",
 				})
-	
-				local watermark = library:watermark({default = os.date('Vagrant.cc | - %b %d %Y - %H:%M:%S')})  
+
+				local watermark = library:watermark({default = os.date('Atlanta |  - %b %d %Y - %H:%M:%S')})  
 
 				task.spawn(function()
-						while task.wait(1) do 
-							watermark.change_text(os.date('Vagrant.cc - Beta - %b %d %Y - %H:%M:%S'))
+					while task.wait(1) do 
+						watermark.change_text(os.date('Atlanta - Beta - %b %d %Y - %H:%M:%S'))
 					end 
-				end)
+				end) 
 
 				local items = style.items
 
@@ -1724,28 +1727,13 @@
 					end 
 				end})
 				section:slider({name = "Max Players", flag = "max_players", min = 0, max = 40, default = 15, interval = 1})
-			-- credits holder
-				local credits_holder = library:panel({
-					name = "Credits", 
-					size = dim2(0, 329, 0, 125),
-					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 2, 0, main_window.items.main_holder.AbsolutePosition.Y + 420),
-					image = "rbxassetid://105199726008012",
-				}) 
-	
-				local credits_items = credits_holder.items
+			-- 
 
-				local credits_column = setmetatable(credits_items, library):column()
-				local credits_section = credits_column:section({name = "Credits :)"})
-
-				credits_section:label({name = "Devs : Cookie & 090"})
-				credits_section:label({name = "Tester : War"})
-				credits_section:label({name = "Cookie may of not dont the most but i still love him "})
-	
 			-- cfg holder
 				local holder = library:panel({
 					name = "Configurations", 
-					size = dim2(0, 329, 0, 415),
-					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 2, 0, main_window.items.main_holder.AbsolutePosition.Y),
+					size = dim2(0, 324, 0, 410),
+					position = dim2(0, items.main_holder.AbsolutePosition.X + items.main_holder.AbsoluteSize.X + 2, 0, items.main_holder.AbsolutePosition.Y),
 					image = "rbxassetid://105199726008012",
 				}) 
 
@@ -1799,6 +1787,56 @@
 
 						blur:Destroy()
 					end})
+			-- 
+
+			-- credits 
+					local credits_holder = library:panel({
+					name = "Credits", 
+					size = dim2(0, 329, 0, 125),
+					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 2, 0, main_window.items.main_holder.AbsolutePosition.Y + 420),
+					image = "rbxassetid://105199726008012",
+				}) 
+	
+				local credits_items = credits_holder.items
+
+				local credits_column = setmetatable(credits_items, library):column()
+				local credits_section = credits_column:section({name = "Credits :)"})
+
+				credits_section:label({name = "Devs : Cookie & 090"})
+				credits_section:label({name = "Tester : War"})
+			--
+			-- esp preview
+				local holder = library:panel({
+					name = "ESP Preview", 
+					anchor_point = vec2(0, 0),
+					size = dim2(0, 300, 0, 325),
+					position = dim2(0, style.items.main_holder.AbsolutePosition.X, 0, style.items.main_holder.AbsolutePosition.Y + style.items.main_holder.AbsoluteSize.Y + 2),
+					image = "rbxassetid://77684377836328",
+				})  
+				
+				local items = holder.items
+				
+				local column = setmetatable(items, library):column() 
+				window.esp_section = column:section({name = "Main"})
+			--  
+
+			-- playerlist 
+				local holder = library:panel({
+					name = "Playerlist", 
+					anchor_point = vec2(0, 0),
+					size = dim2(0, 529, 0, 445),
+					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 531, 0, main_window.items.main_holder.AbsolutePosition.Y),
+					image = "rbxassetid://107070078834415",
+				})  
+				
+				local items = holder.items
+
+				local column = setmetatable(items, library):column() 
+				local section = column:section({name = "Playerlist"})
+				local playerlist = section:playerlist({})
+				section:dropdown({name = "Priority", items = {"Enemy", "Priority", "Neutral", "Friendly"}, default = "Neutral", flag = "PLAYERLIST_DROPDOWN", callback = function(text)
+					library.prioritize(text)
+				end})
 			--  
 
 			return setmetatable(window, library)
@@ -4009,7 +4047,7 @@
 				binding = nil, 
 				name = options.name or nil, 
 				ignore_key = options.ignore or false, 
-				parent_toggle = options.parent_toggle or nil,
+
 				key = options.key or nil, 
 				mode = options.mode or "toggle",
 				active = options.default or false, 
@@ -4293,10 +4331,6 @@
 							cfg.active = true 
 						end 
 
-						if options.parent_toggle then
-							options.parent_toggle.set(cfg.active)
-						end
-			
 						cfg.callback(cfg.active or false)
 					elseif type(input) == "table" then 
 						input.key = type(input.key) == "string" and input.key ~= "none" and library:convert_enum(input.key) or input.key
