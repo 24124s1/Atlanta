@@ -1626,7 +1626,7 @@
 					name = "Style", 
 					anchor_point = vec2(0, 0),
 					size = dim2(0, 394, 0, 464),
-					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 402, 0, main_window.items.main_holder.AbsolutePosition.Y),
+					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 2, 0, main_window.items.main_holder.AbsolutePosition.Y + 400),
 					image = "rbxassetid://115194686863276",
 				})
 
