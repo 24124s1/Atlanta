@@ -1738,7 +1738,8 @@
 				local credits_section = credits_column:section({name = "Credits :)"})
 
 				credits_section:label({name = "Devs : Cookie & 090"})
-				credits_section:label({name = "Tester : War The Femboy"})
+				credits_section:label({name = "Tester : War"})
+				credits_section:label({name = "Cookie may of not dont the most but i still love him "})
 	
 			-- cfg holder
 				local holder = library:panel({
