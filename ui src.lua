@@ -1855,29 +1855,6 @@
 					rgbkey(1, rgb(35, 35, 47))
 				}
 			}) library:apply_theme(UIGradient, "contrast", "Color") 
-
-			library:create("UIListLayout", {
-				Parent = watermark_background,
-				FillDirection = Enum.FillDirection.Horizontal,
-				HorizontalAlignment = Enum.HorizontalAlignment.Left,
-				VerticalAlignment = Enum.VerticalAlignment.Center,
-				SortOrder = Enum.SortOrder.LayoutOrder,
-				Padding = UDim.new(0, 0)
-			})
-
-			library:create("UIPadding", {
-				Parent = watermark_background,
-				PaddingLeft = UDim.new(0, 6)
-			})
-
-			local icon = library:create("ImageLabel", {
-				Parent = watermark_background,
-				Name = "",
-				Size = dim2(0, 16, 0, 16),
-				BackgroundTransparency = 1,
-				Image = options.icon or "",
-				LayoutOrder = 1
-			})
 			
 			local text = library:create("TextLabel", {
 				Parent = watermark_background,
@@ -1885,14 +1862,14 @@
 				FontFace = library.font,
 				TextColor3 = themes.preset.text,
 				BorderColor3 = rgb(0, 0, 0),
-				Text = "",
+				Text = "  drain.lol | Beta | Aug 29 2024 | 07:29:00  ",
 				Size = dim2(0, 0, 1, 0),
 				BackgroundTransparency = 1,
+				Position = dim2(0, -1, 0, 1),
 				BorderSizePixel = 0,
 				AutomaticSize = Enum.AutomaticSize.X,
 				TextSize = 12,
-				BackgroundColor3 = rgb(255, 255, 255),
-				LayoutOrder = 2
+				BackgroundColor3 = rgb(255, 255, 255)
 			})
 			
 			library:create("UIStroke", {
@@ -1922,7 +1899,7 @@
 			})
 			
 			function cfg.change_text(input)
-				text.Text = " ".. input .." "
+				text.Text = "  ".. input .."  "
 			end 
 
 			function cfg.set_visible(bool) 
@@ -1934,7 +1911,7 @@
 
 			return cfg 
 
-		end
+		end 
 
 		function library:esp_preview(properties)
 			local cfg = {items = {}, rotation = 0; objects = {};}
