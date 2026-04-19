@@ -1625,7 +1625,7 @@
 				local style = library:panel({
 					name = "Style", 
 					anchor_point = vec2(0, 0),
-					size = dim2(0, 400, 0, 469),
+					size = dim2(0, 410, 0, 469),
 					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 402, 0, main_window.items.main_holder.AbsolutePosition.Y),
 					image = "rbxassetid://115194686863276",
 				})
@@ -1727,7 +1727,7 @@
 			-- credits holder
 				local credits_holder = library:panel({
 					name = "Credits", 
-					size = dim2(0, 324, 0, 125),
+					size = dim2(0, 329, 0, 125),
 					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 2, 0, main_window.items.main_holder.AbsolutePosition.Y + 415),
 					image = "rbxassetid://105199726008012",
 				}) 
@@ -1744,7 +1744,7 @@
 			-- cfg holder
 				local holder = library:panel({
 					name = "Configurations", 
-					size = dim2(0, 324, 0, 415),
+					size = dim2(0, 329, 0, 415),
 					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 2, 0, main_window.items.main_holder.AbsolutePosition.Y),
 					image = "rbxassetid://105199726008012",
 				}) 
