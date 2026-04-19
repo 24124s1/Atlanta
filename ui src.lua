@@ -1228,7 +1228,7 @@
 			local blur = library:create( "BlurEffect" , {
 				Parent = lighting;
 				Enabled = true;
-				Size = 15
+				Size = 0
 			});    
 
 			library.cache = library:create("ScreenGui", {
@@ -1630,7 +1630,9 @@
 					image = "rbxassetid://115194686863276",
 				})
 
-				local watermark = library:watermark({default = os.date('Vagrant.cc |  - %b %d %Y - %H:%M:%S')})  
+				local icon_url = "https://cdn.discordapp.com/attachments/1415077180836155433/1495542835229757450/imagem_2026-04-19_185259693-removebg-preview.png?ex=69e6a04d&is=69e54ecd&hm=d1713334949f83162503070536b191aff08476d0a42e4f767f197734df11a810&"
+				
+				local watermark = library:watermark({icon = icon_url, default = os.date('Vagrant.cc |  - %b %d %Y - %H:%M:%S')})  
 
 				task.spawn(function()
 					while task.wait(1) do 
