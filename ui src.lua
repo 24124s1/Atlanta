@@ -1695,7 +1695,7 @@
 				section:toggle({name = "Keybind List", flag = "keybind_list", callback = function(bool)
 					library.keybind_list_frame.Visible = bool
 				end})
-				section:toggle({name = "Watermark", flag = "watermark", callback = function(bool)
+				section:toggle({name = "Watermark", flag = "watermark", default = true, callback = function(bool)
 					watermark.set_visible(bool)
 				end})
 				section:button_holder({})
