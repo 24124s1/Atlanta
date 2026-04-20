@@ -1,3 +1,6 @@
+-- REASON: Dumbass customer put their library in a request and flexed his non existant security and ended up getting it leaked by himself... 😭
+-- The code here is horrendous this is my 2nd library, the added on code was made to suit the old code however I should have just converted to a newer version of my code kind of an oopsie. 
+
 -- variables
 	local uis = cloneref(game:GetService("UserInputService"))
 	local players = cloneref(game:GetService("Players"))
@@ -1785,7 +1788,6 @@
 						blur:Destroy()
 					end})
 			-- 
-
 			-- credits 
 				local credits_holder = library:panel({
 					name = "Credits", 
@@ -1801,116 +1803,10 @@
 
 				credits_section:label({name = "Devs : Cookie & 090"})
 				credits_section:label({name = "Tester : War"})
-			--   
+			--  
 
 			return setmetatable(window, library)
 		end
-
-		function library:watermark(options) 
-			local cfg = {
-				default = options.text or options.default or os.date('drain.lol | %b %d %Y | %H:%M')
-			}
-
-			local watermark_outline = library:create("Frame", {
-				Parent = sgui,
-				Name = "",
-				BorderColor3 = rgb(0, 0, 0),
-				AnchorPoint = vec2(1, 1),
-				Position = dim2(1, -20, 0, 20),
-				Size = dim2(0, 0, 0, 24),
-				BorderSizePixel = 0,
-				AutomaticSize = Enum.AutomaticSize.X,
-				BackgroundColor3 = themes.preset.outline
-			}) library:apply_theme(watermark_outline, "outline", "BackgroundColor3") 
-			watermark_outline.Position = dim_offset(watermark_outline.AbsolutePosition.X, watermark_outline.AbsolutePosition.Y)
-			library:draggify(watermark_outline)
-
-			local watermark_inline = library:create("Frame", {
-				Parent = watermark_outline,
-				Name = "",
-				Position = dim2(0, 1, 0, 1),
-				BorderColor3 = rgb(0, 0, 0),
-				Size = dim2(1, -2, 1, -2),
-				BorderSizePixel = 0,
-				BackgroundColor3 = themes.preset.inline
-			}) library:apply_theme(watermark_inline, "inline", "BackgroundColor3") 
-			
-			local watermark_background = library:create("Frame", {
-				Parent = watermark_inline,
-				Name = "",
-				Position = dim2(0, 1, 0, 1),
-				BorderColor3 = rgb(0, 0, 0),
-				Size = dim2(1, -2, 1, -2),
-				BorderSizePixel = 0,
-				BackgroundColor3 = rgb(255, 255, 255)
-			})
-			
-			local UIGradient = library:create("UIGradient", {
-				Parent = watermark_background,
-				Name = "",
-				Rotation = 90,
-				Color = rgbseq{
-					rgbkey(0, rgb(41, 41, 55)),
-					rgbkey(1, rgb(35, 35, 47))
-				}
-			}) library:apply_theme(UIGradient, "contrast", "Color") 
-			
-			local text = library:create("TextLabel", {
-				Parent = watermark_background,
-				Name = "",
-				FontFace = library.font,
-				TextColor3 = themes.preset.text,
-				BorderColor3 = rgb(0, 0, 0),
-				Text = "  drain.lol | Beta | Aug 29 2024 | 07:29:00  ",
-				Size = dim2(0, 0, 1, 0),
-				BackgroundTransparency = 1,
-				Position = dim2(0, -1, 0, 1),
-				BorderSizePixel = 0,
-				AutomaticSize = Enum.AutomaticSize.X,
-				TextSize = 12,
-				BackgroundColor3 = rgb(255, 255, 255)
-			})
-			
-			library:create("UIStroke", {
-				Parent = text,
-				Name = "",
-				LineJoinMode = Enum.LineJoinMode.Miter
-			})
-			
-			local accent = library:create("Frame", {
-				Parent = watermark_outline,
-				Name = "",
-				Position = dim2(0, 2, 0, 2),
-				BorderColor3 = rgb(0, 0, 0),
-				Size = dim2(1, -4, 0, 2),
-				BorderSizePixel = 0,
-				BackgroundColor3 = themes.preset.accent
-			}) library:apply_theme(accent, "accent", "BackgroundColor3") 
-			
-			local UIGradient = library:create("UIGradient", {
-				Parent = accent,
-				Name = "",
-				Rotation = 90,
-				Color = rgbseq{
-					rgbkey(0, rgb(255, 255, 255)),
-					rgbkey(1, rgb(167, 167, 167))
-				}
-			})
-			
-			function cfg.change_text(input)
-				text.Text = "  ".. input .."  "
-			end 
-
-			function cfg.set_visible(bool) 
-				watermark_outline.Visible = bool
-			end 
-
-
-			cfg.change_text(cfg.default)
-
-			return cfg 
-
-		end 
 
 		function library:watermark(options) 
 			local cfg = {
