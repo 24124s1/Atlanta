@@ -102,14 +102,14 @@
 
 	local themes = {
 		preset = {
-			["outline"] = hex("#0A0A0A"), -- 
-			["inline"] = hex("#2D2D2D"), --
-			["accent"] = hex("#6078BE"), --
-			["high_contrast"] = hex("#141414"),
-			["low_contrast"] = hex("#1E1E1E"),
-			["text"] = hex("#B4B4B4"),
+			["outline"] = hex("#0F0F0F"),
+			["inline"] = hex("#1C1C1C"),
+			["accent"] = hex("#FF69B4"),
+			["high_contrast"] = hex("#2A2A2A"),
+			["low_contrast"] = hex("#1C1C1C"),
+			["text"] = hex("#F0D0E0"),
 			["text_outline"] = rgb(0, 0, 0),
-			["glow"] = hex("#6078BE"), 
+			["glow"] = hex("#FF99CC"),
 		},
 
 		utility = {
