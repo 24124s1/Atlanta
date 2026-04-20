@@ -1629,7 +1629,7 @@
 					name = "Style", 
 					anchor_point = vec2(0, 0),
 					size = dim2(0, 394, 0, 464),
-					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 402, 0, main_window.items.main_holder.AbsolutePosition.Y),
+					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 2, 0, main_window.items.main_holder.AbsolutePosition.Y),
 					image = "rbxassetid://115194686863276",
 				})
 
@@ -1728,29 +1728,12 @@
 				end})
 				section:slider({name = "Max Players", flag = "max_players", min = 0, max = 40, default = 15, interval = 1})
 			-- 
-	
-			-- credits 
-				local credits_holder = library:panel({
-					name = "Credits", 
-					size = dim2(0, 329, 0, 125),
-					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 2, 0, main_window.items.main_holder.AbsolutePosition.Y + 420),
-					image = "rbxassetid://107070078834415",
-				}) 
-	
-				local credits_items = credits_holder.items
 
-				local credits_column = setmetatable(credits_items, library):column()
-				local credits_section = credits_column:section({name = "Credits :)"})
-
-				credits_section:label({name = "Devs : Cookie & 090"})
-				credits_section:label({name = "Tester : War"})
-			--   
-	
 			-- cfg holder
 				local holder = library:panel({
 					name = "Configurations", 
 					size = dim2(0, 324, 0, 410),
-					position = UDim2.new(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 2, 0, main_window.items.main_holder.AbsolutePosition.Y)
+					position = dim2(0, items.main_holder.AbsolutePosition.X + items.main_holder.AbsoluteSize.X + 2, 0, items.main_holder.AbsolutePosition.Y),
 					image = "rbxassetid://105199726008012",
 				}) 
 
@@ -1805,6 +1788,40 @@
 						blur:Destroy()
 					end})
 			-- 
+					
+			-- esp preview
+				local holder = library:panel({
+					name = "ESP Preview", 
+					anchor_point = vec2(0, 0),
+					size = dim2(0, 300, 0, 325),
+					position = dim2(0, style.items.main_holder.AbsolutePosition.X, 0, style.items.main_holder.AbsolutePosition.Y + style.items.main_holder.AbsoluteSize.Y + 2),
+					image = "rbxassetid://77684377836328",
+				})  
+				
+				local items = holder.items
+				
+				local column = setmetatable(items, library):column() 
+				window.esp_section = column:section({name = "Main"})
+			--  
+
+			-- playerlist 
+				local holder = library:panel({
+					name = "Playerlist", 
+					anchor_point = vec2(0, 0),
+					size = dim2(0, 529, 0, 445),
+					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 531, 0, main_window.items.main_holder.AbsolutePosition.Y),
+					image = "rbxassetid://107070078834415",
+				})  
+				
+				local items = holder.items
+
+				local column = setmetatable(items, library):column() 
+				local section = column:section({name = "Playerlist"})
+				local playerlist = section:playerlist({})
+				section:dropdown({name = "Priority", items = {"Enemy", "Priority", "Neutral", "Friendly"}, default = "Neutral", flag = "PLAYERLIST_DROPDOWN", callback = function(text)
+					library.prioritize(text)
+				end})
+			--  
 
 			return setmetatable(window, library)
 		end
