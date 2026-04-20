@@ -1228,7 +1228,7 @@
 			local blur = library:create( "BlurEffect" , {
 				Parent = lighting;
 				Enabled = true;
-				Size = 15
+				Size = 0
 			});    
 
 			library.cache = library:create("ScreenGui", {
@@ -1626,7 +1626,7 @@
 					name = "Style", 
 					anchor_point = vec2(0, 0),
 					size = dim2(0, 394, 0, 464),
-					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 402, 0, main_window.items.main_holder.AbsolutePosition.Y),
+					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 400, 0, main_window.items.main_holder.AbsolutePosition.Y),
 					image = "rbxassetid://115194686863276",
 				})
 
