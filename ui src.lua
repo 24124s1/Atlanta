@@ -1728,7 +1728,24 @@
 				end})
 				section:slider({name = "Max Players", flag = "max_players", min = 0, max = 40, default = 15, interval = 1})
 			-- 
+	
+			-- credits 
+				local credits_holder = library:panel({
+					name = "Credits", 
+					size = dim2(0, 329, 0, 125),
+					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 2, 0, main_window.items.main_holder.AbsolutePosition.Y + 420),
+					image = "rbxassetid://107070078834415",
+				}) 
+	
+				local credits_items = credits_holder.items
 
+				local credits_column = setmetatable(credits_items, library):column()
+				local credits_section = credits_column:section({name = "Credits :)"})
+
+				credits_section:label({name = "Devs : Cookie & 090"})
+				credits_section:label({name = "Tester : War"})
+			--   
+	
 			-- cfg holder
 				local holder = library:panel({
 					name = "Configurations", 
@@ -1788,22 +1805,6 @@
 						blur:Destroy()
 					end})
 			-- 
-			-- credits 
-				local credits_holder = library:panel({
-					name = "Credits", 
-					size = dim2(0, 329, 0, 125),
-					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X + main_window.items.main_holder.AbsoluteSize.X + 2, 0, main_window.items.main_holder.AbsolutePosition.Y + 420),
-					image = "rbxassetid://107070078834415",
-				}) 
-	
-				local credits_items = credits_holder.items
-
-				local credits_column = setmetatable(credits_items, library):column()
-				local credits_section = credits_column:section({name = "Credits :)"})
-
-				credits_section:label({name = "Devs : Cookie & 090"})
-				credits_section:label({name = "Tester : War"})
-			--  
 
 			return setmetatable(window, library)
 		end
