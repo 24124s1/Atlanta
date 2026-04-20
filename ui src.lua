@@ -1789,7 +1789,7 @@
 			-- esp preview
 				local credits_holder = library:panel({
 					name = "Credits", 
-					size = dim2(0, 329, 0, 125),
+					size = dim2(0, 324, 0, 125),
 					position = dim2(0, holder.items.main_holder.AbsolutePosition.X, 0, holder.items.main_holder.AbsolutePosition.Y + holder.items.main_holder.AbsoluteSize.Y + 2),
 					image = "rbxassetid://107070078834415",
 				}) 
