@@ -1626,7 +1626,7 @@
 					name = "Style", 
 					anchor_point = vec2(0, 0),
 					size = dim2(0, 394, 0, 464),
-					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 398, 0, main_window.items.main_holder.AbsolutePosition.Y),
+					position = dim2(0, main_window.items.main_holder.AbsolutePosition.X - 400, 0, main_window.items.main_holder.AbsolutePosition.Y),
 					image = "rbxassetid://115194686863276",
 				})
 
@@ -1767,6 +1767,13 @@
 					section:button({name = "Refresh Configs", callback = function()
 						library:config_list_update()
 					end})
+					section:button_holder({})
+					section:button({name = "Unload Config", callback = function()
+						library:load_config(library.old_config)
+					end})
+					section:button({name = "Unload Menu", callback = function()
+						library:load_config(library.old_config)
+
 						for _, gui in library.guis do 
 							gui:Destroy() 
 						end 
