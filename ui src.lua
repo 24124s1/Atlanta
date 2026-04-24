@@ -488,28 +488,6 @@
 				end 
 			end 
 		end 
-
-		local autoload_file = library.directory .. "/configs/autoload.json"
-
-		local function check_autoload()
-			if getgenv().autoload_executed then 
-				return 
-			end
-
-			if isfile(autoload_path) then
-				local success, data = pcall(function()
-					return http_service:JSONDecode(readfile(autoload_path))
-				end)
-
-				if success and data.selected then
-					local path = library.directory .. "/configs/" .. data.selected .. ".cfg"
-					if isfile(path) then
-						getgenv().load_config(data.selected)
-						getgenv().autoload_executed = true
-					end
-				end
-			end
-		end
 		
 		function library:round(number, float) 
 			local multiplier = 1 / (float or 1)
@@ -1762,11 +1740,6 @@
 					library:load_config(readfile(library.directory .. "/configs/" .. name .. ".cfg"))
 				end 
 
-				getgenv().set_autoload = function(name)
-					local data = {selected = name}
-					writefile(autoload_path, http_service:JSONEncode(data))
-				end
-	
 				local column = setmetatable(items, library):column() 
 				local section = column:section({name = "Options"})
 					config_holder = section:list({flag = "config_name_list"})
@@ -1794,13 +1767,6 @@
 					section:button({name = "Refresh Configs", callback = function()
 						library:config_list_update()
 					end})
-					section:button_holder({})
-					section:button({name = "Set Autoload", callback = function()
-						if selected_config_name then
-							set_autoload(selected_config_name)
-						end
-					end})
-
 						for _, gui in library.guis do 
 							gui:Destroy() 
 						end 
