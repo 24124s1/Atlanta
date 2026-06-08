@@ -1254,7 +1254,7 @@
 					end
 				end
 
-				library:tween(blur, {Size = bool and (flags["Blur Size"] or 15) or 0})
+				library:tween(blur, {Size = bool and (flags["Blur Size"] or 0) or 0})
 
 				dock_outline.Visible = bool;
 
