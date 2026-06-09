@@ -4000,7 +4000,7 @@
 			return setmetatable(cfg, library) 
 		end
 
-function library:keybind(options)
+		function library:keybind(options)
 			local parent = self.right_holder
 
 			local cfg = {
@@ -4016,6 +4016,7 @@ function library:keybind(options)
 				active = options.default or false, 
 
 				hold_instances = {},
+				sync_toggle = options.sync_toggle or nil,
 			}
 
 			flags[cfg.flag] = {} 
@@ -4265,8 +4266,14 @@ function library:keybind(options)
 						__cached = true 
 					end 
 
-					cfg.active = __cached 
-					flags[cfg.flag]["active"] = __cached 
+					cfg.active = __cached
+					flags[cfg.flag]["active"] = __cached
+
+					if cfg.sync_toggle then
+						cfg.sync_toggle.enabled = __cached
+						cfg.sync_toggle.set(__cached)
+					end
+
 					cfg.callback(__cached)
 				elseif tostring(input):find("Enum") then 
 					input = input.Name == "Escape" and "none" or input
