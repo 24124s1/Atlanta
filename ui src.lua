@@ -4000,11 +4000,11 @@
 			return setmetatable(cfg, library) 
 		end
 
-		function library:keybind(options)
+function library:keybind(options)
 			local parent = self.right_holder
 
 			local cfg = {
-				flag = options.flag or "SET ME A FLAG NOWWW!!!!",
+				flag = options.flag or tostring(random(1,9999999)),
 				callback = options.callback or function() end,
 				open = false,
 				binding = nil, 
@@ -4107,7 +4107,7 @@
 				TextColor3 = themes.preset.text,
 				BorderColor3 = rgb(0, 0, 0),
 				ZIndex = 2;
-				Text = "b",
+				Text = "none",
 				Size = dim2(1, 0, 1, 0),
 				BackgroundTransparency = 1,
 				Position = dim2(0, 0, 0, -2),
@@ -4123,303 +4123,291 @@
 				PaddingRight = dim(0, 2),
 			})
 			
-			-- mode selector
-				local keybind_selector = library:create("Frame", {
-					Parent = sgui,
-					Name = "",
-					Position = dim2(0, element_outline.AbsolutePosition.X + 1, 0, element_outline.AbsolutePosition.Y + 17),
-					BorderColor3 = rgb(255, 255, 255),
-					BorderSizePixel = 2,
-					Visible = false, 
-					AutomaticSize = Enum.AutomaticSize.XY,
-					BackgroundColor3 = rgb(255, 255, 255)
-				})
-				
-				library:create("UIListLayout", {
-					Parent = keybind_selector,
-					Name = "",
-					SortOrder = Enum.SortOrder.LayoutOrder,
-					HorizontalFlex = Enum.UIFlexAlignment.Fill,
-					Padding = dim(0, 2)
-				})
-				
-				local hold_button = library:create("TextButton", {
-					Parent = keybind_selector,
-					Name = "",
-					FontFace = library.font,
-					TextColor3 = themes.preset.text,
-					BorderColor3 = rgb(0, 0, 0),
-					Text = "hold",
-					BackgroundTransparency = 1,
-					AutomaticSize = Enum.AutomaticSize.XY,
-					BorderSizePixel = 0,
-					ZIndex = 2,
-					TextSize = 12,
-					BackgroundColor3 = rgb(255, 255, 255)
-				})
-				
-				library:create("UIStroke", {
-					Parent = hold_button,
-					Name = "",
-					LineJoinMode = Enum.LineJoinMode.Miter
-				})
-				
-				library:create("UIPadding", {
-					Parent = keybind_selector,
-					Name = "",
-					PaddingTop = dim(0, 3),
-					PaddingBottom = dim(0, 5),
-					PaddingRight = dim(0, 5),
-					PaddingLeft = dim(0, 5)
-				})
-				
-				local toggle_button = library:create("TextButton", {
-					Parent = keybind_selector,
-					Name = "",
-					FontFace = library.font,
-					TextColor3 = themes.preset.text,
-					BorderColor3 = rgb(0, 0, 0),
-					Text = "toggle",
-					BackgroundTransparency = 1,
-					AutomaticSize = Enum.AutomaticSize.XY,
-					BorderSizePixel = 0,
-					ZIndex = 2,
-					TextSize = 12,
-					BackgroundColor3 = rgb(255, 255, 255)
-				})
-				
-				library:create("UIStroke", {
-					Parent = toggle_button,
-					Name = "",
-					LineJoinMode = Enum.LineJoinMode.Miter
-				})
-				
-				local always_button = library:create("TextButton", {
-					Parent = keybind_selector,
-					Name = "",
-					FontFace = library.font,
-					TextColor3 = themes.preset.text,
-					BorderColor3 = rgb(0, 0, 0),
-					Text = "always",
-					BackgroundTransparency = 1,
-					AutomaticSize = Enum.AutomaticSize.XY,
-					BorderSizePixel = 0,
-					ZIndex = 2,
-					TextSize = 12,
-					BackgroundColor3 = rgb(255, 255, 255)
-				})
-				
-				library:create("UIStroke", {
-					Parent = always_button,
-					Name = "",
-					LineJoinMode = Enum.LineJoinMode.Miter
-				})
-				
-				local UIGradient = library:create("UIGradient", {
-					Parent = keybind_selector,
-					Name = "",
-					Rotation = 90,
-					Color = rgbseq{
-						rgbkey(0, rgb(41, 41, 55)),
-						rgbkey(1, rgb(35, 35, 47))
-					}
-				}); library:apply_theme(UIGradient, "contrast", "Color")
-				
-				local UIStroke = library:create("UIStroke", {
-					Parent = keybind_selector,
-					Name = "",
-					Color = themes.preset.inline,
-					LineJoinMode = Enum.LineJoinMode.Miter,
-					ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-				})
-			-- 
+			local keybind_selector = library:create("Frame", {
+				Parent = sgui,
+				Name = "",
+				Position = dim2(0, element_outline.AbsolutePosition.X + 1, 0, element_outline.AbsolutePosition.Y + 17),
+				BorderColor3 = rgb(255, 255, 255),
+				BorderSizePixel = 2,
+				Visible = false, 
+				AutomaticSize = Enum.AutomaticSize.XY,
+				BackgroundColor3 = rgb(255, 255, 255)
+			})
+			
+			library:create("UIListLayout", {
+				Parent = keybind_selector,
+				Name = "",
+				SortOrder = Enum.SortOrder.LayoutOrder,
+				HorizontalFlex = Enum.UIFlexAlignment.Fill,
+				Padding = dim(0, 2)
+			})
+			
+			local hold_button = library:create("TextButton", {
+				Parent = keybind_selector,
+				Name = "",
+				FontFace = library.font,
+				TextColor3 = themes.preset.text,
+				BorderColor3 = rgb(0, 0, 0),
+				Text = "hold",
+				BackgroundTransparency = 1,
+				AutomaticSize = Enum.AutomaticSize.XY,
+				BorderSizePixel = 0,
+				ZIndex = 2,
+				TextSize = 12,
+				BackgroundColor3 = rgb(255, 255, 255)
+			})
+			
+			library:create("UIStroke", {
+				Parent = hold_button,
+				Name = "",
+				LineJoinMode = Enum.LineJoinMode.Miter
+			})
+			
+			library:create("UIPadding", {
+				Parent = keybind_selector,
+				Name = "",
+				PaddingTop = dim(0, 3),
+				PaddingBottom = dim(0, 5),
+				PaddingRight = dim(0, 5),
+				PaddingLeft = dim(0, 5)
+			})
+			
+			local toggle_button = library:create("TextButton", {
+				Parent = keybind_selector,
+				Name = "",
+				FontFace = library.font,
+				TextColor3 = themes.preset.text,
+				BorderColor3 = rgb(0, 0, 0),
+				Text = "toggle",
+				BackgroundTransparency = 1,
+				AutomaticSize = Enum.AutomaticSize.XY,
+				BorderSizePixel = 0,
+				ZIndex = 2,
+				TextSize = 12,
+				BackgroundColor3 = rgb(255, 255, 255)
+			})
+			
+			library:create("UIStroke", {
+				Parent = toggle_button,
+				Name = "",
+				LineJoinMode = Enum.LineJoinMode.Miter
+			})
+			
+			local always_button = library:create("TextButton", {
+				Parent = keybind_selector,
+				Name = "",
+				FontFace = library.font,
+				TextColor3 = themes.preset.text,
+				BorderColor3 = rgb(0, 0, 0),
+				Text = "always",
+				BackgroundTransparency = 1,
+				AutomaticSize = Enum.AutomaticSize.XY,
+				BorderSizePixel = 0,
+				ZIndex = 2,
+				TextSize = 12,
+				BackgroundColor3 = rgb(255, 255, 255)
+			})
+			
+			library:create("UIStroke", {
+				Parent = always_button,
+				Name = "",
+				LineJoinMode = Enum.LineJoinMode.Miter
+			})
+			
+			local UIGradient = library:create("UIGradient", {
+				Parent = keybind_selector,
+				Name = "",
+				Rotation = 90,
+				Color = rgbseq{
+					rgbkey(0, rgb(41, 41, 55)),
+					rgbkey(1, rgb(35, 35, 47))
+				}
+			}); library:apply_theme(UIGradient, "contrast", "Color")
+			
+			local UIStroke = library:create("UIStroke", {
+				Parent = keybind_selector,
+				Name = "",
+				Color = themes.preset.inline,
+				LineJoinMode = Enum.LineJoinMode.Miter,
+				ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+			})
 
-			-- init 
-				function cfg.set_visible(bool)
-					keybind_selector.Visible = bool
-					keybind_selector.Position = dim2(0, element_outline.AbsolutePosition.X + 1, 0, element_outline.AbsolutePosition.Y + 17)
+			function cfg.set_visible(bool)
+				keybind_selector.Visible = bool
+				keybind_selector.Position = dim2(0, element_outline.AbsolutePosition.X + 1, 0, element_outline.AbsolutePosition.Y + 17)
 
-					if bool then 
-						if library.current_element_open and library.current_element_open ~= cfg then 
-							library.current_element_open.set_visible(false)
-							library.current_element_open.open = false 
-						end
-
-						library.current_element_open = cfg 
+				if bool then 
+					if library.current_element_open and library.current_element_open ~= cfg then 
+						library.current_element_open.set_visible(false)
+						library.current_element_open.open = false 
 					end
-				end 
+					library.current_element_open = cfg 
+				end
+			end 
 
-				function cfg.set_mode(mode) 
-					cfg.mode = mode 
+			function cfg.set_mode(mode) 
+				cfg.mode = mode 
 
-					if mode == "always" then
-						cfg.set(true)
-					elseif mode == "hold" then
-						cfg.set(false)
-					end
-
-					flags[cfg.flag]["mode"] = mode
-				end 
-
-				function cfg.set(input)
-					if type(input) == "boolean" then 
-						local __cached = input 
-
-						if cfg.mode == "always" then 
-							__cached = true 
-						end 
-
-						cfg.active = __cached 
-						flags[cfg.flag]["active"] = __cached 
-						cfg.callback(__cached)
-					elseif tostring(input):find("Enum") then 
-						input = input.Name == "Escape" and "none" or input
-						
-						cfg.key = input or "none"	
-
-						local _text = keys[cfg.key] or tostring(cfg.key):gsub("Enum.", "")
-						local _text2 = (tostring(_text):gsub("KeyCode.", ""):gsub("UserInputType.", "")) or "none"
-						cfg.key_name = _text2
-
-						flags[cfg.flag]["mode"] = cfg.mode 
-						flags[cfg.flag]["key"] = cfg.key 
-
-						key_text.Text = string.lower(_text2)
-
-						cfg.callback(cfg.active or false)
-					elseif find({"toggle", "hold", "always"}, input) then 
-						cfg.set_mode(input)
-
-						if input == "always" then 
-							cfg.active = true 
-						end 
-
-						cfg.callback(cfg.active or false)
-					elseif type(input) == "table" then 
-						input.key = type(input.key) == "string" and input.key ~= "none" and library:convert_enum(input.key) or input.key
-
-						input.key = input.key == Enum.KeyCode.Escape and "none" or input.key
-						cfg.key = input.key or "none"
-						
-						cfg.mode = input.mode or "toggle"
-
-						if input.active then
-							cfg.active = input.active
-						end
-
-						local text = tostring(cfg.key) ~= "Enums" and (keys[cfg.key] or tostring(cfg.key):gsub("Enum.", "")) or nil
-						local __text = text and (tostring(text):gsub("KeyCode.", ""):gsub("UserInputType.", ""))
-						
-						key_text.Text = string.lower(__text) or "none"
-						cfg.key_name = __text
-					end 
-
-					flags[cfg.flag] = {
-						mode = cfg.mode,
-						key = cfg.key, 
-						active = cfg.active
-					}
-					
-					if cfg.name then 
-						KEYBIND_ELEMENT.Visible = cfg.active
-
-						library:tween(KEYBIND_ELEMENT, {
-							TextTransparency = cfg.active and 0 or 1, 
-						}) 
-
-						library:tween(KEYBIND_ELEMENT:FindFirstChildOfClass("UIStroke"), {
-							Transparency = cfg.active and 0 or 1, 
-						}) 
-						
-						local text = tostring(cfg.key) ~= "Enums" and (keys[cfg.key] or tostring(cfg.key):gsub("Enum.", "")) or nil
-						local __text = text and (tostring(text):gsub("KeyCode.", ""):gsub("UserInputType.", ""))
-
-						if cfg.name then 
-							KEYBIND_ELEMENT.Text = "[ " .. string.upper(string.sub(cfg.mode, 1, 1)) .. string.sub(cfg.mode, 2) .. " ] " .. cfg.name .. " - " .. __text
-						end
-					end
+				if mode == "always" then
+					cfg.set(true)
+				elseif mode == "hold" then
+					cfg.set(false)
 				end
 
+				flags[cfg.flag]["mode"] = mode
+			end 
 
-				-- ok bro its 30 april2025.. what is this code from october 2024 💀💀
-				hold_button.MouseButton1Click:Connect(function()
-					cfg.set_mode("hold") 
-					cfg.set_visible(false)
-					cfg.open = false 
-				end) 
+			function cfg.set(input)
+				if type(input) == "boolean" then 
+					local __cached = input 
 
-				toggle_button.MouseButton1Click:Connect(function()
-					cfg.set_mode("toggle") 
-					cfg.set_visible(false)
-					cfg.open = false 
-				end) 
-
-				always_button.MouseButton1Click:Connect(function()
-					cfg.set_mode("always") 
-					cfg.set_visible(false)
-					cfg.open = false 
-				end) 
-				
-				element_outline.MouseButton2Click:Connect(function()
-					cfg.open = not cfg.open 
-
-					cfg.set_visible(cfg.open)
-				end)
-
-				element_outline.MouseButton1Down:Connect(function()
-					task.wait()
-					key_text.Text = "none"	
-
-					if cfg.binding then return end 
-
-					cfg.binding = library:connection(uis.InputBegan, function(input, game_event)  
-						local selected_key = input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode or input.UserInputType
-
-						cfg.set(selected_key)
-
-						cfg.binding:Disconnect() 
-						cfg.binding = nil
-					end)
-				end)
-
-				library:connection(uis.InputBegan, function(input, game_event) 
-					local selected_key = input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode or input.UserInputType
-
-					if not game_event then 
-						if selected_key == cfg.key then 
-							if cfg.mode == "toggle" then 
-								cfg.active = not cfg.active
-								cfg.set(cfg.active)
-							elseif cfg.mode == "hold" then 
-								cfg.set(true)
-							end
-						end
-					end
-				end)
-
-				library:connection(uis.InputEnded, function(input, game_event) 
-					if game_event then 
-						return 
+					if cfg.mode == "always" then 
+						__cached = true 
 					end 
 
-					local selected_key = input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode or input.UserInputType
-		
-					if selected_key == cfg.key then
-						if cfg.mode == "hold" then 
-							cfg.set(false)
-						end
+					cfg.active = __cached 
+					flags[cfg.flag]["active"] = __cached 
+					cfg.callback(__cached)
+				elseif tostring(input):find("Enum") then 
+					input = input.Name == "Escape" and "none" or input
+					
+					cfg.key = input or "none"	
+
+					local _text = keys[cfg.key] or tostring(cfg.key):gsub("Enum.", "")
+					local _text2 = (tostring(_text):gsub("KeyCode.", ""):gsub("UserInputType.", "")) or "none"
+					cfg.key_name = _text2
+
+					flags[cfg.flag]["mode"] = cfg.mode 
+					flags[cfg.flag]["key"] = cfg.key 
+
+					key_text.Text = string.lower(_text2)
+
+					cfg.callback(cfg.active or false)
+				elseif find({"toggle", "hold", "always"}, input) then 
+					cfg.set_mode(input)
+
+					if input == "always" then 
+						cfg.active = true 
+					end 
+
+					cfg.callback(cfg.active or false)
+				elseif type(input) == "table" then 
+					input.key = type(input.key) == "string" and input.key ~= "none" and library:convert_enum(input.key) or input.key
+					input.key = input.key == Enum.KeyCode.Escape and "none" or input.key
+					cfg.key = input.key or "none"
+					cfg.mode = input.mode or "toggle"
+
+					if input.active then
+						cfg.active = input.active
 					end
-				end)
-		
-				cfg.set({mode = cfg.mode, active = cfg.active, key = cfg.key})
-		
-				library.config_flags[cfg.flag] = cfg.set
-			-- 
+
+					local text = tostring(cfg.key) ~= "Enums" and (keys[cfg.key] or tostring(cfg.key):gsub("Enum.", "")) or nil
+					local __text = text and (tostring(text):gsub("KeyCode.", ""):gsub("UserInputType.", ""))
+					
+					key_text.Text = string.lower(__text) or "none"
+					cfg.key_name = __text
+				end 
+
+				flags[cfg.flag] = {
+					mode = cfg.mode,
+					key = cfg.key, 
+					active = cfg.active
+				}
+				
+				if cfg.name then 
+					KEYBIND_ELEMENT.Visible = cfg.active
+
+					library:tween(KEYBIND_ELEMENT, {
+						TextTransparency = cfg.active and 0 or 1, 
+					}) 
+
+					library:tween(KEYBIND_ELEMENT:FindFirstChildOfClass("UIStroke"), {
+						Transparency = cfg.active and 0 or 1, 
+					}) 
+					
+					local text = tostring(cfg.key) ~= "Enums" and (keys[cfg.key] or tostring(cfg.key):gsub("Enum.", "")) or nil
+					local __text = text and (tostring(text):gsub("KeyCode.", ""):gsub("UserInputType.", ""))
+
+					if cfg.name then 
+						KEYBIND_ELEMENT.Text = "[ " .. string.upper(string.sub(cfg.mode, 1, 1)) .. string.sub(cfg.mode, 2) .. " ] " .. cfg.name .. " - " .. __text
+					end
+				end
+			end
+
+			hold_button.MouseButton1Click:Connect(function()
+				cfg.set_mode("hold") 
+				cfg.set_visible(false)
+				cfg.open = false 
+			end) 
+
+			toggle_button.MouseButton1Click:Connect(function()
+				cfg.set_mode("toggle") 
+				cfg.set_visible(false)
+				cfg.open = false 
+			end) 
+
+			always_button.MouseButton1Click:Connect(function()
+				cfg.set_mode("always") 
+				cfg.set_visible(false)
+				cfg.open = false 
+			end) 
 			
+			element_outline.MouseButton2Click:Connect(function()
+				cfg.open = not cfg.open 
+				cfg.set_visible(cfg.open)
+			end)
+
+			element_outline.MouseButton1Down:Connect(function()
+				task.wait()
+				key_text.Text = "none"	
+
+				if cfg.binding then return end 
+
+				cfg.binding = library:connection(uis.InputBegan, function(input, game_event)  
+					local selected_key = input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode or input.UserInputType
+					cfg.set(selected_key)
+					cfg.binding:Disconnect() 
+					cfg.binding = nil
+				end)
+			end)
+
+			library:connection(uis.InputBegan, function(input, game_event) 
+				if game_event then return end
+				if cfg.key == nil or tostring(cfg.key) == "Enums" then return end
+
+				local selected_key = input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode or input.UserInputType
+
+				if selected_key == cfg.key then 
+					if cfg.mode == "toggle" then 
+						cfg.active = not cfg.active
+						cfg.set(cfg.active)
+					elseif cfg.mode == "hold" then 
+						cfg.set(true)
+					elseif cfg.mode == "always" then
+						cfg.set(true)
+					end
+				end
+			end)
+
+			library:connection(uis.InputEnded, function(input, game_event) 
+				if game_event then return end
+				if cfg.key == nil or tostring(cfg.key) == "Enums" then return end
+
+				local selected_key = input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode or input.UserInputType
+
+				if selected_key == cfg.key then
+					if cfg.mode == "hold" then 
+						cfg.set(false)
+					end
+				end
+			end)
+
+			cfg.set({mode = cfg.mode, active = cfg.active, key = cfg.key})
+
 			library.config_flags[cfg.flag] = cfg.set
 
 			return setmetatable(cfg, library) 
-		end 
+		end
 
 		function library:dropdown(options)
 			local parent = self.holder 
