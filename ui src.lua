@@ -1684,7 +1684,7 @@
 				:colorpicker({name = "Glow", color = themes.preset.glow, callback = function(color, alpha)
 					library:update_theme("glow", color)
 				end, flag = "Glow"})
-				section:slider({name = "Blur Size", flag = "Blur Size", min = 0, max = 56, default = 15, interval = 1, callback = function(int)
+				section:slider({name = "Blur Size", flag = "Blur Size", min = 0, max = 56, default = 0, interval = 1, callback = function(int)
 					if window.opened then 
 						blur.Size = int
 					end
