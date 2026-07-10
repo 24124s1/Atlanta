@@ -1684,7 +1684,7 @@
 				:colorpicker({name = "Glow", color = themes.preset.glow, callback = function(color, alpha)
 					library:update_theme("glow", color)
 				end, flag = "Glow"})
-				section:slider({name = "Blur Size", flag = "Blur Size", min = 0, max = 56, default = 0, interval = 1, callback = function(int)
+				section:slider({name = "Blur Size", flag = "Blur Size", min = 0, max = 56, default = 15, interval = 1, callback = function(int)
 					if window.opened then 
 						blur.Size = int
 					end
@@ -4439,21 +4439,21 @@
 		    }
 		    cfg.default = options.default or (cfg.multi and {cfg.items[1]}) or cfg.items[1] or nil
 			local dropdown_REAL = library:create("TextLabel", {
-				Parent = parent,
-				FontFace = library.font,
-				TextColor3 = themes.preset.text,
-				BorderColor3 = rgb(0, 0, 0),
-				Text = "",
-				Name = "dropdown",
-				ZIndex = 2,
-				Size = cfg.inline and dim2(0, 45, 0, 14) or dim2(1, -8, 0, 12),
-				BorderSizePixel = 0,
-				BackgroundTransparency = 1,
-				TextXAlignment = Enum.TextXAlignment.Left,
-				AutomaticSize = Enum.AutomaticSize.Y,
-				TextYAlignment = Enum.TextYAlignment.Top,
-				TextSize = 12,
-				BackgroundColor3 = rgb(255, 255, 255)
+    			Parent = parent,
+    			FontFace = library.font,
+    			TextColor3 = themes.preset.text,
+    			BorderColor3 = rgb(0, 0, 0),
+    			Text = "",
+    			Name = "dropdown",
+    			ZIndex = 2,
+    			Size = cfg.inline and dim2(0, 45, 0, 14) or dim2(1, -8, 0, 12),
+    			BorderSizePixel = 0,
+    			BackgroundTransparency = 1,
+    			TextXAlignment = Enum.TextXAlignment.Left,
+   		 		AutomaticSize = Enum.AutomaticSize.Y,
+    			TextYAlignment = Enum.TextYAlignment.Top,
+    			TextSize = 12,
+    			BackgroundColor3 = rgb(255, 255, 255)
 			})
 		    if cfg.inline then
 		        dropdown_REAL.LayoutOrder = -1
@@ -4551,18 +4551,18 @@
 		        if main_text then main_text.Visible = bool end
 		    end 
 			function cfg.set_visible(bool) 
-				library.current_element_open = cfg.ignore or cfg
-				dropdown_holder.Visible = bool
-				plus.Text = bool and "-" or "+"
-				plus.TextSize = bool and 12 or 8
-				if bool then 
-					if library.current_element_open and library.current_element_open ~= cfg and not cfg.ignore then 
-						library.current_element_open.set_visible(false)
-						library.current_element_open.open = false 
-					end
-					dropdown_holder.Size = dim2(0, math.max(dropdown.AbsoluteSize.X, 60), 0, dropdown_holder.Size.Y.Offset)
-					dropdown_holder.Position = dim2(0, dropdown.AbsolutePosition.X + 1, 0, dropdown.AbsolutePosition.Y + 22)                    
-				end
+    			library.current_element_open = cfg.ignore or cfg
+    			dropdown_holder.Visible = bool
+    			plus.Text = bool and "-" or "+"
+    			plus.TextSize = bool and 12 or 8
+    			if bool then 
+        			if library.current_element_open and library.current_element_open ~= cfg and not cfg.ignore then 
+            			library.current_element_open.set_visible(false)
+            			library.current_element_open.open = false 
+        			end
+        			dropdown_holder.Size = dim2(0, math.max(dropdown.AbsoluteSize.X, 60), 0, dropdown_holder.Size.Y.Offset)
+        			dropdown_holder.Position = dim2(0, dropdown.AbsolutePosition.X + 1, 0, dropdown.AbsolutePosition.Y + 22)                    
+   				end
 			end
 		    function cfg.set(value) 
 		        local selected = {}
