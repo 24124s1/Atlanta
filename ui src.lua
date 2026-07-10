@@ -4438,23 +4438,23 @@
 		        tooltip = options.tooltip,
 		    }
 		    cfg.default = options.default or (cfg.multi and {cfg.items[1]}) or cfg.items[1] or nil
-			local dropdown_REAL = library:create("TextLabel", {
-    			Parent = parent,
-    			FontFace = library.font,
-    			TextColor3 = themes.preset.text,
-    			BorderColor3 = rgb(0, 0, 0),
-    			Text = "",
-    			Name = "dropdown",
-    			ZIndex = 2,
-    			Size = cfg.inline and dim2(0, 45, 0, 14) or dim2(1, -8, 0, 12),
-    			BorderSizePixel = 0,
-    			BackgroundTransparency = 1,
-    			TextXAlignment = Enum.TextXAlignment.Left,
-   		 		AutomaticSize = Enum.AutomaticSize.Y,
-    			TextYAlignment = Enum.TextYAlignment.Top,
-    			TextSize = 12,
-    			BackgroundColor3 = rgb(255, 255, 255)
-			})
+		    local dropdown_REAL = library:create("TextLabel", {
+		        Parent = parent,
+		        FontFace = library.font,
+		        TextColor3 = themes.preset.text,
+		        BorderColor3 = rgb(0, 0, 0),
+		        Text = "",
+		        Name = "dropdown",
+		        ZIndex = 2,
+		        Size = cfg.inline and dim2(0, 0, 0, 12) or dim2(1, -8, 0, 12),
+		        BorderSizePixel = 0,
+		        BackgroundTransparency = 1,
+		        TextXAlignment = Enum.TextXAlignment.Left,
+		        AutomaticSize = Enum.AutomaticSize.Y,
+		        TextYAlignment = Enum.TextYAlignment.Top,
+		        TextSize = 12,
+		        BackgroundColor3 = rgb(255, 255, 255)
+		    })
 		    if cfg.inline then
 		        dropdown_REAL.LayoutOrder = -1
 		    end
@@ -4550,20 +4550,20 @@
 		        dropdown_REAL.Visible = bool
 		        if main_text then main_text.Visible = bool end
 		    end 
-			function cfg.set_visible(bool) 
-    			library.current_element_open = cfg.ignore or cfg
-    			dropdown_holder.Visible = bool
-    			plus.Text = bool and "-" or "+"
-    			plus.TextSize = bool and 12 or 8
-    			if bool then 
-        			if library.current_element_open and library.current_element_open ~= cfg and not cfg.ignore then 
-            			library.current_element_open.set_visible(false)
-            			library.current_element_open.open = false 
-        			end
-        			dropdown_holder.Size = dim2(0, math.max(dropdown.AbsoluteSize.X, 60), 0, dropdown_holder.Size.Y.Offset)
-        			dropdown_holder.Position = dim2(0, dropdown.AbsolutePosition.X + 1, 0, dropdown.AbsolutePosition.Y + 22)                    
-   				end
-			end
+		    function cfg.set_visible(bool) 
+		        library.current_element_open = cfg.ignore or cfg
+		        dropdown_holder.Visible = bool
+		        plus.Text = bool and "-" or "+"
+		        plus.TextSize = bool and 12 or 8
+		        if bool then 
+		            if library.current_element_open and library.current_element_open ~= cfg and not cfg.ignore then 
+		                library.current_element_open.set_visible(false)
+		                library.current_element_open.open = false 
+		            end
+		            dropdown_holder.Size = dim2(0, dropdown.AbsoluteSize.X, 0, dropdown_holder.Size.Y.Offset)
+		            dropdown_holder.Position = dim2(0, dropdown.AbsolutePosition.X + 1, 0, dropdown.AbsolutePosition.Y + 22)                    
+		        end
+		    end
 		    function cfg.set(value) 
 		        local selected = {}
 		        local is_table = type(value) == "table"
@@ -4584,22 +4584,22 @@
 		        for _, v in next, cfg.option_instances do v:Destroy() end
 		        cfg.option_instances = {} 
 		        for i,v in next, refreshed_list do 
-				local TextButton = library:create("TextButton", {
-    					Parent = contrast,
-    					FontFace = library.font,
-    					TextColor3 = themes.preset.text,
-    					BorderColor3 = rgb(0, 0, 0),
-    					Size = dim2(1, 0, 0, 0),
-    					BackgroundTransparency = 1,
-    					BorderSizePixel = 0,
-    					TextWrapped = false,
-    					AutomaticSize = Enum.AutomaticSize.XY,
-   						TextSize = 12,
-    					TextXAlignment = Enum.TextXAlignment.Left,
-    					ZIndex = 2, 
-    					Text = v,
-    					BackgroundColor3 = rgb(255, 255, 255)
-					})library:apply_theme(TextButton, "accent", "TextColor3") 
+		            local TextButton = library:create("TextButton", {
+		                Parent = contrast,
+		                FontFace = library.font,
+		                TextColor3 = themes.preset.text,
+		                BorderColor3 = rgb(0, 0, 0),
+		                Size = dim2(1, 0, 0, 0),
+		                BackgroundTransparency = 1,
+		                BorderSizePixel = 0,
+		                TextWrapped = true,
+		                AutomaticSize = Enum.AutomaticSize.Y,
+		                TextSize = 12,
+		                TextXAlignment = Enum.TextXAlignment.Left,
+		                ZIndex = 2, 
+		                Text = v,
+		                BackgroundColor3 = rgb(255, 255, 255)
+		            }) library:apply_theme(TextButton, "accent", "TextColor3") 
 		            library:create("UIStroke", {Parent = TextButton, LineJoinMode = Enum.LineJoinMode.Miter})
 		            insert(cfg.option_instances, TextButton)
 		            TextButton.MouseButton1Down:Connect(function()
