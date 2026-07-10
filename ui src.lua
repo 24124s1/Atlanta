@@ -4465,7 +4465,7 @@
 				Text = "",
 				Name = "dropdown",
 				ZIndex = 2,
-				Size = cfg.inline and dim2(0, 45, 0, 14) or dim2(1, -8, 0, 12),
+				Size = dim2(1, -8, 0, 12),
 				BorderSizePixel = 0,
 				BackgroundTransparency = 1,
 				TextXAlignment = Enum.TextXAlignment.Left,
