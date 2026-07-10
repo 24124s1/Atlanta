@@ -4439,23 +4439,23 @@
 		        tooltip = options.tooltip,
 		    }
 		    cfg.default = options.default or (cfg.multi and {cfg.items[1]}) or cfg.items[1] or nil
-		    local dropdown_REAL = library:create("TextLabel", {
-		        Parent = parent,
-		        FontFace = library.font,
-		        TextColor3 = themes.preset.text,
-		        BorderColor3 = rgb(0, 0, 0),
-		        Text = "",
-		        Name = "dropdown",
-		        ZIndex = 2,
-		        Size = cfg.inline and dim2(0, 0, 0, 12) or dim2(1, -8, 0, 12),
-		        BorderSizePixel = 0,
-		        BackgroundTransparency = 1,
-		        TextXAlignment = Enum.TextXAlignment.Left,
-		        AutomaticSize = Enum.AutomaticSize.Y,
-		        TextYAlignment = Enum.TextYAlignment.Top,
-		        TextSize = 12,
-		        BackgroundColor3 = rgb(255, 255, 255)
-		    })
+			local dropdown_REAL = library:create("TextLabel", {
+				Parent = parent,
+				FontFace = library.font,
+				TextColor3 = themes.preset.text,
+				BorderColor3 = rgb(0, 0, 0),
+				Text = "",
+				Name = "dropdown",
+				ZIndex = 2,
+				Size = cfg.inline and dim2(0, 45, 0, 14) or dim2(1, -8, 0, 12),
+				BorderSizePixel = 0,
+				BackgroundTransparency = 1,
+				TextXAlignment = Enum.TextXAlignment.Left,
+				AutomaticSize = Enum.AutomaticSize.Y,
+				TextYAlignment = Enum.TextYAlignment.Top,
+				TextSize = 12,
+				BackgroundColor3 = rgb(255, 255, 255)
+			})
 		    if cfg.inline then
 		        dropdown_REAL.LayoutOrder = -1
 		    end
