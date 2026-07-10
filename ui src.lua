@@ -4417,7 +4417,7 @@
 			return setmetatable(cfg, library) 
 		end
 
-function library:dropdown(options)
+		function library:dropdown(options)
 		    local parent = self.right_holder or self.holder
 		    if not parent then
 		        error("dropdown: no valid section or right_holder found to parent this dropdown to")
