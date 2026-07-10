@@ -4521,17 +4521,18 @@
 		    local UIGradient = library:create("UIGradient", {Parent = contrast, Rotation = 90, Color = rgbseq{rgbkey(0, rgb(41, 41, 55)), rgbkey(1, rgb(35, 35, 47))}}) library:apply_theme(UIGradient, "contrast", "Color") 
 		    local UIGradient = library:create("UIGradient", {Parent = background, Rotation = 90, Color = rgbseq{rgbkey(0, rgb(255, 255, 255)), rgbkey(1, rgb(167, 167, 167))}}) library:apply_theme(UIGradient, "contrast", "Color") 
 		    library:create("UIListLayout", {Parent = bottom_components, Padding = dim(0, 10), SortOrder = Enum.SortOrder.LayoutOrder})
-			local dropdown = library:create("TextButton", {
-				Parent = bottom_components,
-				Name = "dropdown",
-				Position = dim2(0, 0, 0, 2),
-				BorderColor3 = rgb(0, 0, 0),
-				Size = dim2(1, cfg.inline and 0 or -27, 1, 18),
-				BorderSizePixel = 0,
-				BackgroundColor3 = themes.preset.outline,
-				Text = "",
-				AutoButtonColor = false,
-			})
+		    local dropdown_holder = library:create("Frame", {
+		        Parent = sgui,
+		        BorderColor3 = rgb(0, 0, 0),
+		        Name = "dropdown_holder",
+		        BackgroundTransparency = 1,
+		        Position = dim2(0, dropdown.AbsolutePosition.X + 1, 0, dropdown.AbsolutePosition.Y + 22),
+		        Size = dim2(0, dropdown.AbsoluteSize.X, 0, cfg.scrolling and 180 or 0),
+		        BorderSizePixel = 0,
+		        AutomaticSize = cfg.scrolling and Enum.AutomaticSize.None or Enum.AutomaticSize.Y,
+		        BackgroundColor3 = themes.preset.outline,
+		        Visible = false
+		    })
 		    local inline = library:create("Frame", {Parent = dropdown_holder, Size = dim2(1, -2, 1, 2), Name = "inline", Position = dim2(0, 1, 0, 1), BorderColor3 = rgb(0, 0, 0), ZIndex = 2, BorderSizePixel = 0, BackgroundColor3 = themes.preset.inline}) library:apply_theme(inline, "inline", "BackgroundColor3") 
 		    local background
 		    if not cfg.scrolling then 
@@ -4676,9 +4677,8 @@
 				local bottom_components = library:create("Frame", {
 					Parent = list_holder,
 					Name = "",
-					Position = dim2(0, 0, 0, cfg.name and 15 or 0),
 					BorderColor3 = rgb(0, 0, 0),
-					Size = dim2(1, 0, 0, 0),
+					Size = dim2(1, 26, 0, 0),
 					BorderSizePixel = 0,
 					BackgroundColor3 = rgb(255, 255, 255)
 				})
