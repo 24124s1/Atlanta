@@ -3166,18 +3166,26 @@
 				})
 			--  
 
-			function cfg.set(value)
-				if type(value) == "userdata" then 
-					return 
+			function cfg.set(value) 
+				local selected = {}
+				local is_table = type(value) == "table"
+				for _,v in next, cfg.option_instances do 
+					if v.Text == value or (is_table and find(value, v.Text)) then 
+						insert(selected, v.Text)
+						cfg.multi_items = selected
+						v.TextColor3 = themes.preset.accent
+					else 
+						v.TextColor3 = themes.preset.text
+					end
 				end
-
-				cfg.value = math.clamp(library:round(value, cfg.intervals), cfg.min, cfg.max)
-
-				fill.Size = dim2((cfg.value - cfg.min) / (cfg.max - cfg.min), 0, 1, 0)
-				slidertext.Text = tostring(cfg.value) .. cfg.suffix .. "/" .. tostring(cfg.max) .. cfg.suffix
-				flags[cfg.flag] = cfg.value
-
-				cfg.callback(flags[cfg.flag])
+				text.Text = is_table and concat(selected, ", ") or selected[1] or "nun"
+				flags[cfg.flag] = is_table and selected or selected[1]
+				if cfg.inline then
+					task.spawn(function()
+						dropdown_REAL.Size = dim2(0, text.TextBounds.X + 24, 0, 14)
+					end)
+				end
+				cfg.callback(flags[cfg.flag]) 
 			end
 
 			function cfg.set_element_visible(bool)
