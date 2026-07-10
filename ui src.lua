@@ -4417,7 +4417,7 @@
 			return setmetatable(cfg, library) 
 		end
 
-function library:dropdown(options)
+		function library:dropdown(options)
 		    local parent = self.right_holder or self.holder
 		    if not parent then
 		        error("dropdown: no valid section or right_holder found to parent this dropdown to")
@@ -4793,6 +4793,251 @@ function library:dropdown(options)
 			library.visible_flags[cfg.flag] = cfg.set_element_visible
 
 			return setmetatable(cfg, library) 
+		end 
+
+		function library:list(options)
+			local cfg = {
+				callback = options and options.callback or function() end, 
+
+				scale = options.size or 232, 
+				items = options.items or {"1", "2", "3"}, 
+				-- order = options.order or 1, 
+				placeholdertext = options.placeholder or options.placeholdertext or "search here...",
+				visible = options.visible or true,
+
+				option_instances = {}, 
+				current_instance = nil, 
+				flag = options.flag or "flag", 
+
+			} 
+
+			-- instances 
+				local list_holder = library:create("TextLabel", {
+					Parent = self.holder,
+					Name = "",
+					FontFace = library.font,
+					TextColor3 = themes.preset.text,
+					BorderColor3 = rgb(0, 0, 0),
+					Text = "",
+					ZIndex = 2,
+					Size = dim2(1, -8, 0, 12),
+					BorderSizePixel = 0,
+					BackgroundTransparency = 1,
+					TextXAlignment = Enum.TextXAlignment.Left,
+					AutomaticSize = Enum.AutomaticSize.Y,
+					TextYAlignment = Enum.TextYAlignment.Top,
+					TextSize = 12,
+					BackgroundColor3 = rgb(255, 255, 255)
+				})
+				
+				local UIPadding = library:create("UIPadding", {
+					Parent = list_holder,
+					Name = "",
+					PaddingLeft = dim(0, 1)
+				})
+				
+				local UIStroke = library:create("UIStroke", {
+					Parent = list_holder,
+					Name = ""
+				})
+				
+				local bottom_components = library:create("Frame", {
+					Parent = list_holder,
+					Name = "",
+					BorderColor3 = rgb(0, 0, 0),
+					Size = dim2(1, 26, 0, 0),
+					BorderSizePixel = 0,
+					BackgroundColor3 = rgb(255, 255, 255)
+				})
+				
+				library:create("UIListLayout", {
+					Parent = bottom_components,
+					Name = "",
+					Padding = dim(0, 10),
+					SortOrder = Enum.SortOrder.LayoutOrder
+				})
+				
+				local list = library:create("Frame", {
+					Parent = bottom_components,
+					Name = "",
+					Position = dim2(0, 0, 0, 2),
+					BorderColor3 = rgb(0, 0, 0),
+					Size = dim2(1, -27, 1, cfg.scale),
+					BorderSizePixel = 0,
+					BackgroundColor3 = themes.preset.outline
+				}) library:apply_theme(main_holder, "outline", "BackgroundColor3") 
+				
+				local inline = library:create("Frame", {
+					Parent = list,
+					Name = "",
+					Position = dim2(0, 1, 0, 1),
+					BorderColor3 = rgb(0, 0, 0),
+					Size = dim2(1, -2, 1, -2),
+					BorderSizePixel = 0,
+					BackgroundColor3 = themes.preset.inline
+				}) library:apply_theme(inline, "inline", "BackgroundColor3") 
+				
+				local background = library:create("Frame", {
+					Parent = inline,
+					Name = "",
+					Position = dim2(0, 1, 0, 1),
+					BorderColor3 = rgb(0, 0, 0),
+					Size = dim2(1, -2, 1, -2),
+					BorderSizePixel = 0,
+					BackgroundColor3 = themes.preset.accent
+				}) library:apply_theme(background, "accent", "BackgroundColor3") 
+				
+				local UIGradient = library:create("UIGradient", {
+					Parent = background,
+					Name = "",
+					Rotation = 90,
+					Color = rgbseq{
+					rgbkey(0, rgb(255, 255, 255)),
+					rgbkey(1, rgb(167, 167, 167))
+				}
+				}) library:apply_theme(UIGradient, "contrast", "Color") 
+				
+				local contrast = library:create("Frame", {
+					Parent = background,
+					Name = "",
+					BorderColor3 = rgb(0, 0, 0),
+					Size = dim2(1, 0, 1, 0),
+					BorderSizePixel = 0,
+					BackgroundColor3 = rgb(255, 255, 255)
+				})
+				
+				local UIGradient = library:create("UIGradient", {
+					Parent = contrast,
+					Name = "",
+					Rotation = 90,
+					Color = rgbseq{
+					rgbkey(0, rgb(41, 41, 55)),
+					rgbkey(1, rgb(35, 35, 47))
+				}
+				}) library:apply_theme(UIGradient, "contrast", "Color") 
+				
+				local ScrollingFrame = library:create("ScrollingFrame", {
+					Parent = contrast,
+					Name = "",
+					ScrollBarImageColor3 = themes.preset.accent,
+					Active = true,
+					MidImage = "rbxassetid://103468666327206",
+					TopImage = "rbxassetid://103468666327206",
+					BottomImage = "rbxassetid://103468666327206",
+					AutomaticCanvasSize = Enum.AutomaticSize.Y,
+					ScrollBarThickness = 2,
+					BackgroundTransparency = 1,
+					Size = dim2(1, 0, 1, 0),
+					BackgroundColor3 = rgb(255, 255, 255),
+					BorderColor3 = rgb(0, 0, 0),
+					BorderSizePixel = 0,
+					CanvasSize = dim2(0, 0, 0, 0)
+				}) library:apply_theme(ScrollingFrame, "accent", "ScrollBarImageColor3") 
+				
+				local UIPadding = library:create("UIPadding", {
+					Parent = ScrollingFrame,
+					Name = "",
+					PaddingBottom = dim(0, 4),
+					PaddingTop = dim(0, 4)
+				})
+				
+				local UIListLayout = library:create("UIListLayout", {
+					Parent = ScrollingFrame,
+					Name = "",
+					Padding = dim(0, 4),
+					SortOrder = Enum.SortOrder.LayoutOrder
+				})
+			--  
+
+			function cfg.render_option(text) 
+				local TextButton = library:create("TextButton", {
+					Parent = ScrollingFrame,
+					Name = "",
+					Text = tostring(text),
+					FontFace = library.font,
+					TextColor3 = themes.preset.text,
+					BorderColor3 = rgb(0, 0, 0),
+					BackgroundTransparency = 1,
+					Size = dim2(1, 0, 0, 0),
+					BorderSizePixel = 0,
+					AutomaticSize = Enum.AutomaticSize.Y,
+					TextSize = 12,
+					BackgroundColor3 = rgb(255, 255, 255)
+				})
+
+				library:apply_theme(TextButton, "accent", "TextColor3") 
+
+				local UIStroke = library:create("UIStroke", {
+					Parent = TextButton,
+					Name = ""
+				})
+
+				return TextButton 
+			end 
+
+			function cfg.set_element_visible(bool)
+				list_holder.Visible = bool 
+			end
+
+			function cfg.refresh_options(options) 
+				if type(options) == "function" then 
+					return 
+				end 
+
+				for _, v in next, cfg.option_instances do 
+					v:Destroy() 
+				end 
+
+				for _, option in next, options do 
+					local button = cfg.render_option(option) 
+
+					insert(cfg.option_instances, button)
+
+					button.MouseButton1Click:Connect(function()
+						if cfg.current_instance and cfg.current_instance ~= button then 
+							cfg.current_instance.TextColor3 = themes.preset.text 
+						end 
+
+						cfg.current_instance = button 
+						button.TextColor3 = themes.preset.accent 
+
+						flags[cfg.flag] = button.text
+						
+						cfg.callback(button.text)
+					end)
+				end 
+			end     
+
+			function cfg.filter_options(text)
+				for _, v in next, cfg.option_instances do 
+					if string.find(v.Text, text) then 
+						v.Visible = true 
+					else 
+						v.Visible = false
+					end
+				end
+			end 
+
+			function cfg.set(value)
+				for _, buttons in next, cfg.option_instances do 
+					if buttons.Text == value then 
+						buttons.TextColor3 = themes.preset.accent 
+					else 
+						buttons.TextColor3 = themes.preset.text 
+					end 
+				end 
+
+				flags[cfg.flag] = value
+				cfg.callback(value)
+			end 
+
+			cfg.refresh_options(cfg.items) 
+			cfg.set_element_visible(cfg.visible)
+
+			library.visible_flags[cfg.flag] = cfg.set_element_visible
+			library.config_flags[cfg.flag] = cfg.set
+
+			return setmetatable(cfg, library)
 		end 
 
 		function library:button_holder(options) 
