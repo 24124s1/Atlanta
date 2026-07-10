@@ -3446,16 +3446,17 @@
 			
 			-- colorpicker button 
 				local colorpicker_button = library:create("TextButton", {
-					Parent = parent,
-					Name = "outline",
-					BorderColor3 = rgb(0, 0, 0),
-					Size = dim2(0, 24, 0, 14),
-					BorderSizePixel = 0,
-					BackgroundColor3 = themes.preset.outline,
-					Text = "",
-					AutoButtonColor = false,
-				}) library:apply_theme(colorpicker_button, "outline", "BackgroundColor3") 
-			
+				    Parent = parent,
+				    Name = "outline",
+				    LayoutOrder = 0,
+				    BorderColor3 = rgb(0, 0, 0),
+				    Size = dim2(0, 24, 0, 14),
+				    BorderSizePixel = 0,
+				    BackgroundColor3 = themes.preset.outline,
+				    Text = "",
+				    AutoButtonColor = false,
+				}) library:apply_theme(colorpicker_button, "outline", "BackgroundColor3")
+
 				local inline = library:create("Frame", {
 					Parent = colorpicker_button,
 					Name = "inline",
@@ -4416,455 +4417,216 @@
 			return setmetatable(cfg, library) 
 		end
 
-		function library:dropdown(options)
-			local parent = self.right_holder or self.holder
-			local cfg = {
-				name = options.name or nil,
-				flag = options.flag or tostring(random(1,9999999)),
-				items = options.items or {"1", "2", "3"},
-				callback = options.callback or function() end,
-				multi = options.multi or false, 
-				visible = options.visible or true,
-				open = false, 
-				option_instances = {}, 
-				multi_items = {}, 
-				scrolling = options.scrolling or false, 
-				ignore = options.ignore or nil,
-				inline = self.right_holder ~= nil,
-				tooltip = options.tooltip,
-			}
-			cfg.default = options.default or (cfg.multi and {cfg.items[1]}) or cfg.items[1] or nil
-			local dropdown_REAL = library:create("TextLabel", {
-				Parent = parent,
-				FontFace = library.font,
-				TextColor3 = themes.preset.text,
-				BorderColor3 = rgb(0, 0, 0),
-				Text = "",
-				Name = "dropdown",
-				ZIndex = 2,
-				Size = cfg.inline and dim2(0, 0, 0, 12) or dim2(1, -8, 0, 12),
-				BorderSizePixel = 0,
-				BackgroundTransparency = 1,
-				TextXAlignment = Enum.TextXAlignment.Left,
-				AutomaticSize = Enum.AutomaticSize.Y,
-				TextYAlignment = Enum.TextYAlignment.Top,
-				TextSize = 12,
-				BackgroundColor3 = rgb(255, 255, 255)
-			})
-			local main_text
-			if cfg.name and not cfg.inline then 
-				local left_components = library:create("Frame", {
-					Parent = dropdown_REAL,
-					Name = "left_components",
-					BackgroundTransparency = 1,
-					Position = dim2(0, 2, 0, -1),
-					BorderColor3 = rgb(0, 0, 0),
-					Size = dim2(0, 0, 0, 14),
-					BorderSizePixel = 0,
-					BackgroundColor3 = rgb(255, 255, 255)
-				})
-				main_text = library:create("TextLabel", {
-					Parent = left_components,
-					FontFace = library.font,
-					TextColor3 = themes.preset.text,
-					BorderColor3 = rgb(0, 0, 0),
-					Text = cfg.name,
-					Name = "text",
-					BackgroundTransparency = 1,
-					Size = dim2(0, 0, 1, -1),
-					BorderSizePixel = 0,
-					AutomaticSize = Enum.AutomaticSize.X,
-					TextSize = 12,
-					BackgroundColor3 = rgb(255, 255, 255)
-				})
-				library:create("UIStroke", {Parent = main_text, LineJoinMode = Enum.LineJoinMode.Miter})
-				library:create("UIListLayout", {Parent = left_components, Padding = dim(0, 5), FillDirection = Enum.FillDirection.Horizontal})
-				local right_components = library:create("Frame", {Parent = dropdown_REAL, Name = "right_components", Position = dim2(1, -1, 0, 1), BorderColor3 = rgb(0, 0, 0), Size = dim2(0, 0, 0, 12), BorderSizePixel = 0, BackgroundColor3 = rgb(255, 255, 255)})
-				cfg["right_holder"] = right_components
-				library:create("UIListLayout", {Parent = right_components, VerticalAlignment = Enum.VerticalAlignment.Center, FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Right, Padding = dim(0, 4), SortOrder = Enum.SortOrder.LayoutOrder})
-			end 
-			local bottom_components = library:create("Frame", {
-				Parent = dropdown_REAL,
-				Name = "bottom_components",
-				Position = dim2(0, 0, 0, (cfg.name and not cfg.inline) and 15 or 0),
-				BorderColor3 = rgb(0, 0, 0),
-				Size = dim2(1, cfg.inline and 0 or 26, 0, 0),
-				BorderSizePixel = 0,
-				BackgroundColor3 = rgb(255, 255, 255)
-			})
-			local dropdown = library:create("TextButton", {
-				Parent = bottom_components,
-				Name = "dropdown",
-				Position = dim2(0, 0, 0, 2),
-				BorderColor3 = rgb(0, 0, 0),
-				Size = dim2(1, cfg.inline and 0 or -27, 1, 18),
-				BorderSizePixel = 0,
-				BackgroundColor3 = themes.preset.outline,
-				Text = "",
-				AutoButtonColor = false, 
-			}) library:apply_theme(dropdown, "outline", "BackgroundColor3") 
-			library:hoverify(dropdown_REAL, dropdown)
-			local inline = library:create("Frame", {Parent = dropdown, Name = "inline", ZIndex = 2, Position = dim2(0, 1, 0, 1), BorderColor3 = rgb(0, 0, 0), Size = dim2(1, -2, 1, -2), BorderSizePixel = 0, BackgroundColor3 = themes.preset.inline}) library:apply_theme(inline, "inline", "BackgroundColor3") 
-			local background = library:create("Frame", {Parent = inline, Name = "background", Position = dim2(0, 1, 0, 1), BorderColor3 = rgb(0, 0, 0), Size = dim2(1, -2, 1, -2), ZIndex = 2, BorderSizePixel = 0, BackgroundColor3 = themes.preset.accent}) library:apply_theme(background, "accent", "BackgroundColor3") 
-			local contrast = library:create("Frame", {Parent = background, Name = "contrast", ZIndex = 2, BorderColor3 = rgb(0, 0, 0), Size = dim2(1, 0, 1, 0), BorderSizePixel = 0, BackgroundColor3 = rgb(255, 255, 255)})
-			local plus = library:create("TextLabel", {Parent = contrast, TextWrapped = true, TextColor3 = themes.preset.text, BorderColor3 = rgb(0, 0, 0), ZIndex = 2, Text = "+", Name = "plus", Size = dim2(1, -4, 1, 0), Position = dim2(0, 0, 0, -1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Right, FontFace = library.font, TextTruncate = Enum.TextTruncate.AtEnd, BorderSizePixel = 0, BackgroundColor3 = rgb(255, 255, 255)})
-			library:create("UIStroke", {Parent = plus, LineJoinMode = Enum.LineJoinMode.Miter})
-			local text = library:create("TextLabel", {Parent = contrast, FontFace = library.font, TextColor3 = themes.preset.text, ZIndex = 2, BorderColor3 = rgb(0, 0, 0), Text = "aa", Name = "text", Size = dim2(1, -4, 1, 0), Position = dim2(0, 4, 0, -1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, BorderSizePixel = 0, TextTruncate = Enum.TextTruncate.AtEnd, TextSize = 12, BackgroundColor3 = rgb(255, 255, 255)})
-			library:create("UIStroke", {Parent = text, LineJoinMode = Enum.LineJoinMode.Miter})
-			local UIGradient = library:create("UIGradient", {Parent = contrast, Rotation = 90, Color = rgbseq{rgbkey(0, rgb(41, 41, 55)), rgbkey(1, rgb(35, 35, 47))}}) library:apply_theme(UIGradient, "contrast", "Color") 
-			local UIGradient = library:create("UIGradient", {Parent = background, Rotation = 90, Color = rgbseq{rgbkey(0, rgb(255, 255, 255)), rgbkey(1, rgb(167, 167, 167))}}) library:apply_theme(UIGradient, "contrast", "Color") 
-			library:create("UIListLayout", {Parent = bottom_components, Padding = dim(0, 10), SortOrder = Enum.SortOrder.LayoutOrder})
-			local dropdown_holder = library:create("Frame", {
-				Parent = sgui,
-				BorderColor3 = rgb(0, 0, 0),
-				Name = "dropdown_holder",
-				BackgroundTransparency = 1,
-				Position = dim2(0, dropdown.AbsolutePosition.X + 1, 0, dropdown.AbsolutePosition.Y + 22),
-				Size = dim2(0, dropdown.AbsoluteSize.X, 0, cfg.scrolling and 180 or 0),
-				BorderSizePixel = 0,
-				AutomaticSize = cfg.scrolling and Enum.AutomaticSize.None or Enum.AutomaticSize.Y,
-				BackgroundColor3 = themes.preset.outline,
-				Visible = false
-			})
-			local inline = library:create("Frame", {Parent = dropdown_holder, Size = dim2(1, -2, 1, 2), Name = "inline", Position = dim2(0, 1, 0, 1), BorderColor3 = rgb(0, 0, 0), ZIndex = 2, BorderSizePixel = 0, BackgroundColor3 = themes.preset.inline}) library:apply_theme(inline, "inline", "BackgroundColor3") 
-			local background
-			if not cfg.scrolling then 
-				background = library:create("Frame", {Parent = inline, BorderColor3 = rgb(0, 0, 0), Name = "background", BackgroundTransparency = 1, Position = dim2(0, 1, 0, 1), Size = dim2(1, -2, 1, 1), ZIndex = 2, BorderSizePixel = 0, BackgroundColor3 = themes.preset.accent}) library:apply_theme(background, "accent", "BackgroundColor3") 
-			else 
-				background = library:create("ScrollingFrame", {Parent = inline, BorderColor3 = rgb(0, 0, 0), Name = "background", BackgroundTransparency = 1, MidImage = "rbxassetid://103468666327206", TopImage = "rbxassetid://103468666327206", BottomImage = "rbxassetid://103468666327206", Position = dim2(0, 1, 0, 1), Size = dim2(1, -2, 1, 1), ZIndex = 2, BorderSizePixel = 0, BackgroundColor3 = themes.preset.accent, CanvasSize = dim2(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.Y, ScrollBarThickness = 2, ScrollBarImageColor3 = themes.preset.accent}) library:apply_theme(background, "accent", "BackgroundColor3") library:apply_theme(background, "accent", "ScrollBarImageColor3") 
-			end 
-			local contrast = library:create("Frame", {Parent = background, Name = "contrast", BorderColor3 = rgb(0, 0, 0), Size = dim2(1, 0, 1, -3), BorderSizePixel = 0, ZIndex = 2, BackgroundColor3 = rgb(255, 255, 255), AutomaticSize = cfg.scrolling and Enum.AutomaticSize.Y or Enum.AutomaticSize.None})
-			library:create("UIPadding", {Parent = contrast, PaddingTop = dim(0, 2), PaddingBottom = dim(0, 2), PaddingRight = dim(0, 0), PaddingLeft = dim(0, 4)})
-			local UIGradient = library:create("UIGradient", {Parent = contrast, Rotation = 90, Color = rgbseq{rgbkey(0, rgb(41, 41, 55)), rgbkey(1, rgb(35, 35, 47))}}) library:apply_theme(UIGradient, "contrast", "Color") 
-			library:create("UIListLayout", {Parent = contrast, Padding = dim(0, 5), SortOrder = Enum.SortOrder.LayoutOrder})
-			local UIGradient = library:create("UIGradient", {Parent = background, Rotation = 90, Color = rgbseq{rgbkey(0, rgb(255, 255, 255)), rgbkey(1, rgb(167, 167, 167))}}) library:apply_theme(UIGradient, "contrast", "Color") 
-			local stroke = library:create("UIStroke", {Parent = inline, Color = themes.preset.outline, LineJoinMode = Enum.LineJoinMode.Miter}) library:apply_theme(stroke, "outline", "Color") 
-			function cfg.set_element_visible(bool)
-				dropdown_REAL.Visible = bool
-				if main_text then main_text.Visible = bool end
-			end 
-			function cfg.set_visible(bool) 
-				library.current_element_open = cfg.ignore or cfg
-				dropdown_holder.Visible = bool
-				plus.Text = bool and "-" or "+"
-				plus.TextSize = bool and 12 or 8
-				if bool then 
-					if library.current_element_open and library.current_element_open ~= cfg and not cfg.ignore then 
-						library.current_element_open.set_visible(false)
-						library.current_element_open.open = false 
-					end
-					dropdown_holder.Size = dim2(0, dropdown.AbsoluteSize.X, 0, dropdown_holder.Size.Y.Offset)
-					dropdown_holder.Position = dim2(0, dropdown.AbsolutePosition.X + 1, 0, dropdown.AbsolutePosition.Y + 22)                    
-				end
-			end
-			function cfg.set(value) 
-				local selected = {}
-				local is_table = type(value) == "table"
-				for _,v in next, cfg.option_instances do 
-					if v.Text == value or (is_table and find(value, v.Text)) then 
-						insert(selected, v.Text)
-						cfg.multi_items = selected
-						v.TextColor3 = themes.preset.accent
-					else 
-						v.TextColor3 = themes.preset.text
-					end
-				end
-				text.Text = is_table and concat(selected, ", ") or selected[1] or "nun"
-				flags[cfg.flag] = is_table and selected or selected[1]
-				cfg.callback(flags[cfg.flag]) 
-			end
-			function cfg:refresh_options(refreshed_list) 
-				for _, v in next, cfg.option_instances do v:Destroy() end
-				cfg.option_instances = {} 
-				for i,v in next, refreshed_list do 
-					local TextButton = library:create("TextButton", {
-						Parent = contrast,
-						FontFace = library.font,
-						TextColor3 = themes.preset.text,
-						BorderColor3 = rgb(0, 0, 0),
-						Size = dim2(1, 0, 0, 0),
-						BackgroundTransparency = 1,
-						BorderSizePixel = 0,
-						TextWrapped = true,
-						AutomaticSize = Enum.AutomaticSize.Y,
-						TextSize = 12,
-						TextXAlignment = Enum.TextXAlignment.Left,
-						ZIndex = 2, 
-						Text = v,
-						BackgroundColor3 = rgb(255, 255, 255)
-					}) library:apply_theme(TextButton, "accent", "TextColor3") 
-					library:create("UIStroke", {Parent = TextButton, LineJoinMode = Enum.LineJoinMode.Miter})
-					insert(cfg.option_instances, TextButton)
-					TextButton.MouseButton1Down:Connect(function()
-						if cfg.multi then 
-							local selected_index = find(cfg.multi_items, TextButton.Text)
-							if selected_index then remove(cfg.multi_items, selected_index) else insert(cfg.multi_items, TextButton.Text) end
-							cfg.set(cfg.multi_items) 				
-						else 
-							cfg.set_visible(false)
-							cfg.open = false 
-							cfg.set(TextButton.Text)
-						end
-					end)
-				end
-			end
-			dropdown.MouseButton1Click:Connect(function()
-				cfg.open = not cfg.open 
-				cfg.set_visible(cfg.open)
-			end)
-			cfg:refresh_options(cfg.items) 
-			cfg.set(cfg.default)
-			if cfg.tooltip then library:tool_tip({name = cfg.tooltip, path = dropdown_REAL}) end
-			library.config_flags[cfg.flag] = cfg.set
-			library.visible_flags[cfg.flag] = cfg.set_element_visible
-			cfg.set_element_visible(cfg.visible)
-			return setmetatable(cfg, library)
-		end 
-
-		function library:list(options)
-			local cfg = {
-				callback = options and options.callback or function() end, 
-
-				scale = options.size or 232, 
-				items = options.items or {"1", "2", "3"}, 
-				-- order = options.order or 1, 
-				placeholdertext = options.placeholder or options.placeholdertext or "search here...",
-				visible = options.visible or true,
-
-				option_instances = {}, 
-				current_instance = nil, 
-				flag = options.flag or "flag", 
-
-			} 
-
-			-- instances 
-				local list_holder = library:create("TextLabel", {
-					Parent = self.holder,
-					Name = "",
-					FontFace = library.font,
-					TextColor3 = themes.preset.text,
-					BorderColor3 = rgb(0, 0, 0),
-					Text = "",
-					ZIndex = 2,
-					Size = dim2(1, -8, 0, 12),
-					BorderSizePixel = 0,
-					BackgroundTransparency = 1,
-					TextXAlignment = Enum.TextXAlignment.Left,
-					AutomaticSize = Enum.AutomaticSize.Y,
-					TextYAlignment = Enum.TextYAlignment.Top,
-					TextSize = 12,
-					BackgroundColor3 = rgb(255, 255, 255)
-				})
-				
-				local UIPadding = library:create("UIPadding", {
-					Parent = list_holder,
-					Name = "",
-					PaddingLeft = dim(0, 1)
-				})
-				
-				local UIStroke = library:create("UIStroke", {
-					Parent = list_holder,
-					Name = ""
-				})
-				
-				local bottom_components = library:create("Frame", {
-					Parent = list_holder,
-					Name = "",
-					BorderColor3 = rgb(0, 0, 0),
-					Size = dim2(1, 26, 0, 0),
-					BorderSizePixel = 0,
-					BackgroundColor3 = rgb(255, 255, 255)
-				})
-				
-				library:create("UIListLayout", {
-					Parent = bottom_components,
-					Name = "",
-					Padding = dim(0, 10),
-					SortOrder = Enum.SortOrder.LayoutOrder
-				})
-				
-				local list = library:create("Frame", {
-					Parent = bottom_components,
-					Name = "",
-					Position = dim2(0, 0, 0, 2),
-					BorderColor3 = rgb(0, 0, 0),
-					Size = dim2(1, -27, 1, cfg.scale),
-					BorderSizePixel = 0,
-					BackgroundColor3 = themes.preset.outline
-				}) library:apply_theme(main_holder, "outline", "BackgroundColor3") 
-				
-				local inline = library:create("Frame", {
-					Parent = list,
-					Name = "",
-					Position = dim2(0, 1, 0, 1),
-					BorderColor3 = rgb(0, 0, 0),
-					Size = dim2(1, -2, 1, -2),
-					BorderSizePixel = 0,
-					BackgroundColor3 = themes.preset.inline
-				}) library:apply_theme(inline, "inline", "BackgroundColor3") 
-				
-				local background = library:create("Frame", {
-					Parent = inline,
-					Name = "",
-					Position = dim2(0, 1, 0, 1),
-					BorderColor3 = rgb(0, 0, 0),
-					Size = dim2(1, -2, 1, -2),
-					BorderSizePixel = 0,
-					BackgroundColor3 = themes.preset.accent
-				}) library:apply_theme(background, "accent", "BackgroundColor3") 
-				
-				local UIGradient = library:create("UIGradient", {
-					Parent = background,
-					Name = "",
-					Rotation = 90,
-					Color = rgbseq{
-					rgbkey(0, rgb(255, 255, 255)),
-					rgbkey(1, rgb(167, 167, 167))
-				}
-				}) library:apply_theme(UIGradient, "contrast", "Color") 
-				
-				local contrast = library:create("Frame", {
-					Parent = background,
-					Name = "",
-					BorderColor3 = rgb(0, 0, 0),
-					Size = dim2(1, 0, 1, 0),
-					BorderSizePixel = 0,
-					BackgroundColor3 = rgb(255, 255, 255)
-				})
-				
-				local UIGradient = library:create("UIGradient", {
-					Parent = contrast,
-					Name = "",
-					Rotation = 90,
-					Color = rgbseq{
-					rgbkey(0, rgb(41, 41, 55)),
-					rgbkey(1, rgb(35, 35, 47))
-				}
-				}) library:apply_theme(UIGradient, "contrast", "Color") 
-				
-				local ScrollingFrame = library:create("ScrollingFrame", {
-					Parent = contrast,
-					Name = "",
-					ScrollBarImageColor3 = themes.preset.accent,
-					Active = true,
-					MidImage = "rbxassetid://103468666327206",
-					TopImage = "rbxassetid://103468666327206",
-					BottomImage = "rbxassetid://103468666327206",
-					AutomaticCanvasSize = Enum.AutomaticSize.Y,
-					ScrollBarThickness = 2,
-					BackgroundTransparency = 1,
-					Size = dim2(1, 0, 1, 0),
-					BackgroundColor3 = rgb(255, 255, 255),
-					BorderColor3 = rgb(0, 0, 0),
-					BorderSizePixel = 0,
-					CanvasSize = dim2(0, 0, 0, 0)
-				}) library:apply_theme(ScrollingFrame, "accent", "ScrollBarImageColor3") 
-				
-				local UIPadding = library:create("UIPadding", {
-					Parent = ScrollingFrame,
-					Name = "",
-					PaddingBottom = dim(0, 4),
-					PaddingTop = dim(0, 4)
-				})
-				
-				local UIListLayout = library:create("UIListLayout", {
-					Parent = ScrollingFrame,
-					Name = "",
-					Padding = dim(0, 4),
-					SortOrder = Enum.SortOrder.LayoutOrder
-				})
-			--  
-
-			function cfg.render_option(text) 
-				local TextButton = library:create("TextButton", {
-					Parent = ScrollingFrame,
-					Name = "",
-					Text = tostring(text),
-					FontFace = library.font,
-					TextColor3 = themes.preset.text,
-					BorderColor3 = rgb(0, 0, 0),
-					BackgroundTransparency = 1,
-					Size = dim2(1, 0, 0, 0),
-					BorderSizePixel = 0,
-					AutomaticSize = Enum.AutomaticSize.Y,
-					TextSize = 12,
-					BackgroundColor3 = rgb(255, 255, 255)
-				})
-
-				library:apply_theme(TextButton, "accent", "TextColor3") 
-
-				local UIStroke = library:create("UIStroke", {
-					Parent = TextButton,
-					Name = ""
-				})
-
-				return TextButton 
-			end 
-
-			function cfg.set_element_visible(bool)
-				list_holder.Visible = bool 
-			end
-
-			function cfg.refresh_options(options) 
-				if type(options) == "function" then 
-					return 
-				end 
-
-				for _, v in next, cfg.option_instances do 
-					v:Destroy() 
-				end 
-
-				for _, option in next, options do 
-					local button = cfg.render_option(option) 
-
-					insert(cfg.option_instances, button)
-
-					button.MouseButton1Click:Connect(function()
-						if cfg.current_instance and cfg.current_instance ~= button then 
-							cfg.current_instance.TextColor3 = themes.preset.text 
-						end 
-
-						cfg.current_instance = button 
-						button.TextColor3 = themes.preset.accent 
-
-						flags[cfg.flag] = button.text
-						
-						cfg.callback(button.text)
-					end)
-				end 
-			end     
-
-			function cfg.filter_options(text)
-				for _, v in next, cfg.option_instances do 
-					if string.find(v.Text, text) then 
-						v.Visible = true 
-					else 
-						v.Visible = false
-					end
-				end
-			end 
-
-			function cfg.set(value)
-				for _, buttons in next, cfg.option_instances do 
-					if buttons.Text == value then 
-						buttons.TextColor3 = themes.preset.accent 
-					else 
-						buttons.TextColor3 = themes.preset.text 
-					end 
-				end 
-
-				flags[cfg.flag] = value
-				cfg.callback(value)
-			end 
-
-			cfg.refresh_options(cfg.items) 
-			cfg.set_element_visible(cfg.visible)
-
-			library.visible_flags[cfg.flag] = cfg.set_element_visible
-			library.config_flags[cfg.flag] = cfg.set
-
-			return setmetatable(cfg, library)
-		end 
+function library:dropdown(options)
+		    local parent = self.right_holder or self.holder
+		    if not parent then
+		        error("dropdown: no valid section or right_holder found to parent this dropdown to")
+		    end
+		    local cfg = {
+		        name = options.name or nil,
+		        flag = options.flag or tostring(random(1,9999999)),
+		        items = options.items or {"1", "2", "3"},
+		        callback = options.callback or function() end, 
+		        multi = options.multi or false, 
+		        visible = options.visible or true,
+		        open = false, 
+		        option_instances = {}, 
+		        multi_items = {}, 
+		        scrolling = options.scrolling or false, 
+		        ignore = options.ignore or nil,
+		        inline = self.right_holder ~= nil,
+		        tooltip = options.tooltip,
+		    }
+		    cfg.default = options.default or (cfg.multi and {cfg.items[1]}) or cfg.items[1] or nil
+		    local dropdown_REAL = library:create("TextLabel", {
+		        Parent = parent,
+		        FontFace = library.font,
+		        TextColor3 = themes.preset.text,
+		        BorderColor3 = rgb(0, 0, 0),
+		        Text = "",
+		        Name = "dropdown",
+		        ZIndex = 2,
+		        Size = cfg.inline and dim2(0, 0, 0, 12) or dim2(1, -8, 0, 12),
+		        BorderSizePixel = 0,
+		        BackgroundTransparency = 1,
+		        TextXAlignment = Enum.TextXAlignment.Left,
+		        AutomaticSize = Enum.AutomaticSize.Y,
+		        TextYAlignment = Enum.TextYAlignment.Top,
+		        TextSize = 12,
+		        BackgroundColor3 = rgb(255, 255, 255)
+		    })
+		    if cfg.inline then
+		        dropdown_REAL.LayoutOrder = -1
+		    end
+		    local main_text
+		    if cfg.name and not cfg.inline then 
+		        local left_components = library:create("Frame", {
+		            Parent = dropdown_REAL,
+		            Name = "left_components",
+		            BackgroundTransparency = 1,
+		            Position = dim2(0, 2, 0, -1),
+		            BorderColor3 = rgb(0, 0, 0),
+		            Size = dim2(0, 0, 0, 14),
+		            BorderSizePixel = 0,
+		            BackgroundColor3 = rgb(255, 255, 255)
+		        })
+		        main_text = library:create("TextLabel", {
+		            Parent = left_components,
+		            FontFace = library.font,
+		            TextColor3 = themes.preset.text,
+		            BorderColor3 = rgb(0, 0, 0),
+		            Text = cfg.name,
+		            Name = "text",
+		            BackgroundTransparency = 1,
+		            Size = dim2(0, 0, 1, -1),
+		            BorderSizePixel = 0,
+		            AutomaticSize = Enum.AutomaticSize.X,
+		            TextSize = 12,
+		            BackgroundColor3 = rgb(255, 255, 255)
+		        })
+		        library:create("UIStroke", {Parent = main_text, LineJoinMode = Enum.LineJoinMode.Miter})
+		        library:create("UIListLayout", {Parent = left_components, Padding = dim(0, 5), FillDirection = Enum.FillDirection.Horizontal})
+		        local right_components = library:create("Frame", {Parent = dropdown_REAL, Name = "right_components", Position = dim2(1, -1, 0, 1), BorderColor3 = rgb(0, 0, 0), Size = dim2(0, 0, 0, 12), BorderSizePixel = 0, BackgroundColor3 = rgb(255, 255, 255)})
+		        cfg["right_holder"] = right_components
+		        library:create("UIListLayout", {Parent = right_components, VerticalAlignment = Enum.VerticalAlignment.Center, FillDirection = Enum.FillDirection.Horizontal, HorizontalAlignment = Enum.HorizontalAlignment.Right, Padding = dim(0, 4), SortOrder = Enum.SortOrder.LayoutOrder})
+		    end 
+		    local bottom_components = library:create("Frame", {
+		        Parent = dropdown_REAL,
+		        Name = "bottom_components",
+		        Position = dim2(0, 0, 0, (cfg.name and not cfg.inline) and 15 or 0),
+		        BorderColor3 = rgb(0, 0, 0),
+		        Size = dim2(1, cfg.inline and 0 or 26, 0, 0),
+		        BorderSizePixel = 0,
+		        BackgroundColor3 = rgb(255, 255, 255)
+		    })
+		    local dropdown = library:create("TextButton", {
+		        Parent = bottom_components,
+		        Name = "dropdown",
+		        Position = dim2(0, 0, 0, 2),
+		        BorderColor3 = rgb(0, 0, 0),
+		        Size = dim2(1, cfg.inline and 0 or -27, 1, 18),
+		        BorderSizePixel = 0,
+		        BackgroundColor3 = themes.preset.outline,
+		        Text = "",
+		        AutoButtonColor = false, 
+		    }) library:apply_theme(dropdown, "outline", "BackgroundColor3") 
+		    library:hoverify(dropdown_REAL, dropdown)
+		    local inline = library:create("Frame", {Parent = dropdown, Name = "inline", ZIndex = 2, Position = dim2(0, 1, 0, 1), BorderColor3 = rgb(0, 0, 0), Size = dim2(1, -2, 1, -2), BorderSizePixel = 0, BackgroundColor3 = themes.preset.inline}) library:apply_theme(inline, "inline", "BackgroundColor3") 
+		    local background = library:create("Frame", {Parent = inline, Name = "background", Position = dim2(0, 1, 0, 1), BorderColor3 = rgb(0, 0, 0), Size = dim2(1, -2, 1, -2), ZIndex = 2, BorderSizePixel = 0, BackgroundColor3 = themes.preset.accent}) library:apply_theme(background, "accent", "BackgroundColor3") 
+		    local contrast = library:create("Frame", {Parent = background, Name = "contrast", ZIndex = 2, BorderColor3 = rgb(0, 0, 0), Size = dim2(1, 0, 1, 0), BorderSizePixel = 0, BackgroundColor3 = rgb(255, 255, 255)})
+		    local plus = library:create("TextLabel", {Parent = contrast, TextWrapped = true, TextColor3 = themes.preset.text, BorderColor3 = rgb(0, 0, 0), ZIndex = 2, Text = "+", Name = "plus", Size = dim2(1, -4, 1, 0), Position = dim2(0, 0, 0, -1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Right, FontFace = library.font, TextTruncate = Enum.TextTruncate.AtEnd, BorderSizePixel = 0, BackgroundColor3 = rgb(255, 255, 255)})
+		    library:create("UIStroke", {Parent = plus, LineJoinMode = Enum.LineJoinMode.Miter})
+		    local text = library:create("TextLabel", {Parent = contrast, FontFace = library.font, TextColor3 = themes.preset.text, ZIndex = 2, BorderColor3 = rgb(0, 0, 0), Text = "aa", Name = "text", Size = dim2(1, -4, 1, 0), Position = dim2(0, 4, 0, -1), BackgroundTransparency = 1, TextXAlignment = Enum.TextXAlignment.Left, BorderSizePixel = 0, TextTruncate = Enum.TextTruncate.AtEnd, TextSize = 12, BackgroundColor3 = rgb(255, 255, 255)})
+		    library:create("UIStroke", {Parent = text, LineJoinMode = Enum.LineJoinMode.Miter})
+		    local UIGradient = library:create("UIGradient", {Parent = contrast, Rotation = 90, Color = rgbseq{rgbkey(0, rgb(41, 41, 55)), rgbkey(1, rgb(35, 35, 47))}}) library:apply_theme(UIGradient, "contrast", "Color") 
+		    local UIGradient = library:create("UIGradient", {Parent = background, Rotation = 90, Color = rgbseq{rgbkey(0, rgb(255, 255, 255)), rgbkey(1, rgb(167, 167, 167))}}) library:apply_theme(UIGradient, "contrast", "Color") 
+		    library:create("UIListLayout", {Parent = bottom_components, Padding = dim(0, 10), SortOrder = Enum.SortOrder.LayoutOrder})
+		    local dropdown_holder = library:create("Frame", {
+		        Parent = sgui,
+		        BorderColor3 = rgb(0, 0, 0),
+		        Name = "dropdown_holder",
+		        BackgroundTransparency = 1,
+		        Position = dim2(0, dropdown.AbsolutePosition.X + 1, 0, dropdown.AbsolutePosition.Y + 22),
+		        Size = dim2(0, dropdown.AbsoluteSize.X, 0, cfg.scrolling and 180 or 0),
+		        BorderSizePixel = 0,
+		        AutomaticSize = cfg.scrolling and Enum.AutomaticSize.None or Enum.AutomaticSize.Y,
+		        BackgroundColor3 = themes.preset.outline,
+		        Visible = false
+		    })
+		    local inline = library:create("Frame", {Parent = dropdown_holder, Size = dim2(1, -2, 1, 2), Name = "inline", Position = dim2(0, 1, 0, 1), BorderColor3 = rgb(0, 0, 0), ZIndex = 2, BorderSizePixel = 0, BackgroundColor3 = themes.preset.inline}) library:apply_theme(inline, "inline", "BackgroundColor3") 
+		    local background
+		    if not cfg.scrolling then 
+		        background = library:create("Frame", {Parent = inline, BorderColor3 = rgb(0, 0, 0), Name = "background", BackgroundTransparency = 1, Position = dim2(0, 1, 0, 1), Size = dim2(1, -2, 1, 1), ZIndex = 2, BorderSizePixel = 0, BackgroundColor3 = themes.preset.accent}) library:apply_theme(background, "accent", "BackgroundColor3") 
+		    else 
+		        background = library:create("ScrollingFrame", {Parent = inline, BorderColor3 = rgb(0, 0, 0), Name = "background", BackgroundTransparency = 1, MidImage = "rbxassetid://103468666327206", TopImage = "rbxassetid://103468666327206", BottomImage = "rbxassetid://103468666327206", Position = dim2(0, 1, 0, 1), Size = dim2(1, -2, 1, 1), ZIndex = 2, BorderSizePixel = 0, BackgroundColor3 = themes.preset.accent, CanvasSize = dim2(0, 0, 0, 0), AutomaticCanvasSize = Enum.AutomaticSize.Y, ScrollBarThickness = 2, ScrollBarImageColor3 = themes.preset.accent}) library:apply_theme(background, "accent", "BackgroundColor3") library:apply_theme(background, "accent", "ScrollBarImageColor3") 
+		    end 
+		    local contrast = library:create("Frame", {Parent = background, Name = "contrast", BorderColor3 = rgb(0, 0, 0), Size = dim2(1, 0, 1, -3), BorderSizePixel = 0, ZIndex = 2, BackgroundColor3 = rgb(255, 255, 255), AutomaticSize = cfg.scrolling and Enum.AutomaticSize.Y or Enum.AutomaticSize.None})
+		    library:create("UIPadding", {Parent = contrast, PaddingTop = dim(0, 2), PaddingBottom = dim(0, 2), PaddingRight = dim(0, 0), PaddingLeft = dim(0, 4)})
+		    local UIGradient = library:create("UIGradient", {Parent = contrast, Rotation = 90, Color = rgbseq{rgbkey(0, rgb(41, 41, 55)), rgbkey(1, rgb(35, 35, 47))}}) library:apply_theme(UIGradient, "contrast", "Color") 
+		    library:create("UIListLayout", {Parent = contrast, Padding = dim(0, 5), SortOrder = Enum.SortOrder.LayoutOrder})
+		    local UIGradient = library:create("UIGradient", {Parent = background, Rotation = 90, Color = rgbseq{rgbkey(0, rgb(255, 255, 255)), rgbkey(1, rgb(167, 167, 167))}}) library:apply_theme(UIGradient, "contrast", "Color") 
+		    local stroke = library:create("UIStroke", {Parent = inline, Color = themes.preset.outline, LineJoinMode = Enum.LineJoinMode.Miter}) library:apply_theme(stroke, "outline", "Color") 
+		    function cfg.set_element_visible(bool)
+		        dropdown_REAL.Visible = bool
+		        if main_text then main_text.Visible = bool end
+		    end 
+		    function cfg.set_visible(bool) 
+		        library.current_element_open = cfg.ignore or cfg
+		        dropdown_holder.Visible = bool
+		        plus.Text = bool and "-" or "+"
+		        plus.TextSize = bool and 12 or 8
+		        if bool then 
+		            if library.current_element_open and library.current_element_open ~= cfg and not cfg.ignore then 
+		                library.current_element_open.set_visible(false)
+		                library.current_element_open.open = false 
+		            end
+		            dropdown_holder.Size = dim2(0, dropdown.AbsoluteSize.X, 0, dropdown_holder.Size.Y.Offset)
+		            dropdown_holder.Position = dim2(0, dropdown.AbsolutePosition.X + 1, 0, dropdown.AbsolutePosition.Y + 22)                    
+		        end
+		    end
+		    function cfg.set(value) 
+		        local selected = {}
+		        local is_table = type(value) == "table"
+		        for _,v in next, cfg.option_instances do 
+		            if v.Text == value or (is_table and find(value, v.Text)) then 
+		                insert(selected, v.Text)
+		                cfg.multi_items = selected
+		                v.TextColor3 = themes.preset.accent
+		            else 
+		                v.TextColor3 = themes.preset.text
+		            end
+		        end
+		        text.Text = is_table and concat(selected, ", ") or selected[1] or "nun"
+		        flags[cfg.flag] = is_table and selected or selected[1]
+		        cfg.callback(flags[cfg.flag]) 
+		    end
+		    function cfg:refresh_options(refreshed_list) 
+		        for _, v in next, cfg.option_instances do v:Destroy() end
+		        cfg.option_instances = {} 
+		        for i,v in next, refreshed_list do 
+		            local TextButton = library:create("TextButton", {
+		                Parent = contrast,
+		                FontFace = library.font,
+		                TextColor3 = themes.preset.text,
+		                BorderColor3 = rgb(0, 0, 0),
+		                Size = dim2(1, 0, 0, 0),
+		                BackgroundTransparency = 1,
+		                BorderSizePixel = 0,
+		                TextWrapped = true,
+		                AutomaticSize = Enum.AutomaticSize.Y,
+		                TextSize = 12,
+		                TextXAlignment = Enum.TextXAlignment.Left,
+		                ZIndex = 2, 
+		                Text = v,
+		                BackgroundColor3 = rgb(255, 255, 255)
+		            }) library:apply_theme(TextButton, "accent", "TextColor3") 
+		            library:create("UIStroke", {Parent = TextButton, LineJoinMode = Enum.LineJoinMode.Miter})
+		            insert(cfg.option_instances, TextButton)
+		            TextButton.MouseButton1Down:Connect(function()
+		                if cfg.multi then 
+		                    local selected_index = find(cfg.multi_items, TextButton.Text)
+		                    if selected_index then remove(cfg.multi_items, selected_index) else insert(cfg.multi_items, TextButton.Text) end
+		                    cfg.set(cfg.multi_items) 				
+		                else 
+		                    cfg.set_visible(false)
+		                    cfg.open = false 
+		                    cfg.set(TextButton.Text)
+		                end
+		            end)
+		        end
+		    end
+		    dropdown.MouseButton1Click:Connect(function()
+		        cfg.open = not cfg.open 
+		        cfg.set_visible(cfg.open)
+		    end)
+		    cfg:refresh_options(cfg.items) 
+		    cfg.set(cfg.default)
+		    if cfg.tooltip then library:tool_tip({name = cfg.tooltip, path = dropdown_REAL}) end
+		    library.config_flags[cfg.flag] = cfg.set
+		    library.visible_flags[cfg.flag] = cfg.set_element_visible
+		    cfg.set_element_visible(cfg.visible)
+		    return setmetatable(cfg, library)
+		end
 
 		function library:textbox(options)
 			local cfg = {
