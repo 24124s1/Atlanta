@@ -3181,7 +3181,10 @@
 				flags[cfg.flag] = is_table and selected or selected[1]
 				if cfg.inline then
 					task.spawn(function()
-						dropdown_REAL.Size = dim2(0, text.TextBounds.X + 24, 0, 14)
+						local target = parent:FindFirstChild("dropdown")
+						if target then
+							target.Size = dim2(0, text.TextBounds.X + 24, 0, 14)
+						end
 					end)
 				end
 				cfg.callback(flags[cfg.flag]) 
