@@ -3890,7 +3890,15 @@
 			-- 
 				
 			function cfg.set_visible(bool)
-				colorpicker_holder.Visible = bool
+				local is_dropdown = (dropdown_holder ~= nil)
+				local holder = is_dropdown and dropdown_holder or colorpicker_holder
+
+				holder.Visible = bool
+
+				if is_dropdown then
+					plus.Text = bool and "-" or "+"
+					plus.TextSize = bool and 12 or 8
+				end
 
 				if bool then 
 					if library.current_element_open and library.current_element_open ~= cfg then 
@@ -3899,10 +3907,19 @@
 					end
 
 					library.current_element_open = cfg
-					colorpicker_holder.Position = dim2(0, colorpicker_button.AbsolutePosition.X + 1, 0, colorpicker_button.AbsolutePosition.Y + 17)
-				end
-			end 
 
+					if is_dropdown then
+						dropdown_holder.Size = dim2(0, math.max(dropdown.AbsoluteSize.X, 60), 0, dropdown_holder.Size.Y.Offset)
+						dropdown_holder.Position = dim2(0, dropdown.AbsolutePosition.X + 1, 0, dropdown.AbsolutePosition.Y + 22)                    
+					else
+						colorpicker_holder.Position = dim2(0, colorpicker_button.AbsolutePosition.X + 1, 0, colorpicker_button.AbsolutePosition.Y + 17)
+					end
+				else
+					if library.current_element_open == cfg then
+						library.current_element_open = nil
+					end
+				end
+			end
 			colorpicker_button.MouseButton1Click:Connect(function()		
 				cfg.open = not cfg.open
 
