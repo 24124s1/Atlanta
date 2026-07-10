@@ -4523,7 +4523,7 @@
 				Name = "dropdown",
 				Position = dim2(0, 0, 0, 2),
 				BorderColor3 = rgb(0, 0, 0),
-				Size = dim2(0, 0, 1, 18),
+				Size = dim2(1, cfg.inline and 0 or -27, 1, 18),
 				AutomaticSize = Enum.AutomaticSize.X,
 				BorderSizePixel = 0,
 				BackgroundColor3 = themes.preset.outline,
