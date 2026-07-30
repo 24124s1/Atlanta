@@ -1675,7 +1675,9 @@
 					watermark.set_visible(bool)
 				end})
 				section:toggle({name = "Map", flag = "map_toggle", default = false, callback = function(bool)
-					if library.map_holder then
+					if library.map_sgui then
+						library.map_sgui.Enabled = bool
+					elseif library.map_holder and library.map_holder.items and library.map_holder.items.sgui then
 						library.map_holder.items.sgui.Enabled = bool
 					end
 				end})
@@ -1957,6 +1959,15 @@ map_items.sgui:GetPropertyChangedSignal("Enabled"):Connect(function()
 	end
 end)
 map_items.sgui.Enabled = false
+for i = #library.guis, 1, -1 do
+	if library.guis[i] == map_items.sgui then
+		table.remove(library.guis, i)
+		break
+	end
+end
+map_items.sgui.DisplayOrder = 999998
+library.map_sgui = map_items.sgui
+
 
 
 
