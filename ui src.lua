@@ -1,4 +1,3 @@
--- variables
 	local uis = cloneref(game:GetService("UserInputService"))
 	local players = cloneref(game:GetService("Players"))
 	local ws = cloneref(game:GetService("Workspace"))
@@ -62,9 +61,7 @@
 	local find = table.find 
 	local remove = table.remove
 	local concat = table.concat
--- 
 
--- library init
 	local library = {
 		directory = "Vagrant.cc",
 		folders = {
@@ -238,10 +235,7 @@
 	library.font = Font.new(getcustomasset("dddd.ttf"), Enum.FontWeight.Regular)
 
 	local config_holder 
--- 
 
--- library functions 
-	-- misc functions
 		function library:hoverify(hover, parent) 
 			local hover_instance = library:create("Frame", {
 				Parent = parent,
@@ -358,7 +352,7 @@
 					end 
 
 					if frame.Parent:IsA("ScreenGui") and frame.Parent.DisplayOrder ~= 999999 then 
-						library.display_orders += 1 -- shit code
+						library.display_orders += 1
 						frame.Parent.DisplayOrder = library.display_orders
 					end   
 				end
@@ -546,9 +540,7 @@
 			
 			return ins 
 		end
-	-- 
 
-	-- elements 
 		local tooltip_sgui = library:create("ScreenGui", {
 			Enabled = true,
 			Parent = gethui(),
@@ -648,16 +640,13 @@
 				position = options.position or dim2(0, 500, 0, 500),
 				anchor_point = options.anchor_point or vec2(0, 0),
 
-				-- button
 				image = options.image or "rbxassetid://79856374238119",
 				open = options.open or true,
 
-				-- ignore
 				items = {},
 			}
 			
 			local items = cfg.items do 
-				-- Panel
 					items.sgui = library:create("ScreenGui", {
 						Enabled = true,
 						Parent = gethui(),
@@ -707,7 +696,6 @@
 						items.sgui.Enabled = false;
 					end)
 
-					--library:apply_theme(main_holder, "outline", "BackgroundColor3") 
 					
 					items.window_inline = library:create("Frame", {
 						Parent = items.main_holder,
@@ -844,9 +832,7 @@
 						BorderSizePixel = 0,
 						SliceCenter = rect(vec2(21, 21), vec2(79, 79))
 					}) library:apply_theme(items.glow, "glow", "ImageColor3") 
-				-- 
 				
-				-- Button
 					items.button = library:create("TextButton", {
 						Parent = library.dock_holder,
 						Name = "",
@@ -909,7 +895,6 @@
 						PaddingRight = dim(0, 4),
 						PaddingLeft = dim(0, 4)
 					})
-				-- 
 
 				library:tool_tip({name = cfg.name, path = items.button})
 			end 
@@ -1274,7 +1259,6 @@
 				end
 			end 
 
-			-- dock init
 				dock_outline = library:create("Frame", {
 					Parent = sgui,
 					Name = "",
@@ -1367,9 +1351,7 @@
 						rgbkey(1, rgb(35, 35, 47))
 					}
 				}) library:apply_theme(UIGradient, "contrast", "Color") 
-			-- 
 
-			-- keybind list
 				local outline = library:create("Frame", {
 					Parent = sgui,
 					Name = "",
@@ -1480,7 +1462,6 @@
 					Position = dim2(0, 1, 0, 1),
 					BorderColor3 = rgb(0, 0, 0),
 					BorderSizePixel = 0,
-					--AutomaticSize = Enum.AutomaticSize.Y,
 					BackgroundColor3 = themes.preset.inline
 				})
 				library:apply_theme(inline, "inline", "BackgroundColor3")
@@ -1492,7 +1473,6 @@
 					Position = dim2(0, 1, 0, 1),
 					BorderColor3 = rgb(0, 0, 0),
 					BorderSizePixel = 0,
-					--AutomaticSize = Enum.AutomaticSize.Y,
 					BackgroundColor3 = rgb(255, 255, 255)
 				})
 				library.keybind_list = background
@@ -1521,9 +1501,7 @@
 					PaddingBottom = dim(0, 4),
 					PaddingLeft = dim(0, 5)
 				})
-			--  
 
-			-- main window
 				local main_window = library:panel({
 					name = properties and properties.name or "Vagrant.cc | ", 
 					size = dim2(0, 604, 0, 628),
@@ -1619,9 +1597,7 @@
 				
 				library:apply_theme(UIGradient, "contrast", "Color") 
 				library:make_resizable(items.main_holder) 
-			-- 
 
-			-- theming 
 				local style = library:panel({
 					name = "Style", 
 					anchor_point = vec2(0, 0),
@@ -1698,6 +1674,11 @@
 				section:toggle({name = "Watermark", flag = "watermark", default = true, callback = function(bool)
 					watermark.set_visible(bool)
 				end})
+				section:toggle({name = "Map", flag = "map_toggle", default = false, callback = function(bool)
+					if library.map_holder then
+						library.map_holder.items.sgui.Enabled = bool
+					end
+				end})
 				section:button_holder({})
 				section:button({name = "Copy JobId", callback = function()
 					setclipboard(game.JobId)
@@ -1724,9 +1705,261 @@
 					end 
 				end})
 				section:slider({name = "Max Players", flag = "max_players", min = 0, max = 40, default = 15, interval = 1})
-			-- 
+local locations = {
+	{name = "Oil Refinery", position = CFrame.new(-470.059265, 177.142532, 1050.305786).Position},
+	{name = "Radio Station", position = CFrame.new(-185.504501, 123.627266, 1519.97205).Position},
+	{name = "Radio Tower", position = CFrame.new(-2375.43042, 123.864136, 2556.76807).Position},
+	{name = "Satellite Dish", position = CFrame.new(580.865784, 113.915787, 1420.88953).Position},
+	{name = "Military Airfeild", position = CFrame.new(-2500.2522, 112.77005, 2182.8894).Position},
+	{name = "Industrial Village", position = CFrame.new(-1010.037048, 90.5540543, 2668.11597).Position},
+	{name = "Power Station", position = CFrame.new(-113.590012, 110.622124, 2570.87231).Position},
+	{name = "REBEL Compound", position = CFrame.new(-508.816101, 74.6039581, 2200.03394).Position},
+	{name = "Tunnel Base", position = CFrame.new(640.236816, 77.564209, 2340.19629).Position},
+	{name = "Digging Site", position = CFrame.new(-530.965027, 23.1413612, 1860.06567).Position},
+	{name = "Shore Village", position = CFrame.new(-2814.526, 58.6761856, 1393.42004).Position},
+	{name = "Old Shack", position = CFrame.new(-2950.1582, 92.9922867, 1787.50305).Position},
+	{name = "Airfield Outpost", position = CFrame.new(-1830.55322, 123.610184, 2060.59863).Position},
+	{name = "Shore Depot", position = CFrame.new(-1954.53613, 74.5906982, 1730.55664).Position},
+	{name = "Seaside House", position = CFrame.new(-1030.630493, 48.1060219, 1671.2666).Position},
+}
+local FAX, FBX, FCX = 0.00000380, 0.00030925, -0.061556
+local FAY, FBY, FCY = -0.00022210, 0.00002270, 0.209300
+local function worldToNorm(worldPos)
+	local nx = FAX * worldPos.X + FBX * worldPos.Z + FCX
+	local ny = FAY * worldPos.X + FBY * worldPos.Z + FCY
+	return nx, ny
+end
+local function getColorForIndex(index)
+	local colors = {
+		Color3.new(0.2, 0.6, 1),
+		Color3.new(1, 0.6, 0),
+		Color3.new(1, 1, 0),
+		Color3.new(0, 1, 0),
+		Color3.new(0.8, 0.2, 1),
+		Color3.new(0.8, 0.5, 0.2),
+		Color3.new(0.2, 0.8, 0.8),
+		Color3.new(1, 0.2, 0.2),
+		Color3.new(1, 0.5, 0.8),
+		Color3.new(0.5, 1, 0.5),
+	}
+	return colors[(index - 1) % #colors + 1]
+end
+library.map_holder = library:panel({
+	name = "Map",
+	size = dim2(0, 260, 0, 260),
+	position = dim2(0, 30, 0, 30),
+	image = "rbxassetid://79856374238119",
+})
+local map_items = library.map_holder.items
+if map_items.button then
+	map_items.button:Destroy()
+end
+local mapFrame = library:create("Frame", {
+	Parent = map_items.holder,
+	Name = "MapFrame",
+	Size = dim2(1, 0, 1, 0),
+	Position = dim2(0, 0, 0, 0),
+	BorderSizePixel = 0,
+	BackgroundColor3 = Color3.fromRGB(20, 20, 20),
+	ClipsDescendants = true,
+})
+local mapImage = library:create("ImageLabel", {
+	Parent = mapFrame,
+	Name = "MapImage",
+	Size = dim2(1, 0, 1, 0),
+	Position = dim2(0, 0, 0, 0),
+	BackgroundTransparency = 1,
+	ScaleType = Enum.ScaleType.Stretch,
+	ZIndex = 1,
+	Image = "rbxassetid://111371292654863",
+})
+local blipContainer = library:create("Frame", {
+	Parent = mapFrame,
+	Name = "Blips",
+	Size = dim2(1, 0, 1, 0),
+	BackgroundTransparency = 1,
+	ZIndex = 1000,
+	ClipsDescendants = false,
+})
+local locationBlips = {}
+for i, location in ipairs(locations) do
+	local nx, ny = worldToNorm(location.position)
+	local color = getColorForIndex(i)
+	local container = library:create("Frame", {
+		Parent = blipContainer,
+		Name = "Blip_" .. location.name,
+		Size = dim2(0, 55, 0, 20),
+		Position = dim2(nx, -27, ny, -10),
+		BackgroundTransparency = 1,
+		ZIndex = 1001,
+	})
+	local glow = library:create("Frame", {
+		Parent = container,
+		Name = "Glow",
+		Size = dim2(0, 12, 0, 12),
+		Position = dim2(0.5, -6, 0, 7),
+		BackgroundColor3 = color,
+		BackgroundTransparency = 0.7,
+		BorderSizePixel = 0,
+		ZIndex = 1001,
+	})
+	local glowCorner = Instance.new("UICorner")
+	glowCorner.CornerRadius = UDim.new(1, 0)
+	glowCorner.Parent = glow
+	local dot = library:create("Frame", {
+		Parent = container,
+		Name = "Dot",
+		Size = dim2(0, 6, 0, 6),
+		Position = dim2(0.5, -3, 0, 10),
+		BackgroundColor3 = color,
+		BorderSizePixel = 0,
+		ZIndex = 1002,
+	})
+	local dotCorner = Instance.new("UICorner")
+	dotCorner.CornerRadius = UDim.new(1, 0)
+	dotCorner.Parent = dot
+	local dotStroke = Instance.new("UIStroke")
+	dotStroke.Color = Color3.new(0, 0, 0)
+	dotStroke.Thickness = 1
+	dotStroke.Parent = dot
+	local nameLabel = library:create("TextLabel", {
+		Parent = container,
+		Name = "Name",
+		Size = dim2(1, 0, 0, 9),
+		Position = dim2(0, 0, 0, 0),
+		BackgroundTransparency = 1,
+		Text = location.name,
+		TextColor3 = Color3.new(1, 1, 1),
+		TextSize = 8,
+		Font = Enum.Font.GothamBold,
+		TextScaled = false,
+		TextWrapped = false,
+		TextXAlignment = Enum.TextXAlignment.Center,
+		ZIndex = 1003,
+	})
+	local shadow = library:create("TextLabel", {
+		Parent = container,
+		Name = "Shadow",
+		Size = nameLabel.Size,
+		Position = nameLabel.Position + UDim2.new(0, 1, 0, 1),
+		BackgroundTransparency = 1,
+		Text = location.name,
+		TextColor3 = Color3.new(0, 0, 0),
+		TextSize = 8,
+		Font = Enum.Font.GothamBold,
+		TextScaled = false,
+		TextWrapped = false,
+		TextXAlignment = Enum.TextXAlignment.Center,
+		ZIndex = 1002,
+	})
+	locationBlips[i] = container
+end
+local playerBlipContainer = library:create("Frame", {
+	Parent = blipContainer,
+	Name = "PlayerBlip",
+	Size = dim2(0, 14, 0, 14),
+	BackgroundTransparency = 1,
+	ZIndex = 2000,
+})
+local playerGlow = library:create("Frame", {
+	Parent = playerBlipContainer,
+	Name = "Glow",
+	Size = dim2(0, 12, 0, 12),
+	Position = dim2(0.5, -6, 0.5, -6),
+	BackgroundColor3 = Color3.new(0, 1, 0),
+	BackgroundTransparency = 0.6,
+	BorderSizePixel = 0,
+	ZIndex = 2001,
+})
+local playerGlowCorner = Instance.new("UICorner")
+playerGlowCorner.CornerRadius = UDim.new(1, 0)
+playerGlowCorner.Parent = playerGlow
+local playerDot = library:create("Frame", {
+	Parent = playerBlipContainer,
+	Name = "Dot",
+	Size = dim2(0, 6, 0, 6),
+	Position = dim2(0.5, -3, 0.5, -3),
+	BackgroundColor3 = Color3.new(0, 1, 0),
+	BorderSizePixel = 0,
+	ZIndex = 2002,
+})
+local playerDotCorner = Instance.new("UICorner")
+playerDotCorner.CornerRadius = UDim.new(1, 0)
+playerDotCorner.Parent = playerDot
+local playerDotStroke = Instance.new("UIStroke")
+playerDotStroke.Color = Color3.new(0, 0, 0)
+playerDotStroke.Thickness = 1
+playerDotStroke.Parent = playerDot
+local directionArrow = library:create("Frame", {
+	Parent = playerBlipContainer,
+	Name = "Direction",
+	Size = dim2(0, 4, 0, 4),
+	Position = dim2(0.5, -2, 0.5, -2),
+	BackgroundColor3 = Color3.new(0.5, 1, 0.5),
+	BackgroundTransparency = 0.2,
+	BorderSizePixel = 0,
+	ZIndex = 2001,
+})
+local arrowCorner = Instance.new("UICorner")
+arrowCorner.CornerRadius = UDim.new(0.5, 0)
+arrowCorner.Parent = directionArrow
+local playerName = library:create("TextLabel", {
+	Parent = playerBlipContainer,
+	Name = "Name",
+	Size = dim2(0, 60, 0, 10),
+	Position = dim2(0.5, -30, 1, 1),
+	BackgroundTransparency = 1,
+	Text = lp.Name,
+	TextColor3 = Color3.new(1, 1, 1),
+	TextSize = 7,
+	Font = Enum.Font.GothamBold,
+	TextScaled = true,
+	TextXAlignment = Enum.TextXAlignment.Center,
+	ZIndex = 2003,
+})
+local playerNameShadow = library:create("TextLabel", {
+	Parent = playerBlipContainer,
+	Name = "Shadow",
+	Size = playerName.Size,
+	Position = playerName.Position + UDim2.new(0, 1, 0, 1),
+	BackgroundTransparency = 1,
+	Text = lp.Name,
+	TextColor3 = Color3.new(0, 0, 0),
+	TextSize = 7,
+	Font = Enum.Font.GothamBold,
+	TextScaled = true,
+	TextXAlignment = Enum.TextXAlignment.Center,
+	ZIndex = 2002,
+})
+local function updatePlayerBlip()
+	local character = lp.Character
+	if not character then return end
+	local hrp = character:FindFirstChild("HumanoidRootPart")
+	if not hrp then return end
+	local nx, ny = worldToNorm(hrp.Position)
+	nx = clamp(nx, 0, 1)
+	ny = clamp(ny, 0, 1)
+	playerBlipContainer.Position = UDim2.new(nx, -7, ny, -7)
+	directionArrow.Rotation = -hrp.Orientation.Y
+end
+run.RenderStepped:Connect(updatePlayerBlip)
+map_items.sgui:GetPropertyChangedSignal("Enabled"):Connect(function()
+	if not map_items.sgui.Enabled then
+		playerBlipContainer.Visible = false
+		for _, v in pairs(locationBlips) do
+			v.Visible = false
+		end
+	else
+		playerBlipContainer.Visible = true
+		for _, v in pairs(locationBlips) do
+			v.Visible = true
+		end
+	end
+end)
+map_items.sgui.Enabled = false
 
-			-- cfg holder
+
+
 				local holder = library:panel({
 					name = "Configurations", 
 					size = dim2(0, 324, 0, 410),
@@ -1784,9 +2017,7 @@
 
 						blur:Destroy()
 					end})
-			-- 
 					
-			-- esp preview
 				local credits_holder = library:panel({
 					name = "Credits", 
 					size = dim2(0, 324, 0, 125),
@@ -1801,7 +2032,6 @@
 
 				credits_section:label({name = "Devs : Cookie & 090"})
 				credits_section:label({name = "Tester : War"})
-			-- 
 			return setmetatable(window, library)
 		end
 
@@ -1933,13 +2163,13 @@
 				items.camera = library:create( "Camera" , {
 					FieldOfView = 70.00022888183594;
 					CameraType = Enum.CameraType.Track;
-					Focus = cfr(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1); -- bro wtf is this serializer doing
+					Focus = cfr(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1);
 					CFrame = cfr(0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1);
 					Parent = ws;
 					Name = "\0"
 				}); 
 
-				items.viewportframe.CurrentCamera = items.camera -- sick
+				items.viewportframe.CurrentCamera = items.camera
 				character.Parent = items.viewportframe
 
 				items.camera.CameraSubject = character
@@ -2020,7 +2250,6 @@
 					LineJoinMode = Enum.LineJoinMode.Miter
 				});  
 				
-				-- Corner Boxes
 					objects[ "corners" ] = library:create( "Frame" , {
 						Visible = true;
 						BorderColor3 = rgb(0, 0, 0);
@@ -2192,9 +2421,7 @@
 						BorderSizePixel = 0;
 						BackgroundColor3 = flags["Box_Color"].Color
 					});
-				-- 
 				
-				-- Healthbar
 					objects[ "healthbar_holder" ] = library:create( "Frame" , {
 						AnchorPoint = vec2(1, 0);
 						Parent = library.cache;
@@ -2215,9 +2442,7 @@
 						BorderSizePixel = 0;
 						BackgroundColor3 = rgb(255, 255, 255)
 					});
-				-- 
 
-				-- Distance esp
 					objects[ "distance" ] = library:create( "TextLabel" , {
 						FontFace = library.font;
 						TextColor3 = flags["Distance_Color"].Color;
@@ -2233,9 +2458,7 @@
 						AutomaticSize = Enum.AutomaticSize.Y;
 						TextSize = 12;
 					});                
-				-- 
 
-				-- Weapon esp
 					objects[ "weapon" ] = library:create( "TextLabel" , {
 						FontFace = library.font;
 						TextColor3 = flags["Weapon_Color"].Color;
@@ -2251,7 +2474,6 @@
 						AutomaticSize = Enum.AutomaticSize.Y;
 						TextSize = 12;
 					});
-				--  
 			end 
 
 			cfg.change_health = function()
@@ -2267,7 +2489,7 @@
 				objects[ "healthbar" ].Size = UDim2.new(1, -2, multiplier, -2)
 				objects[ "healthbar" ].Position = UDim2.new(0, 1, 1 - multiplier, 1)
 				objects[ "healthbar" ].BackgroundColor3 = color
-			end -- wtf why diff func defining
+			end
 
 			function cfg.refresh_elements( )                                
 				objects.holder.Parent = flags["Enabled"] and items.viewportframe or library.cache
@@ -2338,7 +2560,6 @@
 				flashing = false, 
 			}
 		
-			-- Instances
 				local watermark_outline = library:create("Frame", {
 					Parent = notif_holder,
 					Name = "",
@@ -2446,7 +2667,6 @@
 				tween_service:Create(watermark_outline, TweenInfo.new(1, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {AnchorPoint = Vector2.new(0, 0)}):Play()
 				
 				tween_service:Create(accent_bottom, TweenInfo.new(cfg.time, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {Size = UDim2.new(1, -4, 0, 1)}):Play()
-			--
 			
 			task.spawn(function()
 				task.wait(cfg.time)
@@ -2479,7 +2699,6 @@
 				enabled = false, 
 			}
 			
-			-- button instances
 				local tab_holder = library:create("TextButton", {
 					Parent = self.tab_holder,
 					FontFace = library.font,
@@ -2539,9 +2758,7 @@
 					BackgroundColor3 = rgb(255, 255, 255)
 				}, "text")
 				library:apply_theme(text, "accent", "TextColor3")
-			-- 
 
-			-- section instances 
 				local section_holder = library:create("Frame", {
 					Parent = library.section_holder,
 					BackgroundTransparency = 1,
@@ -2562,7 +2779,6 @@
 					Padding = dim(0, 4),
 					SortOrder = Enum.SortOrder.LayoutOrder
 				})
-			-- 
 
 			function cfg.open_tab()
 				if library.current_tab and library.current_tab[1] ~= background then 
@@ -2581,7 +2797,7 @@
 				}
 				
 				local button = library.current_tab[1] 
-				button.Size = dim2(1, -2, 1, 0) -- ENABLED
+				button.Size = dim2(1, -2, 1, 0)
 				button:FindFirstChildOfClass("UIGradient").Rotation = -90
 				button:FindFirstChildOfClass("TextLabel").TextColor3 = themes.preset.accent 
 
@@ -2713,7 +2929,6 @@
 					open = false, 
 				} 
 
-				-- Tab
 					local tabb = library:create("TextButton", {
 						Parent = tab_holder,
 						Name = "",
@@ -2767,9 +2982,7 @@
 						Name = "",
 						LineJoinMode = Enum.LineJoinMode.Miter
 					})
-				-- 
 
-				-- Element Handler
 					local ScrollingFrame = library:create("ScrollingFrame", {
 						Parent = __background,
 						Name = "",
@@ -2813,7 +3026,6 @@
 						Name = "",
 						PaddingBottom = dim(0, 60)
 					})
-				--
 				
 				function multi:open_tab(bool) 
 					ScrollingFrame.Visible = bool 
@@ -2995,7 +3207,6 @@
 				value = options.default or 10, 
 			} 
 
-			-- instances 
 				local slider_REAL = library:create("TextLabel", {
 					Parent = self.holder, 
 					FontFace = library.font,
@@ -3164,7 +3375,6 @@
 					Name = "_",
 					SortOrder = Enum.SortOrder.LayoutOrder
 				})
-			--  
 
 			function cfg.set(value)
 				if type(value) == "userdata" then 
@@ -3235,7 +3445,6 @@
 				tooltip = options.tooltip or nil,
 			}
 
-			-- instances
 				local toggle_holder = library:create("TextButton", {
 					Parent = self.holder,
 					FontFace = library.font,
@@ -3385,7 +3594,6 @@
 						rgbkey(1, rgb(35, 35, 47))
 					}
 				}) library:apply_theme(UIGradient, "contrast", "Color") 
-			--  
 
 			library:hoverify(toggle_holder, toggle)
 
@@ -4632,7 +4840,6 @@ function library:dropdown(options)
 
 				scale = options.size or 232, 
 				items = options.items or {"1", "2", "3"}, 
-				-- order = options.order or 1, 
 				placeholdertext = options.placeholder or options.placeholdertext or "search here...",
 				visible = options.visible or true,
 
@@ -4642,7 +4849,6 @@ function library:dropdown(options)
 
 			} 
 
-			-- instances 
 				local list_holder = library:create("TextLabel", {
 					Parent = self.holder,
 					Name = "",
@@ -4778,7 +4984,6 @@ function library:dropdown(options)
 					Padding = dim(0, 4),
 					SortOrder = Enum.SortOrder.LayoutOrder
 				})
-			--  
 
 			function cfg.render_option(text) 
 				local TextButton = library:create("TextButton", {
@@ -4880,7 +5085,6 @@ function library:dropdown(options)
 				visible = options.visible or true,
 			}
 			
-			-- instances 
 				local textbox_holder = library:create("TextLabel", {
 					Parent = self.holder,
 					Name = "",
@@ -5014,7 +5218,6 @@ function library:dropdown(options)
 					flags[cfg.flag] = TextBox.text
 					cfg.callback(TextBox.text)
 				end)
-			-- 
 
 			function cfg.set_element_visible(bool)
 				textbox_holder.Visible = bool 
@@ -5064,7 +5267,6 @@ function library:dropdown(options)
 
 			self.current_holder = button_holder
 
-			-- instances 
 				library:create("UIStroke", {
 					Parent = button_holder,
 					Name = ""
@@ -5078,7 +5280,6 @@ function library:dropdown(options)
 					Padding = dim(0, 5),
 					SortOrder = Enum.SortOrder.LayoutOrder
 				})
-			-- 
 			
 			function cfg.set_element_visible(bool)
 				button_holder.Visible = bool 
@@ -5307,7 +5508,6 @@ function library:dropdown(options)
 				["Friendly"] = rgb(0, 255, 255)
 			}
 
-			-- elements 
 				local playerlist_holder = library:create("TextLabel", {
 					Parent = self.holder,
 					Name = "",
@@ -5446,7 +5646,6 @@ function library:dropdown(options)
 					Padding = dim(0, 4),
 					SortOrder = Enum.SortOrder.LayoutOrder
 				})
-			-- 
 
 			function cfg.create_player(player) 
 				library.playerlist_data[tostring(player)] = {}
@@ -5485,30 +5684,7 @@ function library:dropdown(options)
 				library:apply_theme(player_name, "text", "TextColor3") 
 				library:apply_theme(player_name, "accent", "TextColor3") 
 								
-				-- local TextLabel = library:create("TextLabel", {
-				--     Parent = TextButton,
-				--     Name = "",
-				--     FontFace = library.font,
-				--     TextColor3 = themes.preset.text,
-				--     BorderColor3 = rgb(0, 0, 0),
-				--     Text = "None",
-				--     BackgroundTransparency = 1,
-				--     TextXAlignment = Enum.TextXAlignment.Left,
-				--     BorderSizePixel = 0,
-				--     AutomaticSize = Enum.AutomaticSize.Y,
-				--     TextSize = 12,
-				--     BackgroundColor3 = rgb(255, 255, 255)
-				-- })
 								
-				-- local Frame = library:create("Frame", {
-				--     Parent = TextLabel,
-				--     Name = "",
-				--     Position = dim2(0, -10, 0, 0),
-				--     BorderColor3 = rgb(0, 0, 0),
-				--     Size = dim2(0, 1, 0, 12),
-				--     BorderSizePixel = 0,
-				--     BackgroundColor3 = themes.preset.outline
-				-- }) library:apply_theme(main_holder, "outline", "BackgroundColor3") 
 				
 				local priority_text = library:create("TextLabel", {
 					Parent = TextButton,
@@ -5564,7 +5740,6 @@ function library:dropdown(options)
 				path.line = line 
 				path.priority = "Neutral"
 				path.priority_text = priority_text
-				-- library.selected_player = players[tostring(player)]
 				
 				TextButton.MouseButton1Click:Connect(function()
 					if player_name == lp.Name then 
@@ -5648,7 +5823,6 @@ function library:dropdown(options)
 
 			return setmetatable(cfg, library)
 		end 
-	-- 
--- 
 
-return library, themes; 
+
+return library, themes;
