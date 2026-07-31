@@ -4181,7 +4181,7 @@ function library:colorpicker(options)
 			})
 
 			function cfg.set_visible(bool)
-				colorpicker_holder.Visible = bool
+				keybind_selector.Visible = bool
 
 				if bool then 
 					if library.current_element_open and library.current_element_open ~= cfg then 
@@ -4190,7 +4190,7 @@ function library:colorpicker(options)
 					end
 
 					library.current_element_open = cfg
-					colorpicker_holder.Position = dim2(0, colorpicker_button.AbsolutePosition.X + 1, 0, colorpicker_button.AbsolutePosition.Y + 17)
+					keybind_selector.Position = dim2(0, element_outline.AbsolutePosition.X + 1, 0, element_outline.AbsolutePosition.Y + 17)
 				end
 			end 
 
