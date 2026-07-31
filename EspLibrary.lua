@@ -14,7 +14,7 @@ espModule.Settings = {
         HealthText = false,
         TextSize = 12,
         Skeleton = false,
-        SkeletonThickness = 0.5,
+        SkeletonThickness = 1,
         Chams = false,
         ChamsFillTransparency = 0.5,
         ChamsOutlineTransparency = 0,
@@ -31,7 +31,7 @@ espModule.Settings = {
         TracerColor = Color3.fromRGB(255, 80, 80),
     },
     Teammate = {
-        Enabled = false,
+        Enabled = true,
         BoxEnabled = false,
         BoxType = "Corner",
         Thickness = 1,
@@ -42,7 +42,7 @@ espModule.Settings = {
         HealthText = false,
         TextSize = 12,
         Skeleton = false,
-        SkeletonThickness = 0.5,
+        SkeletonThickness = 0.1,
         Chams = false,
         ChamsFillTransparency = 0.1,
         ChamsOutlineTransparency = 0,
@@ -59,18 +59,18 @@ espModule.Settings = {
         TracerColor = Color3.fromRGB(0, 180, 255),
     },
     AI = {
-        Enabled = true,
-        BoxEnabled = true,
+        Enabled = false,
+        BoxEnabled = false,
         BoxType = "Corner",
         Thickness = 1,
-        Names = true,
-        Distance = true,
-        Tool = true,
-        HealthBar = true,
-        HealthText = true,
+        Names = false,
+        Distance = false,
+        Tool = false,
+        HealthBar = false,
+        HealthText = false,
         TextSize = 12,
         Skeleton = false,
-        SkeletonThickness = 0.5,
+        SkeletonThickness = 1,
         Chams = false,
         ChamsFillTransparency = 0.5,
         ChamsOutlineTransparency = 0,
@@ -156,10 +156,6 @@ local function CreateEntityESP(entity)
         segs[i] = Create("Square", {Filled = true, Visible = false, ZIndex = 4})
     end
     
-    local function cornerSquare()
-        return Create("Square", {Filled = true, Size = Vector2.new(2, 2), Visible = false, ZIndex = 3})
-    end
-    
     espModule._drawings[entity] = {
         FullOutline = {
             Top = Create("Line", {Thickness = 3, Color = Color3.new(0, 0, 0), Visible = false, ZIndex = 1}),
@@ -193,30 +189,6 @@ local function CreateEntityESP(entity)
             BR1 = Create("Line", {Thickness = 1, Color = Color3.new(1, 1, 1), Visible = false, ZIndex = 2}),
             BR2 = Create("Line", {Thickness = 1, Color = Color3.new(1, 1, 1), Visible = false, ZIndex = 2}),
         },
-        FullCornerSquares = {
-            TL = cornerSquare(),
-            TR = cornerSquare(),
-            BL = cornerSquare(),
-            BR = cornerSquare(),
-        },
-        FullOutlineSquares = {
-            TL = cornerSquare(),
-            TR = cornerSquare(),
-            BL = cornerSquare(),
-            BR = cornerSquare(),
-        },
-        CornerSquares = {
-            TL = cornerSquare(),
-            TR = cornerSquare(),
-            BL = cornerSquare(),
-            BR = cornerSquare(),
-        },
-        CornerOutlineSquares = {
-            TL = cornerSquare(),
-            TR = cornerSquare(),
-            BL = cornerSquare(),
-            BR = cornerSquare(),
-        },
         HealthBGOutline = Create("Square", {Filled = false, Thickness = 1, Color = Color3.new(0, 0, 0), Visible = false, ZIndex = 2}),
         HealthBG = Create("Square", {Filled = true, Color = Color3.fromRGB(15, 15, 15), Visible = false, ZIndex = 3}),
         HealthSegments = segs,
@@ -245,10 +217,6 @@ local function HideESP(data)
     for _, v in pairs(data.Full) do v.Visible = false end
     for _, v in pairs(data.CornerOutline) do v.Visible = false end
     for _, v in pairs(data.Corner) do v.Visible = false end
-    for _, v in pairs(data.FullCornerSquares) do v.Visible = false end
-    for _, v in pairs(data.FullOutlineSquares) do v.Visible = false end
-    for _, v in pairs(data.CornerSquares) do v.Visible = false end
-    for _, v in pairs(data.CornerOutlineSquares) do v.Visible = false end
     data.HealthBG.Visible = false
     data.HealthBGOutline.Visible = false
     for i = 1, #data.HealthSegments do
@@ -272,10 +240,6 @@ local function RemoveESP(entity)
     for _, v in pairs(data.Full) do v:Remove() end
     for _, v in pairs(data.CornerOutline) do v:Remove() end
     for _, v in pairs(data.Corner) do v:Remove() end
-    for _, v in pairs(data.FullCornerSquares) do v:Remove() end
-    for _, v in pairs(data.FullOutlineSquares) do v:Remove() end
-    for _, v in pairs(data.CornerSquares) do v:Remove() end
-    for _, v in pairs(data.CornerOutlineSquares) do v:Remove() end
     data.HealthBG:Remove()
     data.HealthBGOutline:Remove()
     for i = 1, #data.HealthSegments do
@@ -402,10 +366,6 @@ local function ProcessEntity(entity)
     for _, v in pairs(data.Full) do v.Visible = false end
     for _, v in pairs(data.CornerOutline) do v.Visible = false end
     for _, v in pairs(data.Corner) do v.Visible = false end
-    for _, v in pairs(data.FullCornerSquares) do v.Visible = false end
-    for _, v in pairs(data.FullOutlineSquares) do v.Visible = false end
-    for _, v in pairs(data.CornerSquares) do v.Visible = false end
-    for _, v in pairs(data.CornerOutlineSquares) do v.Visible = false end
     
     if cfg.BoxEnabled then
         if cfg.BoxType == "Full" then
@@ -442,55 +402,42 @@ local function ProcessEntity(entity)
             data.Full.Right.Color = cfg.LineColor
             data.Full.Right.Thickness = cfg.Thickness
             data.Full.Right.Visible = true
-            
-            local sz = math.max(2, cfg.Thickness + 1)
-            for _, sq in pairs(data.FullOutlineSquares) do
-                sq.Color = Color3.new(0, 0, 0)
-                sq.Size = Vector2.new(sz, sz)
-                sq.Visible = true
-            end
-            data.FullOutlineSquares.TL.Position = Vector2.new(x - 1 - (sz-1)/2, y - 1 - (sz-1)/2)
-            data.FullOutlineSquares.TR.Position = Vector2.new(x + sx + 1 - (sz-1)/2, y - 1 - (sz-1)/2)
-            data.FullOutlineSquares.BL.Position = Vector2.new(x - 1 - (sz-1)/2, y + sy + 1 - (sz-1)/2)
-            data.FullOutlineSquares.BR.Position = Vector2.new(x + sx + 1 - (sz-1)/2, y + sy + 1 - (sz-1)/2)
-            
-            for _, sq in pairs(data.FullCornerSquares) do
-                sq.Color = cfg.LineColor
-                sq.Size = Vector2.new(sz, sz)
-                sq.Visible = true
-            end
-            data.FullCornerSquares.TL.Position = Vector2.new(x - (sz-1)/2, y - (sz-1)/2)
-            data.FullCornerSquares.TR.Position = Vector2.new(x + sx - (sz-1)/2, y - (sz-1)/2)
-            data.FullCornerSquares.BL.Position = Vector2.new(x - (sz-1)/2, y + sy - (sz-1)/2)
-            data.FullCornerSquares.BR.Position = Vector2.new(x + sx - (sz-1)/2, y + sy - (sz-1)/2)
         else
             local len = math.clamp(0.22 + (rawStuds / 400) * 0.18, 0.22, 0.38)
             local cw = math.max(2, math.floor(sx * len + 0.5))
             local ch = math.max(2, math.floor(sy * len + 0.5))
             
-            data.CornerOutline.TL1.From = Vector2.new(x - 1, y)
-            data.CornerOutline.TL1.To = Vector2.new(x + cw + 1, y)
+            local ox = x - 1
+            local oy = y - 1
+            local osx = sx + 2
+            local osy = sy + 2
+            
+            data.CornerOutline.TL1.From = Vector2.new(ox, oy)
+            data.CornerOutline.TL1.To = Vector2.new(ox + cw, oy)
             data.CornerOutline.TL1.Visible = true
-            data.CornerOutline.TL2.From = Vector2.new(x, y - 1)
-            data.CornerOutline.TL2.To = Vector2.new(x, y + ch + 1)
+            data.CornerOutline.TL2.From = Vector2.new(ox, oy)
+            data.CornerOutline.TL2.To = Vector2.new(ox, oy + ch)
             data.CornerOutline.TL2.Visible = true
-            data.CornerOutline.TR1.From = Vector2.new(x + sx + 1, y)
-            data.CornerOutline.TR1.To = Vector2.new(x + sx - cw - 1, y)
+            
+            data.CornerOutline.TR1.From = Vector2.new(ox + osx, oy)
+            data.CornerOutline.TR1.To = Vector2.new(ox + osx - cw, oy)
             data.CornerOutline.TR1.Visible = true
-            data.CornerOutline.TR2.From = Vector2.new(x + sx, y - 1)
-            data.CornerOutline.TR2.To = Vector2.new(x + sx, y + ch + 1)
+            data.CornerOutline.TR2.From = Vector2.new(ox + osx, oy)
+            data.CornerOutline.TR2.To = Vector2.new(ox + osx, oy + ch)
             data.CornerOutline.TR2.Visible = true
-            data.CornerOutline.BL1.From = Vector2.new(x - 1, y + sy)
-            data.CornerOutline.BL1.To = Vector2.new(x + cw + 1, y + sy)
+            
+            data.CornerOutline.BL1.From = Vector2.new(ox, oy + osy)
+            data.CornerOutline.BL1.To = Vector2.new(ox + cw, oy + osy)
             data.CornerOutline.BL1.Visible = true
-            data.CornerOutline.BL2.From = Vector2.new(x, y + sy + 1)
-            data.CornerOutline.BL2.To = Vector2.new(x, y + sy - ch - 1)
+            data.CornerOutline.BL2.From = Vector2.new(ox, oy + osy)
+            data.CornerOutline.BL2.To = Vector2.new(ox, oy + osy - ch)
             data.CornerOutline.BL2.Visible = true
-            data.CornerOutline.BR1.From = Vector2.new(x + sx + 1, y + sy)
-            data.CornerOutline.BR1.To = Vector2.new(x + sx - cw - 1, y + sy)
+            
+            data.CornerOutline.BR1.From = Vector2.new(ox + osx, oy + osy)
+            data.CornerOutline.BR1.To = Vector2.new(ox + osx - cw, oy + osy)
             data.CornerOutline.BR1.Visible = true
-            data.CornerOutline.BR2.From = Vector2.new(x + sx, y + sy + 1)
-            data.CornerOutline.BR2.To = Vector2.new(x + sx, y + sy - ch - 1)
+            data.CornerOutline.BR2.From = Vector2.new(ox + osx, oy + osy)
+            data.CornerOutline.BR2.To = Vector2.new(ox + osx, oy + osy - ch)
             data.CornerOutline.BR2.Visible = true
             
             data.Corner.TL1.From = Vector2.new(x, y)
@@ -503,6 +450,7 @@ local function ProcessEntity(entity)
             data.Corner.TL2.Color = cfg.LineColor
             data.Corner.TL2.Thickness = cfg.Thickness
             data.Corner.TL2.Visible = true
+            
             data.Corner.TR1.From = Vector2.new(x + sx, y)
             data.Corner.TR1.To = Vector2.new(x + sx - cw, y)
             data.Corner.TR1.Color = cfg.LineColor
@@ -513,6 +461,7 @@ local function ProcessEntity(entity)
             data.Corner.TR2.Color = cfg.LineColor
             data.Corner.TR2.Thickness = cfg.Thickness
             data.Corner.TR2.Visible = true
+            
             data.Corner.BL1.From = Vector2.new(x, y + sy)
             data.Corner.BL1.To = Vector2.new(x + cw, y + sy)
             data.Corner.BL1.Color = cfg.LineColor
@@ -523,6 +472,7 @@ local function ProcessEntity(entity)
             data.Corner.BL2.Color = cfg.LineColor
             data.Corner.BL2.Thickness = cfg.Thickness
             data.Corner.BL2.Visible = true
+            
             data.Corner.BR1.From = Vector2.new(x + sx, y + sy)
             data.Corner.BR1.To = Vector2.new(x + sx - cw, y + sy)
             data.Corner.BR1.Color = cfg.LineColor
@@ -533,27 +483,6 @@ local function ProcessEntity(entity)
             data.Corner.BR2.Color = cfg.LineColor
             data.Corner.BR2.Thickness = cfg.Thickness
             data.Corner.BR2.Visible = true
-            
-            local sz = math.max(2, cfg.Thickness + 1)
-            for _, sq in pairs(data.CornerOutlineSquares) do
-                sq.Color = Color3.new(0, 0, 0)
-                sq.Size = Vector2.new(sz, sz)
-                sq.Visible = true
-            end
-            data.CornerOutlineSquares.TL.Position = Vector2.new(x - 1 - (sz-1)/2, y - 1 - (sz-1)/2)
-            data.CornerOutlineSquares.TR.Position = Vector2.new(x + sx + 1 - (sz-1)/2, y - 1 - (sz-1)/2)
-            data.CornerOutlineSquares.BL.Position = Vector2.new(x - 1 - (sz-1)/2, y + sy + 1 - (sz-1)/2)
-            data.CornerOutlineSquares.BR.Position = Vector2.new(x + sx + 1 - (sz-1)/2, y + sy + 1 - (sz-1)/2)
-            
-            for _, sq in pairs(data.CornerSquares) do
-                sq.Color = cfg.LineColor
-                sq.Size = Vector2.new(sz, sz)
-                sq.Visible = true
-            end
-            data.CornerSquares.TL.Position = Vector2.new(x - (sz-1)/2, y - (sz-1)/2)
-            data.CornerSquares.TR.Position = Vector2.new(x + sx - (sz-1)/2, y - (sz-1)/2)
-            data.CornerSquares.BL.Position = Vector2.new(x - (sz-1)/2, y + sy - (sz-1)/2)
-            data.CornerSquares.BR.Position = Vector2.new(x + sx - (sz-1)/2, y + sy - (sz-1)/2)
         end
     end
     
@@ -763,8 +692,6 @@ function espModule:Start()
     if botsFolder then
         self._connections.BotRemoving = botsFolder.ChildRemoved:Connect(RemoveESP)
     end
-    
-    print("ESP Started")
 end
 
 function espModule:Stop()
@@ -781,8 +708,6 @@ function espModule:Stop()
     end
     self._drawings = {}
     self._highlights = {}
-    
-    print("ESP Stopped")
 end
 
 function espModule:Restart()
