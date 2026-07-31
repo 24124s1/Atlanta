@@ -423,13 +423,13 @@ local function ProcessEntity(entity)
             data.CornerOutline.BL1.To = Vector2.new(x + cw + 1, y + sy)
             data.CornerOutline.BL1.Visible = true
             data.CornerOutline.BL2.From = Vector2.new(x, y + sy + 1)
-            data.CornerOutline.BL2.To = Vector2.new(x, y + sy - ch)
+            data.CornerOutline.BL2.To = Vector2.new(x, y + sy - ch - 1)
             data.CornerOutline.BL2.Visible = true
             data.CornerOutline.BR1.From = Vector2.new(x + sx + 1, y + sy)
             data.CornerOutline.BR1.To = Vector2.new(x + sx - cw - 1, y + sy)
             data.CornerOutline.BR1.Visible = true
             data.CornerOutline.BR2.From = Vector2.new(x + sx, y + sy + 1)
-            data.CornerOutline.BR2.To = Vector2.new(x + sx, y + sy - ch)
+            data.CornerOutline.BR2.To = Vector2.new(x + sx, y + sy - ch - 1)
             data.CornerOutline.BR2.Visible = true
             
             data.Corner.TL1.From = Vector2.new(x, y)
@@ -681,6 +681,8 @@ function espModule:Start()
     if botsFolder then
         self._connections.BotRemoving = botsFolder.ChildRemoved:Connect(RemoveESP)
     end
+    
+    print("ESP Started")
 end
 
 function espModule:Stop()
@@ -697,6 +699,8 @@ function espModule:Stop()
     end
     self._drawings = {}
     self._highlights = {}
+    
+    print("ESP Stopped")
 end
 
 function espModule:Restart()
