@@ -1,9 +1,8 @@
 local espModule = {}
-
 espModule.Settings = {
-    Enabled = true,
     Enemy = {
         Enabled = false,
+        BoxEnabled = false,
         BoxType = "Corner",
         Thickness = 1,
         Names = false,
@@ -31,6 +30,7 @@ espModule.Settings = {
     },
     Teammate = {
         Enabled = false,
+        BoxEnabled = false,
         BoxType = "Corner",
         Thickness = 1,
         Names = false,
@@ -58,6 +58,7 @@ espModule.Settings = {
     },
     AI = {
         Enabled = false,
+        BoxEnabled = false,
         BoxType = "Corner",
         Thickness = 1,
         Names = false,
@@ -84,19 +85,16 @@ espModule.Settings = {
         TracerColor = Color3.fromRGB(255, 200, 50),
     },
 }
-
 espModule._drawings = {}
 espModule._highlights = {}
 espModule._isRunning = false
 espModule._connections = {}
-
 local cloneref = cloneref or function(...) return ... end
 local GetService = setmetatable({}, {
     __index = function(self, key)
         return cloneref(game:GetService(key))
     end
 })
-
 local Services = {
     RunService = GetService.RunService,
     Players = GetService.Players,
@@ -106,7 +104,6 @@ local Services = {
 }
 Services.CurrentCamera = Services.WorkSpace.CurrentCamera
 Services.LocalPlayer = Services.Players.LocalPlayer
-
 local PixelFont = nil
 local function loadFont()
     local FONT_URL = "https://raw.githubusercontent.com/i77lhm/storage/main/fonts/smallest_pixel-7.ttf"
@@ -117,7 +114,6 @@ local function loadFont()
         PixelFont = f
     end
 end
-
 local function isTeammate(player)
     if not player or player == Services.LocalPlayer then return false end
     if player.Team and player.Team == Services.LocalPlayer.Team then
@@ -129,7 +125,6 @@ local function isTeammate(player)
     end
     return false
 end
-
 local function Create(type, props)
     local obj = Drawing.new(type)
     for k, v in pairs(props) do
@@ -137,22 +132,18 @@ local function Create(type, props)
     end
     return obj
 end
-
 local function CreateEntityESP(entity)
     if espModule._drawings[entity] then return end
-    
     local function MakeBone()
         return {
             Outline = Create("Line", {Thickness = 3, Color = Color3.new(0, 0, 0), Visible = false, ZIndex = 1}),
             Line = Create("Line", {Thickness = 1, Color = Color3.new(1, 1, 1), Visible = false, ZIndex = 2}),
         }
     end
-    
     local segs = {}
     for i = 1, 64 do
         segs[i] = Create("Square", {Filled = true, Visible = false, ZIndex = 4})
     end
-    
     espModule._drawings[entity] = {
         FullOutline = {
             Top = Create("Line", {Thickness = 3, Color = Color3.new(0, 0, 0), Visible = false, ZIndex = 1}),
@@ -208,7 +199,6 @@ local function CreateEntityESP(entity)
         }
     }
 end
-
 local function HideESP(data)
     for _, v in pairs(data.FullOutline) do v.Visible = false end
     for _, v in pairs(data.Full) do v.Visible = false end
@@ -229,7 +219,6 @@ local function HideESP(data)
         bone.Line.Visible = false
     end
 end
-
 local function RemoveESP(entity)
     local data = espModule._drawings[entity]
     if not data then return end
@@ -257,7 +246,6 @@ local function RemoveESP(entity)
         espModule._highlights[entity] = nil
     end
 end
-
 local function ProcessEntity(entity)
     if entity == Services.LocalPlayer then return end
     local character
@@ -269,7 +257,6 @@ local function ProcessEntity(entity)
         character = entity
     end
     if not character then return end
-    
     if isPlayer then
         local inRaid = entity:FindFirstChild("InRaid")
         if not inRaid or not inRaid:IsA("BoolValue") or not inRaid.Value then
@@ -280,7 +267,6 @@ local function ProcessEntity(entity)
             return
         end
     end
-    
     CreateEntityESP(entity)
     local data = espModule._drawings[entity]
     local cfg
@@ -290,35 +276,29 @@ local function ProcessEntity(entity)
     else
         cfg = espModule.Settings.AI
     end
-    
     if not cfg.Enabled then
         HideESP(data)
         if espModule._highlights[entity] then espModule._highlights[entity].Enabled = false end
         return
     end
-    
     local hrp = character:FindFirstChild("HumanoidRootPart")
     local humanoid = character:FindFirstChildOfClass("Humanoid")
     local Camera = Services.WorkSpace.CurrentCamera
     local viewport = Camera.ViewportSize
-    
     if not (hrp and humanoid and humanoid.Health > 0) then
         HideESP(data)
         if espModule._highlights[entity] then espModule._highlights[entity].Enabled = false end
         return
     end
-    
     local hrpPos, onScreen = Camera:WorldToViewportPoint(hrp.Position)
     if not onScreen or hrpPos.Z <= 0 then
         HideESP(data)
         if espModule._highlights[entity] then espModule._highlights[entity].Enabled = false end
         return
     end
-    
     local minX, minY = math.huge, math.huge
     local maxX, maxY = -math.huge, -math.huge
     local validParts = 0
-    
     for _, partName in ipairs({"HumanoidRootPart", "Head", "UpperTorso", "LowerTorso", "Torso", "LeftHand", "RightHand", "LeftFoot", "RightFoot", "Left Arm", "Right Arm", "Left Leg", "Right Leg"}) do
         local part = character:FindFirstChild(partName)
         if part and part:IsA("BasePart") then
@@ -346,131 +326,129 @@ local function ProcessEntity(entity)
             end
         end
     end
-    
     if validParts == 0 then
         HideESP(data)
         return
     end
-    
     local x = math.floor(minX + 0.5)
     local y = math.floor(minY + 0.5)
     local sx = math.max(math.floor(maxX - minX + 0.5), 6)
     local sy = math.max(math.floor(maxY - minY + 0.5), 6)
     local rawStuds = (Camera.CFrame.Position - hrp.Position).Magnitude
     local meters = math.floor(rawStuds / 2.81 + 0.5)
-    
-    if cfg.BoxType == "Full" then
-        for _, v in pairs(data.CornerOutline) do v.Visible = false end
-        for _, v in pairs(data.Corner) do v.Visible = false end
-        
-        data.FullOutline.Top.From = Vector2.new(x - 1, y)
-        data.FullOutline.Top.To = Vector2.new(x + sx + 1, y)
-        data.FullOutline.Top.Visible = true
-        data.FullOutline.Bottom.From = Vector2.new(x - 1, y + sy)
-        data.FullOutline.Bottom.To = Vector2.new(x + sx + 1, y + sy)
-        data.FullOutline.Bottom.Visible = true
-        data.FullOutline.Left.From = Vector2.new(x, y - 1)
-        data.FullOutline.Left.To = Vector2.new(x, y + sy + 1)
-        data.FullOutline.Left.Visible = true
-        data.FullOutline.Right.From = Vector2.new(x + sx, y - 1)
-        data.FullOutline.Right.To = Vector2.new(x + sx, y + sy + 1)
-        data.FullOutline.Right.Visible = true
-        
-        data.Full.Top.From = Vector2.new(x, y)
-        data.Full.Top.To = Vector2.new(x + sx, y)
-        data.Full.Top.Color = cfg.LineColor
-        data.Full.Top.Thickness = cfg.Thickness
-        data.Full.Top.Visible = true
-        data.Full.Bottom.From = Vector2.new(x, y + sy)
-        data.Full.Bottom.To = Vector2.new(x + sx, y + sy)
-        data.Full.Bottom.Color = cfg.LineColor
-        data.Full.Bottom.Thickness = cfg.Thickness
-        data.Full.Bottom.Visible = true
-        data.Full.Left.From = Vector2.new(x, y)
-        data.Full.Left.To = Vector2.new(x, y + sy)
-        data.Full.Left.Color = cfg.LineColor
-        data.Full.Left.Thickness = cfg.Thickness
-        data.Full.Left.Visible = true
-        data.Full.Right.From = Vector2.new(x + sx, y)
-        data.Full.Right.To = Vector2.new(x + sx, y + sy)
-        data.Full.Right.Color = cfg.LineColor
-        data.Full.Right.Thickness = cfg.Thickness
-        data.Full.Right.Visible = true
+    if cfg.BoxEnabled then
+        if cfg.BoxType == "Full" then
+            for _, v in pairs(data.CornerOutline) do v.Visible = false end
+            for _, v in pairs(data.Corner) do v.Visible = false end
+            data.FullOutline.Top.From = Vector2.new(x - 1, y)
+            data.FullOutline.Top.To = Vector2.new(x + sx + 1, y)
+            data.FullOutline.Top.Visible = true
+            data.FullOutline.Bottom.From = Vector2.new(x - 1, y + sy)
+            data.FullOutline.Bottom.To = Vector2.new(x + sx + 1, y + sy)
+            data.FullOutline.Bottom.Visible = true
+            data.FullOutline.Left.From = Vector2.new(x, y - 1)
+            data.FullOutline.Left.To = Vector2.new(x, y + sy + 1)
+            data.FullOutline.Left.Visible = true
+            data.FullOutline.Right.From = Vector2.new(x + sx, y - 1)
+            data.FullOutline.Right.To = Vector2.new(x + sx, y + sy + 1)
+            data.FullOutline.Right.Visible = true
+            data.Full.Top.From = Vector2.new(x, y)
+            data.Full.Top.To = Vector2.new(x + sx, y)
+            data.Full.Top.Color = cfg.LineColor
+            data.Full.Top.Thickness = cfg.Thickness
+            data.Full.Top.Visible = true
+            data.Full.Bottom.From = Vector2.new(x, y + sy)
+            data.Full.Bottom.To = Vector2.new(x + sx, y + sy)
+            data.Full.Bottom.Color = cfg.LineColor
+            data.Full.Bottom.Thickness = cfg.Thickness
+            data.Full.Bottom.Visible = true
+            data.Full.Left.From = Vector2.new(x, y)
+            data.Full.Left.To = Vector2.new(x, y + sy)
+            data.Full.Left.Color = cfg.LineColor
+            data.Full.Left.Thickness = cfg.Thickness
+            data.Full.Left.Visible = true
+            data.Full.Right.From = Vector2.new(x + sx, y)
+            data.Full.Right.To = Vector2.new(x + sx, y + sy)
+            data.Full.Right.Color = cfg.LineColor
+            data.Full.Right.Thickness = cfg.Thickness
+            data.Full.Right.Visible = true
+        else
+            for _, v in pairs(data.FullOutline) do v.Visible = false end
+            for _, v in pairs(data.Full) do v.Visible = false end
+            local len = math.clamp(0.22 + (rawStuds / 400) * 0.18, 0.22, 0.38)
+            local cw = math.max(2, math.floor(sx * len + 0.5))
+            local ch = math.max(2, math.floor(sy * len + 0.5))
+            data.CornerOutline.TL1.From = Vector2.new(x - 1, y)
+            data.CornerOutline.TL1.To = Vector2.new(x + cw + 1, y)
+            data.CornerOutline.TL1.Visible = true
+            data.CornerOutline.TL2.From = Vector2.new(x, y - 1)
+            data.CornerOutline.TL2.To = Vector2.new(x, y + ch + 1)
+            data.CornerOutline.TL2.Visible = true
+            data.CornerOutline.TR1.From = Vector2.new(x + sx + 1, y)
+            data.CornerOutline.TR1.To = Vector2.new(x + sx - cw - 1, y)
+            data.CornerOutline.TR1.Visible = true
+            data.CornerOutline.TR2.From = Vector2.new(x + sx, y - 1)
+            data.CornerOutline.TR2.To = Vector2.new(x + sx, y + ch + 1)
+            data.CornerOutline.TR2.Visible = true
+            data.CornerOutline.BL1.From = Vector2.new(x - 1, y + sy)
+            data.CornerOutline.BL1.To = Vector2.new(x + cw + 1, y + sy)
+            data.CornerOutline.BL1.Visible = true
+            data.CornerOutline.BL2.From = Vector2.new(x, y + sy + 1)
+            data.CornerOutline.BL2.To = Vector2.new(x, y + sy - ch)
+            data.CornerOutline.BL2.Visible = true
+            data.CornerOutline.BR1.From = Vector2.new(x + sx + 1, y + sy)
+            data.CornerOutline.BR1.To = Vector2.new(x + sx - cw - 1, y + sy)
+            data.CornerOutline.BR1.Visible = true
+            data.CornerOutline.BR2.From = Vector2.new(x + sx, y + sy + 1)
+            data.CornerOutline.BR2.To = Vector2.new(x + sx, y + sy - ch)
+            data.CornerOutline.BR2.Visible = true
+            data.Corner.TL1.From = Vector2.new(x, y)
+            data.Corner.TL1.To = Vector2.new(x + cw, y)
+            data.Corner.TL1.Color = cfg.LineColor
+            data.Corner.TL1.Thickness = cfg.Thickness
+            data.Corner.TL1.Visible = true
+            data.Corner.TL2.From = Vector2.new(x, y)
+            data.Corner.TL2.To = Vector2.new(x, y + ch)
+            data.Corner.TL2.Color = cfg.LineColor
+            data.Corner.TL2.Thickness = cfg.Thickness
+            data.Corner.TL2.Visible = true
+            data.Corner.TR1.From = Vector2.new(x + sx, y)
+            data.Corner.TR1.To = Vector2.new(x + sx - cw, y)
+            data.Corner.TR1.Color = cfg.LineColor
+            data.Corner.TR1.Thickness = cfg.Thickness
+            data.Corner.TR1.Visible = true
+            data.Corner.TR2.From = Vector2.new(x + sx, y)
+            data.Corner.TR2.To = Vector2.new(x + sx, y + ch)
+            data.Corner.TR2.Color = cfg.LineColor
+            data.Corner.TR2.Thickness = cfg.Thickness
+            data.Corner.TR2.Visible = true
+            data.Corner.BL1.From = Vector2.new(x, y + sy)
+            data.Corner.BL1.To = Vector2.new(x + cw, y + sy)
+            data.Corner.BL1.Color = cfg.LineColor
+            data.Corner.BL1.Thickness = cfg.Thickness
+            data.Corner.BL1.Visible = true
+            data.Corner.BL2.From = Vector2.new(x, y + sy)
+            data.Corner.BL2.To = Vector2.new(x, y + sy - ch)
+            data.Corner.BL2.Color = cfg.LineColor
+            data.Corner.BL2.Thickness = cfg.Thickness
+            data.Corner.BL2.Visible = true
+            data.Corner.BR1.From = Vector2.new(x + sx, y + sy)
+            data.Corner.BR1.To = Vector2.new(x + sx - cw, y + sy)
+            data.Corner.BR1.Color = cfg.LineColor
+            data.Corner.BR1.Thickness = cfg.Thickness
+            data.Corner.BR1.Visible = true
+            data.Corner.BR2.From = Vector2.new(x + sx, y + sy)
+            data.Corner.BR2.To = Vector2.new(x + sx, y + sy - ch)
+            data.Corner.BR2.Color = cfg.LineColor
+            data.Corner.BR2.Thickness = cfg.Thickness
+            data.Corner.BR2.Visible = true
+        end
     else
         for _, v in pairs(data.FullOutline) do v.Visible = false end
         for _, v in pairs(data.Full) do v.Visible = false end
-        
-        local len = math.clamp(0.22 + (rawStuds / 400) * 0.18, 0.22, 0.38)
-        local cw = math.max(2, math.floor(sx * len + 0.5))
-        local ch = math.max(2, math.floor(sy * len + 0.5))
-        
-        data.CornerOutline.TL1.From = Vector2.new(x - 1, y)
-        data.CornerOutline.TL1.To = Vector2.new(x + cw + 1, y)
-        data.CornerOutline.TL1.Visible = true
-        data.CornerOutline.TL2.From = Vector2.new(x, y - 1)
-        data.CornerOutline.TL2.To = Vector2.new(x, y + ch + 1)
-        data.CornerOutline.TL2.Visible = true
-        data.CornerOutline.TR1.From = Vector2.new(x + sx + 1, y)
-        data.CornerOutline.TR1.To = Vector2.new(x + sx - cw - 1, y)
-        data.CornerOutline.TR1.Visible = true
-        data.CornerOutline.TR2.From = Vector2.new(x + sx, y - 1)
-        data.CornerOutline.TR2.To = Vector2.new(x + sx, y + ch + 1)
-        data.CornerOutline.TR2.Visible = true
-        data.CornerOutline.BL1.From = Vector2.new(x - 1, y + sy)
-        data.CornerOutline.BL1.To = Vector2.new(x + cw + 1, y + sy)
-        data.CornerOutline.BL1.Visible = true
-        data.CornerOutline.BL2.From = Vector2.new(x, y + sy + 1)
-        data.CornerOutline.BL2.To = Vector2.new(x, y + sy - ch)
-        data.CornerOutline.BL2.Visible = true
-        data.CornerOutline.BR1.From = Vector2.new(x + sx + 1, y + sy)
-        data.CornerOutline.BR1.To = Vector2.new(x + sx - cw - 1, y + sy)
-        data.CornerOutline.BR1.Visible = true
-        data.CornerOutline.BR2.From = Vector2.new(x + sx, y + sy + 1)
-        data.CornerOutline.BR2.To = Vector2.new(x + sx, y + sy - ch)
-        data.CornerOutline.BR2.Visible = true
-        
-        data.Corner.TL1.From = Vector2.new(x, y)
-        data.Corner.TL1.To = Vector2.new(x + cw, y)
-        data.Corner.TL1.Color = cfg.LineColor
-        data.Corner.TL1.Thickness = cfg.Thickness
-        data.Corner.TL1.Visible = true
-        data.Corner.TL2.From = Vector2.new(x, y)
-        data.Corner.TL2.To = Vector2.new(x, y + ch)
-        data.Corner.TL2.Color = cfg.LineColor
-        data.Corner.TL2.Thickness = cfg.Thickness
-        data.Corner.TL2.Visible = true
-        data.Corner.TR1.From = Vector2.new(x + sx, y)
-        data.Corner.TR1.To = Vector2.new(x + sx - cw, y)
-        data.Corner.TR1.Color = cfg.LineColor
-        data.Corner.TR1.Thickness = cfg.Thickness
-        data.Corner.TR1.Visible = true
-        data.Corner.TR2.From = Vector2.new(x + sx, y)
-        data.Corner.TR2.To = Vector2.new(x + sx, y + ch)
-        data.Corner.TR2.Color = cfg.LineColor
-        data.Corner.TR2.Thickness = cfg.Thickness
-        data.Corner.TR2.Visible = true
-        data.Corner.BL1.From = Vector2.new(x, y + sy)
-        data.Corner.BL1.To = Vector2.new(x + cw, y + sy)
-        data.Corner.BL1.Color = cfg.LineColor
-        data.Corner.BL1.Thickness = cfg.Thickness
-        data.Corner.BL1.Visible = true
-        data.Corner.BL2.From = Vector2.new(x, y + sy)
-        data.Corner.BL2.To = Vector2.new(x, y + sy - ch)
-        data.Corner.BL2.Color = cfg.LineColor
-        data.Corner.BL2.Thickness = cfg.Thickness
-        data.Corner.BL2.Visible = true
-        data.Corner.BR1.From = Vector2.new(x + sx, y + sy)
-        data.Corner.BR1.To = Vector2.new(x + sx - cw, y + sy)
-        data.Corner.BR1.Color = cfg.LineColor
-        data.Corner.BR1.Thickness = cfg.Thickness
-        data.Corner.BR1.Visible = true
-        data.Corner.BR2.From = Vector2.new(x + sx, y + sy)
-        data.Corner.BR2.To = Vector2.new(x + sx, y + sy - ch)
-        data.Corner.BR2.Color = cfg.LineColor
-        data.Corner.BR2.Thickness = cfg.Thickness
-        data.Corner.BR2.Visible = true
+        for _, v in pairs(data.CornerOutline) do v.Visible = false end
+        for _, v in pairs(data.Corner) do v.Visible = false end
     end
-    
     if cfg.HealthBar then
         local barX = x - 5
         local barW = 2
@@ -480,12 +458,10 @@ local function ProcessEntity(entity)
         data.HealthBG.Size = Vector2.new(barW, sy)
         data.HealthBG.Position = Vector2.new(barX, y)
         data.HealthBG.Visible = true
-        
         local segCount = #data.HealthSegments
         local segH = sy / segCount
         local hp = math.clamp(humanoid.Health / math.max(humanoid.MaxHealth, 1), 0, 1)
         local threshold = hp * segCount
-        
         for i = 1, segCount do
             local seg = data.HealthSegments[i]
             if i <= threshold then
@@ -497,7 +473,6 @@ local function ProcessEntity(entity)
                 seg.Visible = false
             end
         end
-        
         if cfg.HealthText then
             local hpVal = math.floor(humanoid.Health + 0.5)
             data.HealthText.Text = tostring(hpVal)
@@ -522,7 +497,6 @@ local function ProcessEntity(entity)
         end
         data.HealthText.Visible = false
     end
-    
     if cfg.Names then
         local name = isPlayer and entity.DisplayName or character.Name
         data.NameText.Text = name
@@ -534,7 +508,6 @@ local function ProcessEntity(entity)
     else
         data.NameText.Visible = false
     end
-    
     if cfg.Distance then
         data.DistanceText.Text = "[" .. tostring(meters) .. "m]"
         data.DistanceText.Size = cfg.TextSize
@@ -545,7 +518,6 @@ local function ProcessEntity(entity)
     else
         data.DistanceText.Visible = false
     end
-    
     if cfg.Tool then
         local tool = character:FindFirstChildOfClass("Tool")
         data.ToolText.Text = tool and tool.Name or "None"
@@ -557,7 +529,6 @@ local function ProcessEntity(entity)
     else
         data.ToolText.Visible = false
     end
-    
     if cfg.Tracers then
         local from
         if cfg.TracerOrigin == "Bottom" then
@@ -575,7 +546,6 @@ local function ProcessEntity(entity)
     else
         data.Tracer.Visible = false
     end
-    
     if cfg.Skeleton then
         local function DrawBone(bone, p1n, p2n)
             local p1 = character:FindFirstChild(p1n)
@@ -617,7 +587,6 @@ local function ProcessEntity(entity)
             bone.Line.Visible = false
         end
     end
-    
     if cfg.Chams then
         local hl = espModule._highlights[entity]
         if not hl then
@@ -638,24 +607,13 @@ local function ProcessEntity(entity)
         end
     end
 end
-
 local function espLoop()
     local Camera = Services.WorkSpace.CurrentCamera
     local viewport = Camera.ViewportSize
-    
-    if not espModule.Settings.Enabled then
-        for _, data in pairs(espModule._drawings) do HideESP(data) end
-        for _, hl in pairs(espModule._highlights) do
-            if hl then hl.Enabled = false end
-        end
-        return
-    end
-    
     for _, player in ipairs(Services.Players:GetPlayers()) do
         if player == Services.LocalPlayer then continue end
         ProcessEntity(player)
     end
-    
     local botsFolder = Services.WorkSpace:FindFirstChild("IngameBots")
     if botsFolder then
         for _, bot in ipairs(botsFolder:GetChildren()) do
@@ -663,47 +621,34 @@ local function espLoop()
         end
     end
 end
-
 function espModule:Start()
     if self._isRunning then return end
     self._isRunning = true
-    
     loadFont()
-    
     self._connections.PlayerRemoving = Services.Players.PlayerRemoving:Connect(RemoveESP)
     self._connections.RenderStepped = Services.RunService.RenderStepped:Connect(espLoop)
-    
     local botsFolder = Services.WorkSpace:FindFirstChild("IngameBots")
     if botsFolder then
         self._connections.BotRemoving = botsFolder.ChildRemoved:Connect(RemoveESP)
     end
-    
-    print("ESP Started")
 end
-
 function espModule:Stop()
     if not self._isRunning then return end
     self._isRunning = false
-    
     for _, conn in pairs(self._connections) do
         conn:Disconnect()
     end
     self._connections = {}
-    
     for entity, data in pairs(self._drawings) do
         RemoveESP(entity)
     end
     self._drawings = {}
     self._highlights = {}
-    
-    print("ESP Stopped")
 end
-
 function espModule:Restart()
     self:Stop()
     self:Start()
 end
-
 function espModule:UpdateSettings(newSettings)
     local function merge(t1, t2)
         for k, v in pairs(t2) do
@@ -716,11 +661,9 @@ function espModule:UpdateSettings(newSettings)
     end
     merge(self.Settings, newSettings)
 end
-
 function espModule:GetSettings()
     return self.Settings
 end
-
 function espModule:Toggle()
     if self._isRunning then
         self:Stop()
@@ -728,5 +671,4 @@ function espModule:Toggle()
         self:Start()
     end
 end
-
 return espModule
