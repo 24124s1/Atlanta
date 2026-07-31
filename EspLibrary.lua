@@ -681,8 +681,6 @@ function espModule:Start()
     if botsFolder then
         self._connections.BotRemoving = botsFolder.ChildRemoved:Connect(RemoveESP)
     end
-    
-    print("ESP Started")
 end
 
 function espModule:Stop()
@@ -699,8 +697,6 @@ function espModule:Stop()
     end
     self._drawings = {}
     self._highlights = {}
-    
-    print("ESP Stopped")
 end
 
 function espModule:Restart()
