@@ -278,7 +278,7 @@ local function ProcessEntity(entity)
         if not inRaid or not inRaid:IsA("BoolValue") or not inRaid.Value then
             if espModule._drawings[entity] then
                 HideESP(espModule._drawings[entity])
-                if espModule._highlights[entity] then espModule._highlights[entity].Enabled = true end
+                if espModule._highlights[entity] then espModule._highlights[entity].Enabled = false end
             end
             return
         end
