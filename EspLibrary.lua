@@ -88,17 +88,20 @@ espModule.Settings = {
         Enabled = true,
         MaxDistance = 200,
         TextSize = 12,
-        Vault = { Enabled = true, Color = Color3.fromRGB(255, 215, 0), Names = true, Distance = true, Contents = true },
-        Safe = { Enabled = true, Color = Color3.fromRGB(192, 192, 192), Names = true, Distance = true, Contents = true },
-        CivilianAirdrop = { Enabled = true, Color = Color3.fromRGB(255, 140, 0), Names = true, Distance = true, Contents = true },
-        AbandonedCar = { Enabled = true, Color = Color3.fromRGB(169, 169, 169), Names = true, Distance = true, Contents = true },
-        DuffelBag = { Enabled = true, Color = Color3.fromRGB(139, 69, 19), Names = true, Distance = true, Contents = true },
-        FoodCrate = { Enabled = true, Color = Color3.fromRGB(0, 255, 0), Names = true, Distance = true, Contents = true },
-        LeatherPouch = { Enabled = true, Color = Color3.fromRGB(160, 82, 45), Names = true, Distance = true, Contents = true },
-        SupplyCrate = { Enabled = true, Color = Color3.fromRGB(0, 191, 255), Names = true, Distance = true, Contents = true },
-        MedicalPouch = { Enabled = true, Color = Color3.fromRGB(255, 20, 20), Names = true, Distance = true, Contents = true },
-        DroppedItemContainer = { Enabled = true, Color = Color3.fromRGB(255, 105, 180), Names = true, Distance = true, Contents = true },
-        Dead = { Enabled = true, Color = Color3.fromRGB(255, 0, 0), Names = true, Distance = true, Contents = true },
+        ShowNames = true,
+        ShowDistance = true,
+        ShowContents = true,
+        Vault = { Enabled = true, Color = Color3.fromRGB(255, 215, 0) },
+        Safe = { Enabled = true, Color = Color3.fromRGB(192, 192, 192) },
+        CivilianAirdrop = { Enabled = true, Color = Color3.fromRGB(255, 140, 0) },
+        AbandonedCar = { Enabled = true, Color = Color3.fromRGB(169, 169, 169) },
+        DuffelBag = { Enabled = true, Color = Color3.fromRGB(139, 69, 19) },
+        FoodCrate = { Enabled = true, Color = Color3.fromRGB(0, 255, 0) },
+        LeatherPouch = { Enabled = true, Color = Color3.fromRGB(160, 82, 45) },
+        SupplyCrate = { Enabled = true, Color = Color3.fromRGB(0, 191, 255) },
+        MedicalPouch = { Enabled = true, Color = Color3.fromRGB(255, 20, 20) },
+        DroppedItemContainer = { Enabled = true, Color = Color3.fromRGB(255, 105, 180) },
+        Dead = { Enabled = true, Color = Color3.fromRGB(255, 0, 0) },
     }
 }
 espModule._drawings = {}
@@ -358,10 +361,9 @@ local function ProcessItem(item)
     local data = espModule._itemDrawings[item]
     local color = itemCfg.Color or Color3.fromRGB(255, 255, 255)
     local textSize = cfg.TextSize
-    local showNames = (itemCfg.Names == nil) and true or itemCfg.Names
-    local showDist = (itemCfg.Distance == nil) and true or itemCfg.Distance
-    local showContents = (itemCfg.Contents == nil) and true or itemCfg.Contents
-    -- Build name+dist string
+    local showNames = cfg.ShowNames
+    local showDist = cfg.ShowDistance
+    local showContents = cfg.ShowContents
     local nameDistStr = ""
     if showNames then
         nameDistStr = itemName
@@ -384,7 +386,6 @@ local function ProcessItem(item)
     else
         data.NameDistText.Visible = false
     end
-    -- Build contents string
     if showContents then
         local slots = item:FindFirstChild("Slots")
         local contents = {}
@@ -402,13 +403,11 @@ local function ProcessItem(item)
         end
         if #contents > 0 then
             local contentStr = table.concat(contents, " | ")
-            -- Truncate if too long (max width ~400 pixels)
             local maxWidth = 400
             local testText = Create("Text", {Text = contentStr, Size = textSize - 1, Font = PixelFont or Drawing.Fonts.Monospace})
             local bounds = testText.TextBounds
             testText:Remove()
             if bounds.X > maxWidth then
-                -- Find a good truncation point
                 local truncated = ""
                 for i, v in ipairs(contents) do
                     local candidate = truncated .. (i > 1 and " | " or "") .. v
