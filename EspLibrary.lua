@@ -84,9 +84,29 @@ espModule.Settings = {
         ChamsOutlineColor = Color3.fromRGB(255, 200, 50),
         TracerColor = Color3.fromRGB(255, 200, 50),
     },
+    Items = {
+        Enabled = true,
+        Names = true,
+        Distance = true,
+        Contents = true,
+        TextSize = 12,
+        MaxDistance = 200,
+        Vault = { Enabled = true, Color = Color3.fromRGB(255, 215, 0) },
+        Safe = { Enabled = true, Color = Color3.fromRGB(192, 192, 192) },
+        CivilianAirdrop = { Enabled = true, Color = Color3.fromRGB(255, 140, 0) },
+        AbandonedCar = { Enabled = true, Color = Color3.fromRGB(169, 169, 169) },
+        DuffelBag = { Enabled = true, Color = Color3.fromRGB(139, 69, 19) },
+        FoodCrate = { Enabled = true, Color = Color3.fromRGB(0, 255, 0) },
+        LeatherPouch = { Enabled = true, Color = Color3.fromRGB(160, 82, 45) },
+        SupplyCrate = { Enabled = true, Color = Color3.fromRGB(0, 191, 255) },
+        MedicalPouch = { Enabled = true, Color = Color3.fromRGB(255, 20, 20) },
+        DroppedItemContainer = { Enabled = true, Color = Color3.fromRGB(255, 105, 180) },
+        Dead = { Enabled = true, Color = Color3.fromRGB(255, 0, 0) },
+    }
 }
 espModule._drawings = {}
 espModule._highlights = {}
+espModule._itemDrawings = {}
 espModule._isRunning = false
 espModule._connections = {}
 local cloneref = cloneref or function(...) return ... end
@@ -244,6 +264,161 @@ local function RemoveESP(entity)
     if espModule._highlights[entity] then
         espModule._highlights[entity]:Destroy()
         espModule._highlights[entity] = nil
+    end
+end
+local function CreateItemESP(item)
+    if espModule._itemDrawings[item] then return end
+    espModule._itemDrawings[item] = {
+        NameText = Create("Text", {Center = true, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = PixelFont or Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
+        DistanceText = Create("Text", {Center = false, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = PixelFont or Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
+        ContentsText = Create("Text", {Center = true, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = PixelFont or Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
+    }
+end
+local function RemoveItemESP(item)
+    local data = espModule._itemDrawings[item]
+    if not data then return end
+    data.NameText:Remove()
+    data.DistanceText:Remove()
+    data.ContentsText:Remove()
+    espModule._itemDrawings[item] = nil
+end
+local function ProcessItem(item)
+    local cfg = espModule.Settings.Items
+    if not cfg.Enabled then
+        if espModule._itemDrawings[item] then
+            local data = espModule._itemDrawings[item]
+            data.NameText.Visible = false
+            data.DistanceText.Visible = false
+            data.ContentsText.Visible = false
+        end
+        return
+    end
+    local camera = Services.CurrentCamera
+    local viewport = camera.ViewportSize
+    local pos, onScreen = camera:WorldToViewportPoint(item.Position)
+    if not onScreen or pos.Z <= 0 then
+        if espModule._itemDrawings[item] then
+            local data = espModule._itemDrawings[item]
+            data.NameText.Visible = false
+            data.DistanceText.Visible = false
+            data.ContentsText.Visible = false
+        end
+        return
+    end
+    local dist = (camera.CFrame.Position - item.Position).Magnitude
+    if dist > cfg.MaxDistance * 2.81 then
+        if espModule._itemDrawings[item] then
+            local data = espModule._itemDrawings[item]
+            data.NameText.Visible = false
+            data.DistanceText.Visible = false
+            data.ContentsText.Visible = false
+        end
+        return
+    end
+    local itemName = item.Name
+    local itemType = nil
+    local isDead = false
+    local typeList = {
+        "Vault", "Safe", "CivilianAirdrop", "AbandonedCar", "DuffelBag",
+        "FoodCrate", "LeatherPouch", "SupplyCrate", "MedicalPouch",
+        "DroppedItemContainer"
+    }
+    for _, t in ipairs(typeList) do
+        if itemName:find(t) then
+            itemType = t
+            break
+        end
+    end
+    if itemName:find("Dead") then
+        isDead = true
+        if itemType == nil then
+            itemType = "Dead"
+        end
+    end
+    if not itemType then
+        if espModule._itemDrawings[item] then
+            local data = espModule._itemDrawings[item]
+            data.NameText.Visible = false
+            data.DistanceText.Visible = false
+            data.ContentsText.Visible = false
+        end
+        return
+    end
+    if isDead then
+        if not cfg.Dead.Enabled then
+            if espModule._itemDrawings[item] then
+                local data = espModule._itemDrawings[item]
+                data.NameText.Visible = false
+                data.DistanceText.Visible = false
+                data.ContentsText.Visible = false
+            end
+            return
+        end
+    end
+    local itemCfg = cfg[itemType]
+    if not itemCfg or not itemCfg.Enabled then
+        if espModule._itemDrawings[item] then
+            local data = espModule._itemDrawings[item]
+            data.NameText.Visible = false
+            data.DistanceText.Visible = false
+            data.ContentsText.Visible = false
+        end
+        return
+    end
+    CreateItemESP(item)
+    local data = espModule._itemDrawings[item]
+    local color = itemCfg.Color or Color3.fromRGB(255, 255, 255)
+    local nameText = itemName
+    local distText = tostring(math.floor(dist / 2.81 + 0.5)) .. "m"
+    local textSize = cfg.TextSize
+    if cfg.Names then
+        data.NameText.Text = nameText
+        data.NameText.Size = textSize
+        data.NameText.Font = PixelFont or Drawing.Fonts.Monospace
+        data.NameText.Color = color
+        data.NameText.Position = Vector2.new(pos.X, pos.Y - 12)
+        data.NameText.Visible = true
+    else
+        data.NameText.Visible = false
+    end
+    if cfg.Distance then
+        data.DistanceText.Text = "[" .. distText .. "]"
+        data.DistanceText.Size = textSize
+        data.DistanceText.Font = PixelFont or Drawing.Fonts.Monospace
+        data.DistanceText.Color = color
+        data.DistanceText.Position = Vector2.new(pos.X + 4, pos.Y + 2)
+        data.DistanceText.Visible = true
+    else
+        data.DistanceText.Visible = false
+    end
+    if cfg.Contents then
+        local slots = item:FindFirstChild("Slots")
+        local contents = {}
+        if slots then
+            for _, slot in ipairs(slots:GetChildren()) do
+                if slot.Name:match("^Slot%d+$") then
+                    local itemNameVal = slot:FindFirstChild("ItemName")
+                    local stackVal = slot:FindFirstChild("Stack")
+                    if itemNameVal and stackVal and stackVal:IsA("IntValue") and stackVal.Value > 0 then
+                        local name = itemNameVal:IsA("StringValue") and itemNameVal.Value or tostring(itemNameVal)
+                        table.insert(contents, name .. " (" .. stackVal.Value .. ")")
+                    end
+                end
+            end
+        end
+        if #contents > 0 then
+            local contentStr = table.concat(contents, " | ")
+            data.ContentsText.Text = contentStr
+            data.ContentsText.Size = textSize - 1
+            data.ContentsText.Font = PixelFont or Drawing.Fonts.Monospace
+            data.ContentsText.Color = color
+            data.ContentsText.Position = Vector2.new(pos.X, pos.Y + 16)
+            data.ContentsText.Visible = true
+        else
+            data.ContentsText.Visible = false
+        end
+    else
+        data.ContentsText.Visible = false
     end
 end
 local function ProcessEntity(entity)
@@ -620,6 +795,14 @@ local function espLoop()
             ProcessEntity(bot)
         end
     end
+    local containers = Services.WorkSpace:FindFirstChild("Containers")
+    if containers then
+        for _, item in ipairs(containers:GetChildren()) do
+            if item:IsA("BasePart") then
+                ProcessItem(item)
+            end
+        end
+    end
 end
 function espModule:Start()
     if self._isRunning then return end
@@ -630,6 +813,10 @@ function espModule:Start()
     local botsFolder = Services.WorkSpace:FindFirstChild("IngameBots")
     if botsFolder then
         self._connections.BotRemoving = botsFolder.ChildRemoved:Connect(RemoveESP)
+    end
+    local containers = Services.WorkSpace:FindFirstChild("Containers")
+    if containers then
+        self._connections.ContainerRemoving = containers.ChildRemoved:Connect(RemoveItemESP)
     end
 end
 function espModule:Stop()
@@ -644,6 +831,10 @@ function espModule:Stop()
     end
     self._drawings = {}
     self._highlights = {}
+    for item, data in pairs(self._itemDrawings) do
+        RemoveItemESP(item)
+    end
+    self._itemDrawings = {}
 end
 function espModule:Restart()
     self:Stop()
