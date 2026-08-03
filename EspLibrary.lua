@@ -111,8 +111,6 @@ espModule.Settings = {
         Dead = { Enabled = false, Color = Color3.fromRGB(255, 0, 0) },
     }
 }
-
-
 espModule._drawings = {}
 espModule._highlights = {}
 espModule._itemDrawings = {}
@@ -294,6 +292,24 @@ local function RemoveItemESP(item)
         espModule._itemHighlights[item] = nil
     end
 end
+local itemTypeMap = {
+    ["Safe"] = "Safe",
+    ["Civilian Airdrop"] = "CivilianAirdrop",
+    ["Abandoned Car"] = "AbandonedCar",
+    ["Duffel Bag"] = "DuffelBag",
+    ["Food Crate"] = "FoodCrate",
+    ["Leather Pouch"] = "LeatherPouch",
+    ["Supply Crate"] = "SupplyCrate",
+    ["Medical Pouch"] = "MedicalPouch",
+    ["DroppedItemContainer"] = "DroppedItemContainer",
+    ["T.C.R Supply Crate"] = "TCRCrate",
+    ["Metal Crate"] = "MetalCrate",
+    ["Specops Supply Crate"] = "SpecopsCrate",
+    ["Tall Metal Crate"] = "TallMetalCrate",
+    ["Wooden Crate"] = "WoodenCrate",
+    ["Ammo Box"] = "AmmoBox",
+    ["Dead"] = "Dead",
+}
 local function ProcessItem(item)
     if not item:IsA("Model") then return end
     local cfg = espModule.Settings.Items
@@ -336,10 +352,9 @@ local function ProcessItem(item)
     local typeList = {
         "Safe", "Civilian Airdrop", "Abandoned Car", "Duffel Bag",
         "Food Crate", "Leather Pouch", "Supply Crate", "Medical Pouch",
-        "DroppedItemContainer", "T.C.R Supply Crate", "Metal Crate", 
+        "DroppedItemContainer", "T.C.R Supply Crate", "Metal Crate",
         "Specops Supply Crate", "Tall Metal Crate", "Wooden Crate", "Ammo Box"
     }
-
     for _, t in ipairs(typeList) do
         if itemName:find(t) then
             itemType = t
@@ -361,6 +376,16 @@ local function ProcessItem(item)
         end
         return
     end
+    local settingsKey = itemTypeMap[itemType]
+    if not settingsKey then
+        if espModule._itemDrawings[item] then
+            local data = espModule._itemDrawings[item]
+            data.NameDistText.Visible = false
+            data.ContentsText.Visible = false
+            if espModule._itemHighlights[item] then espModule._itemHighlights[item].Enabled = false end
+        end
+        return
+    end
     if isDead then
         if not cfg.Dead.Enabled then
             if espModule._itemDrawings[item] then
@@ -371,8 +396,9 @@ local function ProcessItem(item)
             end
             return
         end
+        settingsKey = "Dead"
     end
-    local itemCfg = cfg[itemType]
+    local itemCfg = cfg[settingsKey]
     if not itemCfg or not itemCfg.Enabled then
         if espModule._itemDrawings[item] then
             local data = espModule._itemDrawings[item]
