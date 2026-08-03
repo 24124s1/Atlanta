@@ -266,16 +266,14 @@ end
 local function CreateItemESP(item)
     if espModule._itemDrawings[item] then return end
     espModule._itemDrawings[item] = {
-        NameText = Create("Text", {Center = true, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = PixelFont or Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
-        DistanceText = Create("Text", {Center = false, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = PixelFont or Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
+        NameDistText = Create("Text", {Center = true, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = PixelFont or Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
         ContentsText = Create("Text", {Center = true, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = PixelFont or Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
     }
 end
 local function RemoveItemESP(item)
     local data = espModule._itemDrawings[item]
     if not data then return end
-    data.NameText:Remove()
-    data.DistanceText:Remove()
+    data.NameDistText:Remove()
     data.ContentsText:Remove()
     espModule._itemDrawings[item] = nil
 end
@@ -284,8 +282,7 @@ local function ProcessItem(item)
     if not cfg.Enabled then
         if espModule._itemDrawings[item] then
             local data = espModule._itemDrawings[item]
-            data.NameText.Visible = false
-            data.DistanceText.Visible = false
+            data.NameDistText.Visible = false
             data.ContentsText.Visible = false
         end
         return
@@ -296,8 +293,7 @@ local function ProcessItem(item)
     if not onScreen or pos.Z <= 0 then
         if espModule._itemDrawings[item] then
             local data = espModule._itemDrawings[item]
-            data.NameText.Visible = false
-            data.DistanceText.Visible = false
+            data.NameDistText.Visible = false
             data.ContentsText.Visible = false
         end
         return
@@ -306,8 +302,7 @@ local function ProcessItem(item)
     if dist > cfg.MaxDistance * 2.81 then
         if espModule._itemDrawings[item] then
             local data = espModule._itemDrawings[item]
-            data.NameText.Visible = false
-            data.DistanceText.Visible = false
+            data.NameDistText.Visible = false
             data.ContentsText.Visible = false
         end
         return
@@ -335,8 +330,7 @@ local function ProcessItem(item)
     if not itemType then
         if espModule._itemDrawings[item] then
             local data = espModule._itemDrawings[item]
-            data.NameText.Visible = false
-            data.DistanceText.Visible = false
+            data.NameDistText.Visible = false
             data.ContentsText.Visible = false
         end
         return
@@ -345,8 +339,7 @@ local function ProcessItem(item)
         if not cfg.Dead.Enabled then
             if espModule._itemDrawings[item] then
                 local data = espModule._itemDrawings[item]
-                data.NameText.Visible = false
-                data.DistanceText.Visible = false
+                data.NameDistText.Visible = false
                 data.ContentsText.Visible = false
             end
             return
@@ -356,8 +349,7 @@ local function ProcessItem(item)
     if not itemCfg or not itemCfg.Enabled then
         if espModule._itemDrawings[item] then
             local data = espModule._itemDrawings[item]
-            data.NameText.Visible = false
-            data.DistanceText.Visible = false
+            data.NameDistText.Visible = false
             data.ContentsText.Visible = false
         end
         return
@@ -365,32 +357,34 @@ local function ProcessItem(item)
     CreateItemESP(item)
     local data = espModule._itemDrawings[item]
     local color = itemCfg.Color or Color3.fromRGB(255, 255, 255)
-    local nameText = itemName
-    local distText = tostring(math.floor(dist / 2.81 + 0.5)) .. "m"
     local textSize = cfg.TextSize
     local showNames = (itemCfg.Names == nil) and true or itemCfg.Names
     local showDist = (itemCfg.Distance == nil) and true or itemCfg.Distance
     local showContents = (itemCfg.Contents == nil) and true or itemCfg.Contents
+    -- Build name+dist string
+    local nameDistStr = ""
     if showNames then
-        data.NameText.Text = nameText
-        data.NameText.Size = textSize
-        data.NameText.Font = PixelFont or Drawing.Fonts.Monospace
-        data.NameText.Color = color
-        data.NameText.Position = Vector2.new(pos.X, pos.Y - 12)
-        data.NameText.Visible = true
-    else
-        data.NameText.Visible = false
+        nameDistStr = itemName
     end
     if showDist then
-        data.DistanceText.Text = "[" .. distText .. "]"
-        data.DistanceText.Size = textSize
-        data.DistanceText.Font = PixelFont or Drawing.Fonts.Monospace
-        data.DistanceText.Color = color
-        data.DistanceText.Position = Vector2.new(pos.X + 4, pos.Y + 2)
-        data.DistanceText.Visible = true
-    else
-        data.DistanceText.Visible = false
+        local distM = math.floor(dist / 2.81 + 0.5)
+        if showNames then
+            nameDistStr = nameDistStr .. " [" .. distM .. "m]"
+        else
+            nameDistStr = "[" .. distM .. "m]"
+        end
     end
+    if nameDistStr ~= "" then
+        data.NameDistText.Text = nameDistStr
+        data.NameDistText.Size = textSize
+        data.NameDistText.Font = PixelFont or Drawing.Fonts.Monospace
+        data.NameDistText.Color = color
+        data.NameDistText.Position = Vector2.new(pos.X, pos.Y - 12)
+        data.NameDistText.Visible = true
+    else
+        data.NameDistText.Visible = false
+    end
+    -- Build contents string
     if showContents then
         local slots = item:FindFirstChild("Slots")
         local contents = {}
@@ -408,6 +402,32 @@ local function ProcessItem(item)
         end
         if #contents > 0 then
             local contentStr = table.concat(contents, " | ")
+            -- Truncate if too long (max width ~400 pixels)
+            local maxWidth = 400
+            local testText = Create("Text", {Text = contentStr, Size = textSize - 1, Font = PixelFont or Drawing.Fonts.Monospace})
+            local bounds = testText.TextBounds
+            testText:Remove()
+            if bounds.X > maxWidth then
+                -- Find a good truncation point
+                local truncated = ""
+                for i, v in ipairs(contents) do
+                    local candidate = truncated .. (i > 1 and " | " or "") .. v
+                    local t = Create("Text", {Text = candidate, Size = textSize - 1, Font = PixelFont or Drawing.Fonts.Monospace})
+                    local b = t.TextBounds
+                    t:Remove()
+                    if b.X > maxWidth then
+                        if i == 1 then
+                            truncated = v:sub(1, math.max(1, #v - 3)) .. "..."
+                        else
+                            truncated = truncated .. " | ..."
+                        end
+                        break
+                    else
+                        truncated = candidate
+                    end
+                end
+                contentStr = truncated
+            end
             data.ContentsText.Text = contentStr
             data.ContentsText.Size = textSize - 1
             data.ContentsText.Font = PixelFont or Drawing.Fonts.Monospace
