@@ -9117,11 +9117,15 @@ function library:colorpicker(options)
 			section:button_holder({})
 			section:button({name = "Copy", callback = function()
 				library.copied_flag = flags[cfg.flag]
-				library.is_rainbow = cfg.flag .. "_RAINBOW_FLAG"
+				library.is_rainbow = flags[cfg.flag .. "_RAINBOW_FLAG"]
 			end})
 			section:button({name = "Paste", callback = function()
-				RainbowToggle.set(library.is_rainbow)
-				cfg.set(library.copied_flag.Color, library.copied_flag.Transparency)
+				if library.is_rainbow ~= nil then
+					RainbowToggle.set(library.is_rainbow)
+				end
+				if library.copied_flag then
+					cfg.set(library.copied_flag.Color, library.copied_flag.Transparency)
+				end
 			end})
 
 			local main_holder_inline = library:create("Frame", {
