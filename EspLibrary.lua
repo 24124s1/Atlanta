@@ -91,6 +91,8 @@ espModule.Settings = {
         ShowNames = true,
         ShowDistance = true,
         ShowContents = true,
+        Chams = false,
+        ChamsFillTransparency = 0.3,
         Vault = { Enabled = true, Color = Color3.fromRGB(255, 215, 0) },
         Safe = { Enabled = true, Color = Color3.fromRGB(192, 192, 192) },
         CivilianAirdrop = { Enabled = true, Color = Color3.fromRGB(255, 140, 0) },
@@ -107,6 +109,7 @@ espModule.Settings = {
 espModule._drawings = {}
 espModule._highlights = {}
 espModule._itemDrawings = {}
+espModule._itemHighlights = {}
 espModule._isRunning = false
 espModule._connections = {}
 local cloneref = cloneref or function(...) return ... end
@@ -279,34 +282,44 @@ local function RemoveItemESP(item)
     data.NameDistText:Remove()
     data.ContentsText:Remove()
     espModule._itemDrawings[item] = nil
+    if espModule._itemHighlights[item] then
+        espModule._itemHighlights[item]:Destroy()
+        espModule._itemHighlights[item] = nil
+    end
 end
 local function ProcessItem(item)
+    if not item:IsA("Model") then return end
     local cfg = espModule.Settings.Items
     if not cfg.Enabled then
         if espModule._itemDrawings[item] then
             local data = espModule._itemDrawings[item]
             data.NameDistText.Visible = false
             data.ContentsText.Visible = false
+            if espModule._itemHighlights[item] then espModule._itemHighlights[item].Enabled = false end
         end
         return
     end
+    local pivot = item:GetPivot()
+    if not pivot then return end
     local camera = Services.CurrentCamera
     local viewport = camera.ViewportSize
-    local pos, onScreen = camera:WorldToViewportPoint(item.Position)
+    local pos, onScreen = camera:WorldToViewportPoint(pivot.Position)
     if not onScreen or pos.Z <= 0 then
         if espModule._itemDrawings[item] then
             local data = espModule._itemDrawings[item]
             data.NameDistText.Visible = false
             data.ContentsText.Visible = false
+            if espModule._itemHighlights[item] then espModule._itemHighlights[item].Enabled = false end
         end
         return
     end
-    local dist = (camera.CFrame.Position - item.Position).Magnitude
+    local dist = (camera.CFrame.Position - pivot.Position).Magnitude
     if dist > cfg.MaxDistance * 2.81 then
         if espModule._itemDrawings[item] then
             local data = espModule._itemDrawings[item]
             data.NameDistText.Visible = false
             data.ContentsText.Visible = false
+            if espModule._itemHighlights[item] then espModule._itemHighlights[item].Enabled = false end
         end
         return
     end
@@ -335,6 +348,7 @@ local function ProcessItem(item)
             local data = espModule._itemDrawings[item]
             data.NameDistText.Visible = false
             data.ContentsText.Visible = false
+            if espModule._itemHighlights[item] then espModule._itemHighlights[item].Enabled = false end
         end
         return
     end
@@ -344,6 +358,7 @@ local function ProcessItem(item)
                 local data = espModule._itemDrawings[item]
                 data.NameDistText.Visible = false
                 data.ContentsText.Visible = false
+                if espModule._itemHighlights[item] then espModule._itemHighlights[item].Enabled = false end
             end
             return
         end
@@ -354,6 +369,7 @@ local function ProcessItem(item)
             local data = espModule._itemDrawings[item]
             data.NameDistText.Visible = false
             data.ContentsText.Visible = false
+            if espModule._itemHighlights[item] then espModule._itemHighlights[item].Enabled = false end
         end
         return
     end
@@ -438,6 +454,25 @@ local function ProcessItem(item)
         end
     else
         data.ContentsText.Visible = false
+    end
+    if cfg.Chams then
+        local hl = espModule._itemHighlights[item]
+        if not hl then
+            hl = Instance.new("Highlight")
+            hl.Name = "ItemHighlight"
+            hl.Parent = Services.CoreGui
+            espModule._itemHighlights[item] = hl
+        end
+        hl.Adornee = item
+        hl.FillColor = color
+        hl.OutlineColor = Color3.new(0, 0, 0)
+        hl.FillTransparency = cfg.ChamsFillTransparency
+        hl.OutlineTransparency = 1
+        hl.Enabled = true
+    else
+        if espModule._itemHighlights[item] then
+            espModule._itemHighlights[item].Enabled = false
+        end
     end
 end
 local function ProcessEntity(entity)
@@ -817,7 +852,7 @@ local function espLoop()
     local containers = Services.WorkSpace:FindFirstChild("Containers")
     if containers then
         for _, item in ipairs(containers:GetChildren()) do
-            if item:IsA("BasePart") then
+            if item:IsA("Model") then
                 ProcessItem(item)
             end
         end
@@ -854,6 +889,7 @@ function espModule:Stop()
         RemoveItemESP(item)
     end
     self._itemDrawings = {}
+    self._itemHighlights = {}
 end
 function espModule:Restart()
     self:Stop()
