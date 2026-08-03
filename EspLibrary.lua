@@ -85,27 +85,34 @@ espModule.Settings = {
         TracerColor = Color3.fromRGB(255, 200, 50),
     },
     Items = {
-        Enabled = true,
+        Enabled = false,
         MaxDistance = 200,
         TextSize = 12,
-        ShowNames = true,
-        ShowDistance = true,
-        ShowContents = true,
+        ShowNames = false,
+        ShowDistance = false,
+        ShowContents = false,
         Chams = false,
         ChamsFillTransparency = 0.3,
-        Vault = { Enabled = true, Color = Color3.fromRGB(255, 215, 0) },
-        Safe = { Enabled = true, Color = Color3.fromRGB(192, 192, 192) },
-        CivilianAirdrop = { Enabled = true, Color = Color3.fromRGB(255, 140, 0) },
-        AbandonedCar = { Enabled = true, Color = Color3.fromRGB(169, 169, 169) },
-        DuffelBag = { Enabled = true, Color = Color3.fromRGB(139, 69, 19) },
-        FoodCrate = { Enabled = true, Color = Color3.fromRGB(0, 255, 0) },
-        LeatherPouch = { Enabled = true, Color = Color3.fromRGB(160, 82, 45) },
-        SupplyCrate = { Enabled = true, Color = Color3.fromRGB(0, 191, 255) },
-        MedicalPouch = { Enabled = true, Color = Color3.fromRGB(255, 20, 20) },
-        DroppedItemContainer = { Enabled = true, Color = Color3.fromRGB(255, 105, 180) },
-        Dead = { Enabled = true, Color = Color3.fromRGB(255, 0, 0) },
+        Safe = { Enabled = false, Color = Color3.fromRGB(192, 192, 192) },
+        CivilianAirdrop = { Enabled = false, Color = Color3.fromRGB(255, 140, 0) },
+        AbandonedCar = { Enabled = false, Color = Color3.fromRGB(169, 169, 169) },
+        DuffelBag = { Enabled = false, Color = Color3.fromRGB(139, 69, 19) },
+        FoodCrate = { Enabled = false, Color = Color3.fromRGB(0, 255, 0) },
+        LeatherPouch = { Enabled = false, Color = Color3.fromRGB(160, 82, 45) },
+        SupplyCrate = { Enabled = false, Color = Color3.fromRGB(0, 191, 255) },
+        MedicalPouch = { Enabled = false, Color = Color3.fromRGB(255, 20, 20) },
+        TCRCrate = { Enabled = false, Color = Color3.fromRGB(192, 192, 192) },
+        MetalCrate = { Enabled = false, Color = Color3.fromRGB(255, 140, 0) },
+        TallMetalCrate = { Enabled = false, Color = Color3.fromRGB(169, 169, 169) },
+        SpecopsCrate = { Enabled = false, Color = Color3.fromRGB(139, 69, 19) },
+        AmmoBox = { Enabled = false, Color = Color3.fromRGB(0, 255, 0) },
+        WoodenCrate = { Enabled = false, Color = Color3.fromRGB(160, 82, 45) },
+        DroppedItemContainer = { Enabled = false, Color = Color3.fromRGB(255, 105, 180) },
+        Dead = { Enabled = false, Color = Color3.fromRGB(255, 0, 0) },
     }
 }
+
+
 espModule._drawings = {}
 espModule._highlights = {}
 espModule._itemDrawings = {}
@@ -327,10 +334,12 @@ local function ProcessItem(item)
     local itemType = nil
     local isDead = false
     local typeList = {
-        "Vault", "Safe", "CivilianAirdrop", "AbandonedCar", "DuffelBag",
-        "FoodCrate", "LeatherPouch", "SupplyCrate", "MedicalPouch",
-        "DroppedItemContainer"
+        "Safe", "Civilian Airdrop", "Abandoned Car", "Duffel Bag",
+        "Food Crate", "Leather Pouch", "Supply Crate", "Medical Pouch",
+        "DroppedItemContainer", "T.C.R Supply Crate", "Metal Crate", 
+        "Specops Supply Crate", "Tall Metal Crate", "Wooden Crate", "Ammo Box"
     }
+
     for _, t in ipairs(typeList) do
         if itemName:find(t) then
             itemType = t
