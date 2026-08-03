@@ -86,22 +86,19 @@ espModule.Settings = {
     },
     Items = {
         Enabled = true,
-        Names = true,
-        Distance = true,
-        Contents = true,
-        TextSize = 12,
         MaxDistance = 200,
-        Vault = { Enabled = true, Color = Color3.fromRGB(255, 215, 0) },
-        Safe = { Enabled = true, Color = Color3.fromRGB(192, 192, 192) },
-        CivilianAirdrop = { Enabled = true, Color = Color3.fromRGB(255, 140, 0) },
-        AbandonedCar = { Enabled = true, Color = Color3.fromRGB(169, 169, 169) },
-        DuffelBag = { Enabled = true, Color = Color3.fromRGB(139, 69, 19) },
-        FoodCrate = { Enabled = true, Color = Color3.fromRGB(0, 255, 0) },
-        LeatherPouch = { Enabled = true, Color = Color3.fromRGB(160, 82, 45) },
-        SupplyCrate = { Enabled = true, Color = Color3.fromRGB(0, 191, 255) },
-        MedicalPouch = { Enabled = true, Color = Color3.fromRGB(255, 20, 20) },
-        DroppedItemContainer = { Enabled = true, Color = Color3.fromRGB(255, 105, 180) },
-        Dead = { Enabled = true, Color = Color3.fromRGB(255, 0, 0) },
+        TextSize = 12,
+        Vault = { Enabled = true, Color = Color3.fromRGB(255, 215, 0), Names = true, Distance = true, Contents = true },
+        Safe = { Enabled = true, Color = Color3.fromRGB(192, 192, 192), Names = true, Distance = true, Contents = true },
+        CivilianAirdrop = { Enabled = true, Color = Color3.fromRGB(255, 140, 0), Names = true, Distance = true, Contents = true },
+        AbandonedCar = { Enabled = true, Color = Color3.fromRGB(169, 169, 169), Names = true, Distance = true, Contents = true },
+        DuffelBag = { Enabled = true, Color = Color3.fromRGB(139, 69, 19), Names = true, Distance = true, Contents = true },
+        FoodCrate = { Enabled = true, Color = Color3.fromRGB(0, 255, 0), Names = true, Distance = true, Contents = true },
+        LeatherPouch = { Enabled = true, Color = Color3.fromRGB(160, 82, 45), Names = true, Distance = true, Contents = true },
+        SupplyCrate = { Enabled = true, Color = Color3.fromRGB(0, 191, 255), Names = true, Distance = true, Contents = true },
+        MedicalPouch = { Enabled = true, Color = Color3.fromRGB(255, 20, 20), Names = true, Distance = true, Contents = true },
+        DroppedItemContainer = { Enabled = true, Color = Color3.fromRGB(255, 105, 180), Names = true, Distance = true, Contents = true },
+        Dead = { Enabled = true, Color = Color3.fromRGB(255, 0, 0), Names = true, Distance = true, Contents = true },
     }
 }
 espModule._drawings = {}
@@ -371,7 +368,10 @@ local function ProcessItem(item)
     local nameText = itemName
     local distText = tostring(math.floor(dist / 2.81 + 0.5)) .. "m"
     local textSize = cfg.TextSize
-    if cfg.Names then
+    local showNames = (itemCfg.Names == nil) and true or itemCfg.Names
+    local showDist = (itemCfg.Distance == nil) and true or itemCfg.Distance
+    local showContents = (itemCfg.Contents == nil) and true or itemCfg.Contents
+    if showNames then
         data.NameText.Text = nameText
         data.NameText.Size = textSize
         data.NameText.Font = PixelFont or Drawing.Fonts.Monospace
@@ -381,7 +381,7 @@ local function ProcessItem(item)
     else
         data.NameText.Visible = false
     end
-    if cfg.Distance then
+    if showDist then
         data.DistanceText.Text = "[" .. distText .. "]"
         data.DistanceText.Size = textSize
         data.DistanceText.Font = PixelFont or Drawing.Fonts.Monospace
@@ -391,7 +391,7 @@ local function ProcessItem(item)
     else
         data.DistanceText.Visible = false
     end
-    if cfg.Contents then
+    if showContents then
         local slots = item:FindFirstChild("Slots")
         local contents = {}
         if slots then
