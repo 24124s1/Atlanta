@@ -7184,7 +7184,7 @@
 				end)
 
 
-				local watermark = Library:watermark({
+				local watermark = library:watermark({
     				default = string.format("catware.top | private | %s | %s", gameName)
 				})  
 
