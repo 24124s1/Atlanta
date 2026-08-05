@@ -5583,6 +5583,7 @@
 	local sound_service = cloneref(game:GetService("SoundService"))
 	local starter_gui = cloneref(game:GetService("StarterGui"))
 	local rs = cloneref(game:GetService("ReplicatedStorage"))
+	local MarketplaceService = cloneref(game:GetService("MarketplaceService")
 
 	local vec2 = Vector2.new
 	local vec3 = Vector3.new
@@ -7180,11 +7181,11 @@
 
 				local gameName = "Unknown Game"
 				pcall(function()
-    				gameName = Services.MarketplaceService:GetProductInfo(game.PlaceId).Name
+    				gameName = MarketplaceService:GetProductInfo(game.PlaceId).Name
 				end)
 
 
-				local watermark = Library:watermark({
+				local watermark = library:watermark({
    					 default = string.format("catware.top | private | %s | %s", gameName)
 				})  
 
