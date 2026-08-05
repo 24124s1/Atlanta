@@ -7179,21 +7179,13 @@
 				})
 
 
-				local gameName = "Unknown Game"
-				pcall(function()
-    				gameName = MarketplaceService:GetProductInfo(game.PlaceId).Name
-				end)
-
-
-				local watermark = library:watermark({
-   					 default = string.format("catware.top | private | %s | %s", gameName)
-				})  
+				local watermark = library:watermark({default = os.date('Vagrant.cc |  - %b %d %Y - %H:%M:%S')})  
 
 				task.spawn(function()
-    				while task.wait(1) do 
-        				watermark.change_text(string.format("catware.top | private | %s | %s", gameName, serverId))
-    				end 
-				end)
+					while task.wait(1) do 
+						watermark.change_text(os.date('Vagrant.cc - Beta - %b %d %Y - %H:%M:%S'))
+					end 
+				end) 
 
 				local items = style.items
 
