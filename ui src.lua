@@ -7178,6 +7178,22 @@
 				})
 
 
+				local gameName = "Unknown Game"
+				pcall(function()
+    				gameName = Services.MarketplaceService:GetProductInfo(game.PlaceId).Name
+				end)
+
+
+				local watermark = Library:watermark({
+   					 default = string.format("catware.top | private | %s | %s", gameName)
+				})  
+
+				task.spawn(function()
+    				while task.wait(1) do 
+        				watermark.change_text(string.format("catware.top | private | %s | %s", gameName, serverId))
+    				end 
+				end)
+
 				local items = style.items
 
 				local column = setmetatable(items, library):column() 
