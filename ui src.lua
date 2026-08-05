@@ -7178,15 +7178,6 @@
 					image = "rbxassetid://115194686863276",
 				})
 
-
-				local watermark = library:watermark({default = os.date('Vagrant.cc |  - %b %d %Y - %H:%M:%S')})  
-
-				task.spawn(function()
-					while task.wait(1) do 
-						watermark.change_text(os.date('Vagrant.cc - Beta - %b %d %Y - %H:%M:%S'))
-					end 
-				end) 
-
 				local gameName = "Unknown Game"
 				pcall(function()
     				gameName = Services.MarketplaceService:GetProductInfo(game.PlaceId).Name
