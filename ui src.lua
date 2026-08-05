@@ -7183,11 +7183,11 @@
     				gameName = MarketplaceService:GetProductInfo(game.PlaceId).Name
 				end)
 
-				local watermark = library:watermark({default = string.format("catware.top | private | %s", gameName)})  
+				local watermark = library:watermark({default = string.format("Catware.top | Private | %s", gameName)})  
 
 				task.spawn(function()
     				while task.wait(1) do 
-        				watermark.change_text(string.format("catware.top | private | %s", gameName))
+        				watermark.change_text(string.format("Catware.top | Private | %s", gameName))
     				end 
 				end)
 
