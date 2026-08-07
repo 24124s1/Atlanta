@@ -5788,7 +5788,7 @@
 		makefolder(library.directory .. path)
 	end 
 
-	writefile("ffff.ttf", game:HttpGet("https://raw.githubusercontent.com/i77lhm/storage/main/fonts/fs-tahoma-8px.ttf"))
+	writefile("ffff.ttf", game:HttpGet("https://raw.githubusercontent.com/i77lhm/storage/main/fonts/Minecraftia-Regular.ttf"))
 
 	local tahoma = {
 		name = "SmallestPixel7",
