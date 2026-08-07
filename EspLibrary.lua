@@ -728,13 +728,6 @@ local function ProcessEntity(entity)
     local meters = math.floor(rawStuds / 2.81 + 0.5)
 
     if cfg.BoxEnabled then
-        local th = math.max(1, cfg.Thickness)
-        local oth = th + 1
-        local x1 = x
-        local y1 = y
-        local x2 = x + sx
-        local y2 = y + sy
-
         if cfg.BoxType == "Full" then
             local co = data.CornerOutline
             co.TL1.Visible = false
@@ -756,43 +749,39 @@ local function ProcessEntity(entity)
             c.BR2.Visible = false
 
             local fo = data.FullOutline
-            fo.Top.From = Vector2.new(x1 - 1, y1)
-            fo.Top.To = Vector2.new(x2 + 1, y1)
-            fo.Top.Thickness = oth
+            fo.Top.From = Vector2.new(x - 1, y)
+            fo.Top.To = Vector2.new(x + sx + 1, y)
             fo.Top.Visible = true
-            fo.Bottom.From = Vector2.new(x1 - 1, y2)
-            fo.Bottom.To = Vector2.new(x2 + 1, y2)
-            fo.Bottom.Thickness = oth
+            fo.Bottom.From = Vector2.new(x - 1, y + sy)
+            fo.Bottom.To = Vector2.new(x + sx + 1, y + sy)
             fo.Bottom.Visible = true
-            fo.Left.From = Vector2.new(x1, y1 - 1)
-            fo.Left.To = Vector2.new(x1, y2 + 1)
-            fo.Left.Thickness = oth
+            fo.Left.From = Vector2.new(x, y - 1)
+            fo.Left.To = Vector2.new(x, y + sy + 1)
             fo.Left.Visible = true
-            fo.Right.From = Vector2.new(x2, y1 - 1)
-            fo.Right.To = Vector2.new(x2, y2 + 1)
-            fo.Right.Thickness = oth
+            fo.Right.From = Vector2.new(x + sx, y - 1)
+            fo.Right.To = Vector2.new(x + sx, y + sy + 1)
             fo.Right.Visible = true
 
             local f = data.Full
-            f.Top.From = Vector2.new(x1, y1)
-            f.Top.To = Vector2.new(x2, y1)
+            f.Top.From = Vector2.new(x, y)
+            f.Top.To = Vector2.new(x + sx, y)
             f.Top.Color = cfg.LineColor
-            f.Top.Thickness = th
+            f.Top.Thickness = cfg.Thickness
             f.Top.Visible = true
-            f.Bottom.From = Vector2.new(x1, y2)
-            f.Bottom.To = Vector2.new(x2, y2)
+            f.Bottom.From = Vector2.new(x, y + sy)
+            f.Bottom.To = Vector2.new(x + sx, y + sy)
             f.Bottom.Color = cfg.LineColor
-            f.Bottom.Thickness = th
+            f.Bottom.Thickness = cfg.Thickness
             f.Bottom.Visible = true
-            f.Left.From = Vector2.new(x1, y1)
-            f.Left.To = Vector2.new(x1, y2)
+            f.Left.From = Vector2.new(x, y)
+            f.Left.To = Vector2.new(x, y + sy)
             f.Left.Color = cfg.LineColor
-            f.Left.Thickness = th
+            f.Left.Thickness = cfg.Thickness
             f.Left.Visible = true
-            f.Right.From = Vector2.new(x2, y1)
-            f.Right.To = Vector2.new(x2, y2)
+            f.Right.From = Vector2.new(x + sx, y)
+            f.Right.To = Vector2.new(x + sx, y + sy)
             f.Right.Color = cfg.LineColor
-            f.Right.Thickness = th
+            f.Right.Thickness = cfg.Thickness
             f.Right.Visible = true
         else
             local fo = data.FullOutline
@@ -806,79 +795,80 @@ local function ProcessEntity(entity)
             f.Left.Visible = false
             f.Right.Visible = false
 
-            local MAX_CORNER = 10
-            local cl = math.floor(math.min(sx, sy) * 0.28 + 0.5)
-            cl = math.clamp(cl, 3, MAX_CORNER)
-
-            local function setCorner(outlineH, outlineV, lineH, lineV, hx1, hy1, hx2, hy2, vx1, vy1, vx2, vy2)
-                outlineH.From = Vector2.new(hx1, hy1)
-                outlineH.To = Vector2.new(hx2, hy2)
-                outlineH.Thickness = oth
-                outlineH.Visible = true
-                outlineV.From = Vector2.new(vx1, vy1)
-                outlineV.To = Vector2.new(vx2, vy2)
-                outlineV.Thickness = oth
-                outlineV.Visible = true
-                lineH.From = Vector2.new(hx1, hy1)
-                lineH.To = Vector2.new(hx2, hy2)
-                lineH.Color = cfg.LineColor
-                lineH.Thickness = th
-                lineH.Visible = true
-                lineV.From = Vector2.new(vx1, vy1)
-                lineV.To = Vector2.new(vx2, vy2)
-                lineV.Color = cfg.LineColor
-                lineV.Thickness = th
-                lineV.Visible = true
-            end
+            local len = math.clamp(0.22 + (rawStuds / 400) * 0.18, 0.22, 0.38)
+            local cw = math.max(2, math.floor(sx * len + 0.5))
+            local ch = math.max(2, math.floor(sy * len + 0.5))
 
             local co = data.CornerOutline
+            co.TL1.From = Vector2.new(x - 1, y)
+            co.TL1.To = Vector2.new(x + cw + 1, y)
+            co.TL1.Visible = true
+            co.TL2.From = Vector2.new(x, y - 1)
+            co.TL2.To = Vector2.new(x, y + ch + 1)
+            co.TL2.Visible = true
+            co.TR1.From = Vector2.new(x + sx + 1, y)
+            co.TR1.To = Vector2.new(x + sx - cw - 1, y)
+            co.TR1.Visible = true
+            co.TR2.From = Vector2.new(x + sx, y - 1)
+            co.TR2.To = Vector2.new(x + sx, y + ch + 1)
+            co.TR2.Visible = true
+            co.BL1.From = Vector2.new(x - 1, y + sy)
+            co.BL1.To = Vector2.new(x + cw + 1, y + sy)
+            co.BL1.Visible = true
+            co.BL2.From = Vector2.new(x, y + sy + 1)
+            co.BL2.To = Vector2.new(x, y + sy - ch)
+            co.BL2.Visible = true
+            co.BR1.From = Vector2.new(x + sx + 1, y + sy)
+            co.BR1.To = Vector2.new(x + sx - cw - 1, y + sy)
+            co.BR1.Visible = true
+            co.BR2.From = Vector2.new(x + sx, y + sy + 1)
+            co.BR2.To = Vector2.new(x + sx, y + sy - ch)
+            co.BR2.Visible = true
+
             local c = data.Corner
-
-            setCorner(co.TL1, co.TL2, c.TL1, c.TL2,
-                x1, y1, x1 + cl, y1,
-                x1, y1, x1, y1 + cl)
-
-            setCorner(co.TR1, co.TR2, c.TR1, c.TR2,
-                x2, y1, x2 - cl, y1,
-                x2, y1, x2, y1 + cl)
-
-            setCorner(co.BL1, co.BL2, c.BL1, c.BL2,
-                x1, y2, x1 + cl, y2,
-                x1, y2, x1, y2 - cl)
-
-            setCorner(co.BR1, co.BR2, c.BR1, c.BR2,
-                x2, y2, x2 - cl, y2,
-                x2, y2, x2, y2 - cl)
+            c.TL1.From = Vector2.new(x, y)
+            c.TL1.To = Vector2.new(x + cw, y)
+            c.TL1.Color = cfg.LineColor
+            c.TL1.Thickness = cfg.Thickness
+            c.TL1.Visible = true
+            c.TL2.From = Vector2.new(x, y)
+            c.TL2.To = Vector2.new(x, y + ch)
+            c.TL2.Color = cfg.LineColor
+            c.TL2.Thickness = cfg.Thickness
+            c.TL2.Visible = true
+            c.TR1.From = Vector2.new(x + sx, y)
+            c.TR1.To = Vector2.new(x + sx - cw, y)
+            c.TR1.Color = cfg.LineColor
+            c.TR1.Thickness = cfg.Thickness
+            c.TR1.Visible = true
+            c.TR2.From = Vector2.new(x + sx, y)
+            c.TR2.To = Vector2.new(x + sx, y + ch)
+            c.TR2.Color = cfg.LineColor
+            c.TR2.Thickness = cfg.Thickness
+            c.TR2.Visible = true
+            c.BL1.From = Vector2.new(x, y + sy)
+            c.BL1.To = Vector2.new(x + cw, y + sy)
+            c.BL1.Color = cfg.LineColor
+            c.BL1.Thickness = cfg.Thickness
+            c.BL1.Visible = true
+            c.BL2.From = Vector2.new(x, y + sy)
+            c.BL2.To = Vector2.new(x, y + sy - ch)
+            c.BL2.Color = cfg.LineColor
+            c.BL2.Thickness = cfg.Thickness
+            c.BL2.Visible = true
+            c.BR1.From = Vector2.new(x + sx, y + sy)
+            c.BR1.To = Vector2.new(x + sx - cw, y + sy)
+            c.BR1.Color = cfg.LineColor
+            c.BR1.Thickness = cfg.Thickness
+            c.BR1.Visible = true
+            c.BR2.From = Vector2.new(x + sx, y + sy)
+            c.BR2.To = Vector2.new(x + sx, y + sy - ch)
+            c.BR2.Color = cfg.LineColor
+            c.BR2.Thickness = cfg.Thickness
+            c.BR2.Visible = true
         end
     else
-        local fo = data.FullOutline
-        fo.Top.Visible = false
-        fo.Bottom.Visible = false
-        fo.Left.Visible = false
-        fo.Right.Visible = false
-        local f = data.Full
-        f.Top.Visible = false
-        f.Bottom.Visible = false
-        f.Left.Visible = false
-        f.Right.Visible = false
-        local co = data.CornerOutline
-        co.TL1.Visible = false
-        co.TL2.Visible = false
-        co.TR1.Visible = false
-        co.TR2.Visible = false
-        co.BL1.Visible = false
-        co.BL2.Visible = false
-        co.BR1.Visible = false
-        co.BR2.Visible = false
-        local c = data.Corner
-        c.TL1.Visible = false
-        c.TL2.Visible = false
-        c.TR1.Visible = false
-        c.TR2.Visible = false
-        c.BL1.Visible = false
-        c.BL2.Visible = false
-        c.BR1.Visible = false
-        c.BR2.Visible = false
+        HideESP(data)
     end
 
     if cfg.HealthBar then
