@@ -148,12 +148,12 @@ local MAX_ITEM_DIST_MULT = 2.81
 local function loadFont()
     if PixelFont then return end
     local ok, data = pcall(function()
-        if isfile and isfile("ffff.ttf") then
-            return readfile("ffff.ttf")
+        if isfile and isfile("1111.ttf") then
+            return readfile("1111.ttf")
         end
         local raw = game:HttpGet("https://github.com/weasely111/beta/raw/refs/heads/main/fs-tahoma-8px.ttf")
         if writefile then
-            writefile("ffff.ttf", raw)
+            writefile("1111.ttf", raw)
         end
         return raw
     end)
