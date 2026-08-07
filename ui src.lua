@@ -5671,11 +5671,11 @@
 
 	local themes = {
 		preset = {
-			["outline"] = hex("#A171FF"),
-			["inline"] = hex("#1A1A1A"),
+			["outline"] = hex("#000000"),
+			["inline"] = hex("#181818"),
 			["accent"] = hex("#A171FF"),
 			["high_contrast"] = hex("#0F0F0F"),
-			["low_contrast"] = hex("#161616"),
+			["low_contrast"] = hex("#0F0F0F"),
 			["text"] = hex("#B4B4B4"),
 			["text_outline"] = rgb(0, 0, 0),
 			["glow"] = hex("#A171FF"),
