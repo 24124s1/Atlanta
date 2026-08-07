@@ -141,34 +141,72 @@ Services.CurrentCamera = Services.WorkSpace.CurrentCamera
 Services.LocalPlayer = Services.Players.LocalPlayer
 
 local PixelFont = nil
-local HEALTH_SEGMENTS = 64
+local HEALTH_SEGMENTS = 24
 local MAX_ENTITY_DIST = 1200
 local MAX_ITEM_DIST_MULT = 2.81
 
+local function getEspFont()
+    if PixelFont then
+        return PixelFont
+    end
+    return Drawing.Fonts.UI or Drawing.Fonts.System or Drawing.Fonts.Monospace
+end
+
 local function loadFont()
     if PixelFont then return end
-    local ok, data = pcall(function()
-        if isfile and isfile("1111.ttf") then
-            return readfile("1111.ttf")
-        end
-        local raw = game:HttpGet("https://raw.githubusercontent.com/i77lhm/storage/main/fonts/smallest_pixel-7.ttf")
-        if writefile then
-            writefile("1111.ttf", raw)
-        end
-        return raw
-    end)
-    if ok and data and #data > 100 then
-        local ok2, f = pcall(function()
-            local font = Drawing.new("Font")
-            font.Data = data
-            return font
+    local paths = { "esp_pixel.ttf", "1111.ttf", "ffff.ttf" }
+    local urls = {
+        "https://raw.githubusercontent.com/i77lhm/storage/main/fonts/smallest_pixel-7.ttf",
+        "https://github.com/weasely111/beta/raw/refs/heads/main/fs-tahoma-8px.ttf",
+    }
+    local data = nil
+    for _, path in ipairs(paths) do
+        local ok, content = pcall(function()
+            if isfile and isfile(path) then
+                return readfile(path)
+            end
         end)
-        if ok2 and f then
-            PixelFont = f
+        if ok and content and #content > 100 then
+            data = content
+            break
+        end
+    end
+    if not data then
+        for _, url in ipairs(urls) do
+            local ok, content = pcall(game.HttpGet, game, url)
+            if ok and content and #content > 100 then
+                data = content
+                pcall(function()
+                    if writefile then
+                        writefile("esp_pixel.ttf", content)
+                    end
+                end)
+                break
+            end
+        end
+    end
+    if data then
+        local ok, font = pcall(function()
+            local f = Drawing.new("Font")
+            f.Data = data
+            return f
+        end)
+        if ok and font then
+            PixelFont = font
             return
         end
     end
-    PixelFont = Drawing.Fonts.Monospace
+    pcall(function()
+        PixelFont = Drawing.Fonts.UI
+    end)
+    if not PixelFont then
+        pcall(function()
+            PixelFont = Drawing.Fonts.System
+        end)
+    end
+    if not PixelFont then
+        PixelFont = Drawing.Fonts.Monospace
+    end
 end
 
 local function isTeammate(player)
@@ -236,10 +274,10 @@ local function CreateEntityESP(entity)
         HealthBGOutline = Create("Square", {Filled = false, Thickness = 1, Color = Color3.new(0, 0, 0), Visible = false, ZIndex = 2}),
         HealthBG = Create("Square", {Filled = true, Color = Color3.fromRGB(15, 15, 15), Visible = false, ZIndex = 3}),
         HealthSegments = segs,
-        HealthText = Create("Text", {Center = false, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = PixelFont or Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
-        NameText = Create("Text", {Center = true, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = PixelFont or Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
-        DistanceText = Create("Text", {Center = false, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = PixelFont or Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
-        ToolText = Create("Text", {Center = true, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = PixelFont or Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
+        HealthText = Create("Text", {Center = false, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
+        NameText = Create("Text", {Center = true, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
+        DistanceText = Create("Text", {Center = false, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
+        ToolText = Create("Text", {Center = true, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
         Tracer = Create("Line", {Thickness = 1, Color = Color3.new(1, 1, 1), Visible = false, ZIndex = 2}),
         Skeleton = {
             HeadTorso = MakeBone(),
@@ -349,8 +387,8 @@ end
 local function CreateItemESP(item)
     if espModule._itemDrawings[item] then return end
     espModule._itemDrawings[item] = {
-        NameDistText = Create("Text", {Center = true, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = PixelFont or Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
-        ContentsText = Create("Text", {Center = true, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = PixelFont or Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
+        NameDistText = Create("Text", {Center = true, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
+        ContentsText = Create("Text", {Center = true, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
     }
 end
 
@@ -518,7 +556,7 @@ local function ProcessItem(item)
     if nameDistStr ~= "" then
         data.NameDistText.Text = nameDistStr
         data.NameDistText.Size = textSize
-        data.NameDistText.Font = PixelFont or Drawing.Fonts.Monospace
+        data.NameDistText.Font = getEspFont()
         data.NameDistText.Color = color
         data.NameDistText.Position = Vector2.new(pos.X, pos.Y - 12)
         data.NameDistText.Visible = true
@@ -548,7 +586,7 @@ local function ProcessItem(item)
             end
             data.ContentsText.Text = contentStr
             data.ContentsText.Size = textSize - 1
-            data.ContentsText.Font = PixelFont or Drawing.Fonts.Monospace
+            data.ContentsText.Font = getEspFont()
             data.ContentsText.Color = color
             data.ContentsText.Position = Vector2.new(pos.X, pos.Y + 16)
             data.ContentsText.Visible = true
@@ -862,7 +900,7 @@ local function ProcessEntity(entity)
             local hpVal = math.floor(humanoid.Health + 0.5)
             data.HealthText.Text = tostring(hpVal)
             data.HealthText.Size = cfg.TextSize
-            data.HealthText.Font = PixelFont or Drawing.Fonts.Monospace
+            data.HealthText.Font = getEspFont()
             local tw = data.HealthText.TextBounds.X
             local fillH = sy * hp
             local minClamp = y - 2
@@ -887,7 +925,7 @@ local function ProcessEntity(entity)
         local name = isPlayer and entity.DisplayName or character.Name
         data.NameText.Text = name
         data.NameText.Size = cfg.TextSize
-        data.NameText.Font = PixelFont or Drawing.Fonts.Monospace
+        data.NameText.Font = getEspFont()
         data.NameText.Color = cfg.TextColor
         data.NameText.Position = Vector2.new(x + sx * 0.5, y - 14)
         data.NameText.Visible = true
@@ -898,7 +936,7 @@ local function ProcessEntity(entity)
     if cfg.Distance then
         data.DistanceText.Text = "[" .. tostring(meters) .. "m]"
         data.DistanceText.Size = cfg.TextSize
-        data.DistanceText.Font = PixelFont or Drawing.Fonts.Monospace
+        data.DistanceText.Font = getEspFont()
         data.DistanceText.Color = cfg.TextColor
         data.DistanceText.Position = Vector2.new(x + sx + 4, y - 1)
         data.DistanceText.Visible = true
@@ -910,7 +948,7 @@ local function ProcessEntity(entity)
         local tool = character:FindFirstChildOfClass("Tool")
         data.ToolText.Text = tool and tool.Name or "None"
         data.ToolText.Size = cfg.TextSize
-        data.ToolText.Font = PixelFont or Drawing.Fonts.Monospace
+        data.ToolText.Font = getEspFont()
         data.ToolText.Color = cfg.TextColor
         data.ToolText.Position = Vector2.new(x + sx * 0.5, y + sy + 2)
         data.ToolText.Visible = true
