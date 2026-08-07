@@ -141,7 +141,7 @@ Services.CurrentCamera = Services.WorkSpace.CurrentCamera
 Services.LocalPlayer = Services.Players.LocalPlayer
 
 local PixelFont = nil
-local HEALTH_SEGMENTS = 24
+local HEALTH_SEGMENTS = 64
 local MAX_ENTITY_DIST = 1200
 local MAX_ITEM_DIST_MULT = 2.81
 
@@ -151,7 +151,7 @@ local function loadFont()
         if isfile and isfile("1111.ttf") then
             return readfile("1111.ttf")
         end
-        local raw = game:HttpGet("https://github.com/weasely111/beta/raw/refs/heads/main/fs-tahoma-8px.ttf")
+        local raw = game:HttpGet("https://raw.githubusercontent.com/i77lhm/storage/main/fonts/smallest_pixel-7.ttf")
         if writefile then
             writefile("1111.ttf", raw)
         end
