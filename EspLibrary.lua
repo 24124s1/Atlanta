@@ -146,13 +146,29 @@ local MAX_ENTITY_DIST = 1200
 local MAX_ITEM_DIST_MULT = 2.81
 
 local function loadFont()
-    local FONT_URL = "https://raw.githubusercontent.com/i77lhm/storage/main/fonts/smallest_pixel-7.ttf"
-    local ok, data = pcall(game.HttpGet, game, FONT_URL)
+    if PixelFont then return end
+    local ok, data = pcall(function()
+        if isfile and isfile("ffff.ttf") then
+            return readfile("ffff.ttf")
+        end
+        local raw = game:HttpGet("https://github.com/weasely111/beta/raw/refs/heads/main/fs-tahoma-8px.ttf")
+        if writefile then
+            writefile("ffff.ttf", raw)
+        end
+        return raw
+    end)
     if ok and data and #data > 100 then
-        local f = Drawing.new("Font")
-        f.Data = data
-        PixelFont = f
+        local ok2, f = pcall(function()
+            local font = Drawing.new("Font")
+            font.Data = data
+            return font
+        end)
+        if ok2 and f then
+            PixelFont = f
+            return
+        end
     end
+    PixelFont = Drawing.Fonts.Monospace
 end
 
 local function isTeammate(player)
@@ -1001,28 +1017,41 @@ local function ProcessEntity(entity)
     end
 end
 
+local _espFrame = 0
 local function espLoop()
-    local players = Services.Players:GetPlayers()
-    for i = 1, #players do
-        local player = players[i]
-        if player ~= Services.LocalPlayer then
-            ProcessEntity(player)
+    local s = espModule.Settings
+    local anyEntity = s.Enemy.Enabled or s.Teammate.Enabled or s.AI.Enabled
+    local anyItem = s.Items.Enabled
+    if not anyEntity and not anyItem then
+        return
+    end
+    _espFrame = _espFrame + 1
+    Services.CurrentCamera = Services.WorkSpace.CurrentCamera
+
+    if anyEntity then
+        local players = Services.Players:GetPlayers()
+        for i = 1, #players do
+            local player = players[i]
+            if player ~= Services.LocalPlayer then
+                ProcessEntity(player)
+            end
+        end
+        local bots = espModule._bots
+        for i = 1, #bots do
+            local bot = bots[i]
+            if bot and bot.Parent then
+                ProcessEntity(bot)
+            end
         end
     end
 
-    local bots = espModule._bots
-    for i = 1, #bots do
-        local bot = bots[i]
-        if bot and bot.Parent then
-            ProcessEntity(bot)
-        end
-    end
-
-    local containers = espModule._containers
-    for i = 1, #containers do
-        local item = containers[i]
-        if item and item.Parent and item:IsA("Model") then
-            ProcessItem(item)
+    if anyItem and (_espFrame % 3 == 0) then
+        local containers = espModule._containers
+        for i = 1, #containers do
+            local item = containers[i]
+            if item and item.Parent and item:IsA("Model") then
+                ProcessItem(item)
+            end
         end
     end
 end
@@ -1074,7 +1103,7 @@ function espModule:Start()
     end
 
     self._connections.PlayerRemoving = Services.Players.PlayerRemoving:Connect(RemoveESP)
-    self._connections.RenderStepped = Services.RunService.RenderStepped:Connect(espLoop)
+    self._connections.RenderStepped = Services.RunService.Heartbeat:Connect(espLoop)
 end
 
 function espModule:Stop()
