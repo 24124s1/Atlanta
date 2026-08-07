@@ -5671,16 +5671,15 @@
 
 	local themes = {
 		preset = {
-			["outline"] = hex("#0A0A0A"),
-			["inline"] = hex("#2D2D2D"),
-			["accent"] = hex("#FC6BFF"),
-			["high_contrast"] = hex("#141414"),
-			["low_contrast"] = hex("#1E1E1E"),
+			["outline"] = hex("#000000"),
+			["inline"] = hex("#181818"),
+			["accent"] = hex("#A171FF"),
+			["high_contrast"] = hex("#0F0F0F"),
+			["low_contrast"] = hex("#0F0F0F"),
 			["text"] = hex("#B4B4B4"),
 			["text_outline"] = rgb(0, 0, 0),
-			["glow"] = hex("#FC6BFF"),
+			["glow"] = hex("#A171FF"),
 		},
-
 		utility = {
 			["outline"] = {
 				["BackgroundColor3"] = {}, 	
