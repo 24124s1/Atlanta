@@ -8,7 +8,7 @@ local TeamManager = {
     Members = {},
 }
 
-if game.PlaceId == 115872975504419 then
+if game.PlaceId == 79783567666809 then
     local SquadRemotes = ReplicatedStorage:WaitForChild("SquadRemotes")
     SquadRemotes.SquadUpdate.OnClientEvent:Connect(function(data)
         if data and data.members then
