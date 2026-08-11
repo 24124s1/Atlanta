@@ -138,14 +138,7 @@ local Services = {
     Workspace = GetService.Workspace,
 }
 Services.LocalPlayer = Services.Players.LocalPlayer
-
-local function getCamera()
-    if Services.CurrentCamera and Services.CurrentCamera.Parent then
-        return Services.CurrentCamera
-    end
-    Services.CurrentCamera = Services.Workspace:FindFirstChildOfClass("Camera")
-    return Services.CurrentCamera
-end
+Services.CurrentCamera = Services.Workspace.CurrentCamera
 
 local PixelFont = nil
 local HEALTH_SEGMENTS = 24
