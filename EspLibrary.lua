@@ -135,10 +135,17 @@ local Services = {
     Players = GetService.Players,
     UserInputService = GetService.UserInputService,
     CoreGui = GetService.CoreGui,
-    WorkSpace = GetService.Workspace,
+    Workspace = GetService.Workspace,
 }
-Services.CurrentCamera = Services.WorkSpace.CurrentCamera
 Services.LocalPlayer = Services.Players.LocalPlayer
+
+local function getCamera()
+    if Services.CurrentCamera and Services.CurrentCamera.Parent then
+        return Services.CurrentCamera
+    end
+    Services.CurrentCamera = Services.Workspace:FindFirstChildOfClass("Camera")
+    return Services.CurrentCamera
+end
 
 local PixelFont = nil
 local HEALTH_SEGMENTS = 24
@@ -1051,7 +1058,7 @@ local function espLoop()
     if not anyEntity and not anyItem then return end
     _espFrame = _espFrame + 1
     if tick() - _cameraCacheTime > 0.1 then
-        _cameraCache = Services.WorkSpace.CurrentCamera
+        _cameraCache = getCamera()
         _cameraCacheTime = tick()
     end
     Services.CurrentCamera = _cameraCache
@@ -1093,7 +1100,7 @@ function espModule:Start()
     table.clear(self._bots)
     table.clear(self._containers)
 
-    local botsFolder = Services.WorkSpace:FindFirstChild("IngameBots")
+    local botsFolder = Services.Workspace:FindFirstChild("IngameBots")
     if botsFolder then
         for _, bot in ipairs(botsFolder:GetChildren()) do
             if bot:IsA("Model") then
@@ -1112,7 +1119,7 @@ function espModule:Start()
         end)
     end
 
-    local containers = Services.WorkSpace:FindFirstChild("Containers")
+    local containers = Services.Workspace:FindFirstChild("Containers")
     if containers then
         for _, item in ipairs(containers:GetChildren()) do
             if item:IsA("Model") then
