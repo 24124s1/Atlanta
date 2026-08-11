@@ -125,7 +125,7 @@ espModule._players = {}
 
 local cloneref = cloneref or function(...) return ... end
 local GetService = setmetatable({}, {
-    __index = function(self, key)
+    CachedValue = function(self, key)
         return cloneref(game:GetService(key))
     end
 })
@@ -620,9 +620,7 @@ end
 
 local function ProcessEntity(entity)
     if entity == Services.LocalPlayer then return end
-
-    local character
-    local isPlayer = false
+    local character, isPlayer
     if typeof(entity) == "Instance" and entity:IsA("Player") then
         isPlayer = true
         character = entity.Character
@@ -630,53 +628,49 @@ local function ProcessEntity(entity)
         character = entity
     end
     if not character then return end
-
     if isPlayer then
         local inRaid = entity:FindFirstChild("InRaid")
         if not inRaid or not inRaid:IsA("BoolValue") or not inRaid.Value then
             local data = espModule._drawings[entity]
             if data then
                 HideESP(data)
-                if espModule._highlights[entity] then espModule._highlights[entity].Enabled = false end
+                if espModule._highlights[entity] then 
+                    espModule._highlights[entity].Enabled = false 
+                end
             end
             return
         end
     end
-
     CreateEntityESP(entity)
     local data = espModule._drawings[entity]
-
-    local cfg
-    if isPlayer then
-        cfg = isTeammate(entity) and espModule.Settings.Teammate or espModule.Settings.Enemy
-    else
-        cfg = espModule.Settings.AI
-    end
-
+    if not data then return end
+    local cfg = isPlayer and (isTeammate(entity) and espModule.Settings.Teammate or espModule.Settings.Enemy) or espModule.Settings.AI
     if not cfg.Enabled then
         HideESP(data)
-        if espModule._highlights[entity] then espModule._highlights[entity].Enabled = false end
+        if espModule._highlights[entity] then 
+            espModule._highlights[entity].Enabled = false 
+        end
         return
     end
-
     local hrp = character:FindFirstChild("HumanoidRootPart")
     local humanoid = character:FindFirstChildOfClass("Humanoid")
-    local Camera = Services.CurrentCamera
-    local viewport = Camera.ViewportSize
-
     if not (hrp and humanoid and humanoid.Health > 0) then
         HideESP(data)
-        if espModule._highlights[entity] then espModule._highlights[entity].Enabled = false end
+        if espModule._highlights[entity] then 
+            espModule._highlights[entity].Enabled = false 
+        end
         return
     end
-
+    local Camera = Services.CurrentCamera
+    if not Camera then return end
     local rawStuds = (Camera.CFrame.Position - hrp.Position).Magnitude
     if rawStuds > MAX_ENTITY_DIST then
         HideESP(data)
-        if espModule._highlights[entity] then espModule._highlights[entity].Enabled = false end
+        if espModule._highlights[entity] then 
+            espModule._highlights[entity].Enabled = false 
+        end
         return
     end
-
     local hrpPos, onScreen = Camera:WorldToViewportPoint(hrp.Position)
     if not onScreen or hrpPos.Z <= 0 then
         HideESP(data)
@@ -730,23 +724,15 @@ local function ProcessEntity(entity)
     if cfg.BoxEnabled then
         if cfg.BoxType == "Full" then
             local co = data.CornerOutline
-            co.TL1.Visible = false
-            co.TL2.Visible = false
-            co.TR1.Visible = false
-            co.TR2.Visible = false
-            co.BL1.Visible = false
-            co.BL2.Visible = false
-            co.BR1.Visible = false
-            co.BR2.Visible = false
+            co.TL1.Visible, co.TL2.Visible = false, false
+            co.TR1.Visible, co.TR2.Visible = false, false
+            co.BL1.Visible, co.BL2.Visible = false, false
+            co.BR1.Visible, co.BR2.Visible = false, false
             local c = data.Corner
-            c.TL1.Visible = false
-            c.TL2.Visible = false
-            c.TR1.Visible = false
-            c.TR2.Visible = false
-            c.BL1.Visible = false
-            c.BL2.Visible = false
-            c.BR1.Visible = false
-            c.BR2.Visible = false
+            c.TL1.Visible, c.TL2.Visible = false, false
+            c.TR1.Visible, c.TR2.Visible = false, false
+            c.BL1.Visible, c.BL2.Visible = false, false
+            c.BR1.Visible, c.BR2.Visible = false, false
 
             local fo = data.FullOutline
             fo.Top.From = Vector2.new(x - 1, y)
@@ -1056,15 +1042,20 @@ local function ProcessEntity(entity)
 end
 
 local _espFrame = 0
+local _cameraCache = nil
+local _cameraCacheTime = 0
 local function espLoop()
     local s = espModule.Settings
     local anyEntity = s.Enemy.Enabled or s.Teammate.Enabled or s.AI.Enabled
     local anyItem = s.Items.Enabled
-    if not anyEntity and not anyItem then
-        return
-    end
+    if not anyEntity and not anyItem then return end
     _espFrame = _espFrame + 1
-    Services.CurrentCamera = Services.WorkSpace.CurrentCamera
+    if tick() - _cameraCacheTime > 0.1 then
+        _cameraCache = Services.WorkSpace.CurrentCamera
+        _cameraCacheTime = tick()
+    end
+    Services.CurrentCamera = _cameraCache
+    if not Services.CurrentCamera then return end
 
     if anyEntity then
         local players = Services.Players:GetPlayers()
