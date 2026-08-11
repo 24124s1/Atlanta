@@ -113,15 +113,15 @@ espModule.Settings = {
     }
 }
 
-espModule._drawings = {}
-espModule._highlights = {}
-espModule._itemDrawings = {}
-espModule._itemHighlights = {}
-espModule._isRunning = false
-espModule._connections = {}
-espModule._bots = {}
-espModule._containers = {}
-espModule._players = {}
+espModule.drawings = {}
+espModule.highlights = {}
+espModule.itemDrawings = {}
+espModule.itemHighlights = {}
+espModule.isRunning = false
+espModule.connections = {}
+espModule.bots = {}
+espModule.containers = {}
+espModule.players = {}
 
 local cloneref = cloneref or function(...) return ... end
 local GetService = setmetatable({}, {
@@ -233,12 +233,12 @@ local function MakeBone()
 end
 
 local function CreateEntityESP(entity)
-    if espModule._drawings[entity] then return end
+    if espModule.drawings[entity] then return end
     local segs = table.create(HEALTH_SEGMENTS)
     for i = 1, HEALTH_SEGMENTS do
         segs[i] = Create("Square", {Filled = true, Visible = false, ZIndex = 4})
     end
-    espModule._drawings[entity] = {
+    espModule.drawings[entity] = {
         FullOutline = {
             Top = Create("Line", {Thickness = 3, Color = Color3.new(0, 0, 0), Visible = false, ZIndex = 1}),
             Bottom = Create("Line", {Thickness = 3, Color = Color3.new(0, 0, 0), Visible = false, ZIndex = 1}),
@@ -357,7 +357,7 @@ local function HideESP(data)
 end
 
 local function RemoveESP(entity)
-    local data = espModule._drawings[entity]
+    local data = espModule.drawings[entity]
     if not data then return end
     for _, v in pairs(data.FullOutline) do v:Remove() end
     for _, v in pairs(data.Full) do v:Remove() end
@@ -377,30 +377,30 @@ local function RemoveESP(entity)
         bone.Outline:Remove()
         bone.Line:Remove()
     end
-    espModule._drawings[entity] = nil
-    if espModule._highlights[entity] then
-        espModule._highlights[entity]:Destroy()
-        espModule._highlights[entity] = nil
+    espModule.drawings[entity] = nil
+    if espModule.highlights[entity] then
+        espModule.highlights[entity]:Destroy()
+        espModule.highlights[entity] = nil
     end
 end
 
 local function CreateItemESP(item)
-    if espModule._itemDrawings[item] then return end
-    espModule._itemDrawings[item] = {
+    if espModule.itemDrawings[item] then return end
+    espModule.itemDrawings[item] = {
         NameDistText = Create("Text", {Center = true, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
         ContentsText = Create("Text", {Center = true, Outline = true, OutlineColor = Color3.new(0, 0, 0), Size = 10, Color = Color3.new(1, 1, 1), Font = Drawing.Fonts.Monospace, Visible = false, ZIndex = 5}),
     }
 end
 
 local function RemoveItemESP(item)
-    local data = espModule._itemDrawings[item]
+    local data = espModule.itemDrawings[item]
     if not data then return end
     data.NameDistText:Remove()
     data.ContentsText:Remove()
-    espModule._itemDrawings[item] = nil
-    if espModule._itemHighlights[item] then
-        espModule._itemHighlights[item]:Destroy()
-        espModule._itemHighlights[item] = nil
+    espModule.itemDrawings[item] = nil
+    if espModule.itemHighlights[item] then
+        espModule.itemHighlights[item]:Destroy()
+        espModule.itemHighlights[item] = nil
     end
 end
 
@@ -436,11 +436,11 @@ local function ProcessItem(item)
     if not item:IsA("Model") then return end
     local cfg = espModule.Settings.Items
     if not cfg.Enabled then
-        local data = espModule._itemDrawings[item]
+        local data = espModule.itemDrawings[item]
         if data then
             data.NameDistText.Visible = false
             data.ContentsText.Visible = false
-            if espModule._itemHighlights[item] then espModule._itemHighlights[item].Enabled = false end
+            if espModule.itemHighlights[item] then espModule.itemHighlights[item].Enabled = false end
         end
         return
     end
@@ -451,22 +451,22 @@ local function ProcessItem(item)
 
     local pos, onScreen = camera:WorldToViewportPoint(pivot.Position)
     if not onScreen or pos.Z <= 0 then
-        local data = espModule._itemDrawings[item]
+        local data = espModule.itemDrawings[item]
         if data then
             data.NameDistText.Visible = false
             data.ContentsText.Visible = false
-            if espModule._itemHighlights[item] then espModule._itemHighlights[item].Enabled = false end
+            if espModule.itemHighlights[item] then espModule.itemHighlights[item].Enabled = false end
         end
         return
     end
 
     local dist = (camera.CFrame.Position - pivot.Position).Magnitude
     if dist > cfg.MaxDistance * MAX_ITEM_DIST_MULT then
-        local data = espModule._itemDrawings[item]
+        local data = espModule.itemDrawings[item]
         if data then
             data.NameDistText.Visible = false
             data.ContentsText.Visible = false
-            if espModule._itemHighlights[item] then espModule._itemHighlights[item].Enabled = false end
+            if espModule.itemHighlights[item] then espModule.itemHighlights[item].Enabled = false end
         end
         return
     end
@@ -488,33 +488,33 @@ local function ProcessItem(item)
     end
 
     if not itemType then
-        local data = espModule._itemDrawings[item]
+        local data = espModule.itemDrawings[item]
         if data then
             data.NameDistText.Visible = false
             data.ContentsText.Visible = false
-            if espModule._itemHighlights[item] then espModule._itemHighlights[item].Enabled = false end
+            if espModule.itemHighlights[item] then espModule.itemHighlights[item].Enabled = false end
         end
         return
     end
 
     local settingsKey = itemTypeMap[itemType]
     if not settingsKey then
-        local data = espModule._itemDrawings[item]
+        local data = espModule.itemDrawings[item]
         if data then
             data.NameDistText.Visible = false
             data.ContentsText.Visible = false
-            if espModule._itemHighlights[item] then espModule._itemHighlights[item].Enabled = false end
+            if espModule.itemHighlights[item] then espModule.itemHighlights[item].Enabled = false end
         end
         return
     end
 
     if isDead then
         if not cfg.Dead.Enabled then
-            local data = espModule._itemDrawings[item]
+            local data = espModule.itemDrawings[item]
             if data then
                 data.NameDistText.Visible = false
                 data.ContentsText.Visible = false
-                if espModule._itemHighlights[item] then espModule._itemHighlights[item].Enabled = false end
+                if espModule.itemHighlights[item] then espModule.itemHighlights[item].Enabled = false end
             end
             return
         end
@@ -523,17 +523,17 @@ local function ProcessItem(item)
 
     local itemCfg = cfg[settingsKey]
     if not itemCfg or not itemCfg.Enabled then
-        local data = espModule._itemDrawings[item]
+        local data = espModule.itemDrawings[item]
         if data then
             data.NameDistText.Visible = false
             data.ContentsText.Visible = false
-            if espModule._itemHighlights[item] then espModule._itemHighlights[item].Enabled = false end
+            if espModule.itemHighlights[item] then espModule.itemHighlights[item].Enabled = false end
         end
         return
     end
 
     CreateItemESP(item)
-    local data = espModule._itemDrawings[item]
+    local data = espModule.itemDrawings[item]
     local color = itemCfg.Color or Color3.fromRGB(255, 255, 255)
     local textSize = cfg.TextSize
     local showNames = cfg.ShowNames
@@ -598,12 +598,12 @@ local function ProcessItem(item)
     end
 
     if cfg.Chams then
-        local hl = espModule._itemHighlights[item]
+        local hl = espModule.itemHighlights[item]
         if not hl then
             hl = Instance.new("Highlight")
             hl.Name = "ItemHighlight"
             hl.Parent = Services.CoreGui
-            espModule._itemHighlights[item] = hl
+            espModule.itemHighlights[item] = hl
         end
         hl.Adornee = item
         hl.FillColor = color
@@ -612,8 +612,8 @@ local function ProcessItem(item)
         hl.OutlineTransparency = 1
         hl.Enabled = true
     else
-        if espModule._itemHighlights[item] then
-            espModule._itemHighlights[item].Enabled = false
+        if espModule.itemHighlights[item] then
+            espModule.itemHighlights[item].Enabled = false
         end
     end
 end
@@ -631,24 +631,24 @@ local function ProcessEntity(entity)
     if isPlayer then
         local inRaid = entity:FindFirstChild("InRaid")
         if not inRaid or not inRaid:IsA("BoolValue") or not inRaid.Value then
-            local data = espModule._drawings[entity]
+            local data = espModule.drawings[entity]
             if data then
                 HideESP(data)
-                if espModule._highlights[entity] then 
-                    espModule._highlights[entity].Enabled = false 
+                if espModule.highlights[entity] then 
+                    espModule.highlights[entity].Enabled = false 
                 end
             end
             return
         end
     end
     CreateEntityESP(entity)
-    local data = espModule._drawings[entity]
+    local data = espModule.drawings[entity]
     if not data then return end
     local cfg = isPlayer and (isTeammate(entity) and espModule.Settings.Teammate or espModule.Settings.Enemy) or espModule.Settings.AI
     if not cfg.Enabled then
         HideESP(data)
-        if espModule._highlights[entity] then 
-            espModule._highlights[entity].Enabled = false 
+        if espModule.highlights[entity] then 
+            espModule.highlights[entity].Enabled = false 
         end
         return
     end
@@ -656,8 +656,8 @@ local function ProcessEntity(entity)
     local humanoid = character:FindFirstChildOfClass("Humanoid")
     if not (hrp and humanoid and humanoid.Health > 0) then
         HideESP(data)
-        if espModule._highlights[entity] then 
-            espModule._highlights[entity].Enabled = false 
+        if espModule.highlights[entity] then 
+            espModule.highlights[entity].Enabled = false 
         end
         return
     end
@@ -666,15 +666,15 @@ local function ProcessEntity(entity)
     local rawStuds = (Camera.CFrame.Position - hrp.Position).Magnitude
     if rawStuds > MAX_ENTITY_DIST then
         HideESP(data)
-        if espModule._highlights[entity] then 
-            espModule._highlights[entity].Enabled = false 
+        if espModule.highlights[entity] then 
+            espModule.highlights[entity].Enabled = false 
         end
         return
     end
     local hrpPos, onScreen = Camera:WorldToViewportPoint(hrp.Position)
     if not onScreen or hrpPos.Z <= 0 then
         HideESP(data)
-        if espModule._highlights[entity] then espModule._highlights[entity].Enabled = false end
+        if espModule.highlights[entity] then espModule.highlights[entity].Enabled = false end
         return
     end
 
@@ -1021,12 +1021,12 @@ local function ProcessEntity(entity)
     end
 
     if cfg.Chams then
-        local hl = espModule._highlights[entity]
+        local hl = espModule.highlights[entity]
         if not hl then
             hl = Instance.new("Highlight")
             hl.Name = "ESPHighlight"
             hl.Parent = Services.CoreGui
-            espModule._highlights[entity] = hl
+            espModule.highlights[entity] = hl
         end
         hl.Adornee = character
         hl.FillColor = cfg.ChamsFillColor
@@ -1035,26 +1035,26 @@ local function ProcessEntity(entity)
         hl.OutlineTransparency = cfg.ChamsOutlineTransparency
         hl.Enabled = true
     else
-        if espModule._highlights[entity] then
-            espModule._highlights[entity].Enabled = false
+        if espModule.highlights[entity] then
+            espModule.highlights[entity].Enabled = false
         end
     end
 end
 
-local _espFrame = 0
-local _cameraCache = nil
-local _cameraCacheTime = 0
+local espFrame = 0
+local cameraCache = nil
+local cameraCacheTime = 0
 local function espLoop()
     local s = espModule.Settings
     local anyEntity = s.Enemy.Enabled or s.Teammate.Enabled or s.AI.Enabled
     local anyItem = s.Items.Enabled
     if not anyEntity and not anyItem then return end
-    _espFrame = _espFrame + 1
-    if tick() - _cameraCacheTime > 0.1 then
-        _cameraCache = getCamera()
-        _cameraCacheTime = tick()
+    espFrame = espFrame + 1
+    if tick() - cameraCacheTime > 0.1 then
+        cameraCache = Services.Workspace.CurrentCamera
+        cameraCacheTime = tick()
     end
-    Services.CurrentCamera = _cameraCache
+    Services.CurrentCamera = cameraCache
     if not Services.CurrentCamera then return end
 
     if anyEntity then
@@ -1065,7 +1065,7 @@ local function espLoop()
                 ProcessEntity(player)
             end
         end
-        local bots = espModule._bots
+        local bots = espModule.bots
         for i = 1, #bots do
             local bot = bots[i]
             if bot and bot.Parent then
@@ -1074,8 +1074,8 @@ local function espLoop()
         end
     end
 
-    if anyItem and (_espFrame % 3 == 0) then
-        local containers = espModule._containers
+    if anyItem and (espFrame % 3 == 0) then
+        local containers = espModule.containers
         for i = 1, #containers do
             local item = containers[i]
             if item and item.Parent and item:IsA("Model") then
@@ -1086,28 +1086,28 @@ local function espLoop()
 end
 
 function espModule:Start()
-    if self._isRunning then return end
-    self._isRunning = true
+    if self.isRunning then return end
+    self.isRunning = true
     loadFont()
 
-    table.clear(self._bots)
-    table.clear(self._containers)
+    table.clear(self.bots)
+    table.clear(self.containers)
 
     local botsFolder = Services.Workspace:FindFirstChild("IngameBots")
     if botsFolder then
         for _, bot in ipairs(botsFolder:GetChildren()) do
             if bot:IsA("Model") then
-                self._bots[#self._bots + 1] = bot
+                self.bots[#self.bots + 1] = bot
             end
         end
-        self._connections.BotAdded = botsFolder.ChildAdded:Connect(function(child)
+        self.connections.BotAdded = botsFolder.ChildAdded:Connect(function(child)
             if child:IsA("Model") then
-                self._bots[#self._bots + 1] = child
+                self.bots[#self.bots + 1] = child
             end
         end)
-        self._connections.BotRemoving = botsFolder.ChildRemoved:Connect(function(child)
-            local idx = table.find(self._bots, child)
-            if idx then table.remove(self._bots, idx) end
+        self.connections.BotRemoving = botsFolder.ChildRemoved:Connect(function(child)
+            local idx = table.find(self.bots, child)
+            if idx then table.remove(self.bots, idx) end
             RemoveESP(child)
         end)
     end
@@ -1116,44 +1116,44 @@ function espModule:Start()
     if containers then
         for _, item in ipairs(containers:GetChildren()) do
             if item:IsA("Model") then
-                self._containers[#self._containers + 1] = item
+                self.containers[#self.containers + 1] = item
             end
         end
-        self._connections.ContainerAdded = containers.ChildAdded:Connect(function(child)
+        self.connections.ContainerAdded = containers.ChildAdded:Connect(function(child)
             if child:IsA("Model") then
-                self._containers[#self._containers + 1] = child
+                self.containers[#self.containers + 1] = child
             end
         end)
-        self._connections.ContainerRemoving = containers.ChildRemoved:Connect(function(child)
-            local idx = table.find(self._containers, child)
-            if idx then table.remove(self._containers, idx) end
+        self.connections.ContainerRemoving = containers.ChildRemoved:Connect(function(child)
+            local idx = table.find(self.containers, child)
+            if idx then table.remove(self.containers, idx) end
             RemoveItemESP(child)
         end)
     end
 
-    self._connections.PlayerRemoving = Services.Players.PlayerRemoving:Connect(RemoveESP)
-    self._connections.RenderStepped = Services.RunService.Heartbeat:Connect(espLoop)
+    self.connections.PlayerRemoving = Services.Players.PlayerRemoving:Connect(RemoveESP)
+    self.connections.RenderStepped = Services.RunService.Heartbeat:Connect(espLoop)
 end
 
 function espModule:Stop()
-    if not self._isRunning then return end
-    self._isRunning = false
-    for _, conn in pairs(self._connections) do
+    if not self.isRunning then return end
+    self.isRunning = false
+    for _, conn in pairs(self.connections) do
         conn:Disconnect()
     end
-    self._connections = {}
-    for entity in pairs(self._drawings) do
+    self.connections = {}
+    for entity in pairs(self.drawings) do
         RemoveESP(entity)
     end
-    self._drawings = {}
-    self._highlights = {}
+    self.drawings = {}
+    self.highlights = {}
     for item in pairs(self._itemDrawings) do
         RemoveItemESP(item)
     end
     self._itemDrawings = {}
     self._itemHighlights = {}
-    table.clear(self._bots)
-    table.clear(self._containers)
+    table.clear(self.bots)
+    table.clear(self.containers)
 end
 
 function espModule:Restart()
@@ -1179,7 +1179,7 @@ function espModule:GetSettings()
 end
 
 function espModule:Toggle()
-    if self._isRunning then
+    if self.isRunning then
         self:Stop()
     else
         self:Start()
